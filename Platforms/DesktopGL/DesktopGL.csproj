@@ -11,7 +11,7 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <NoWarn>IDE0044;IDE0051;IDE0052;CA1859;CA2211;CA1822</NoWarn>
+    <NoWarn>IDE0044;IDE0051;IDE0052;CA1859;CA2211;CA1822;IDE0090</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
