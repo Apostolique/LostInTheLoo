@@ -1,11 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Apos.Input;
-using System.Text.Json.Serialization.Metadata;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -16,39 +13,63 @@ namespace GameProject {
             IsMouseVisible = true;
             Content.RootDirectory = "Content";
 
-            _settings = EnsureJson<Settings>("Settings.json", SettingsContext.Default.Settings);
+            Assets.LoadJson();
         }
 
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
+            Utility.Game = this;
+            Utility.Graphics = _graphics;
+
             Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += ClientSizeChanged;
 
-            IsFixedTimeStep = _settings.IsFixedTimeStep;
-            _graphics.SynchronizeWithVerticalRetrace = _settings.IsVSync;
+            IsFixedTimeStep = Assets.Settings.IsFixedTimeStep;
+            _graphics.SynchronizeWithVerticalRetrace = Assets.Settings.IsVSync;
 
-            _settings.IsFullscreen = _settings.IsFullscreen || _settings.IsBorderless;
+            Assets.Settings.IsFullscreen = Assets.Settings.IsFullscreen || Assets.Settings.IsBorderless;
 
-            RestoreWindow();
-            if (_settings.IsFullscreen) {
-                ApplyFullscreenChange(false);
+            Utility.RestoreWindow();
+            if (Assets.Settings.IsFullscreen) {
+                Utility.ApplyFullscreenChange(false);
             }
 
             base.Initialize();
         }
 
         protected override void LoadContent() {
-            _s = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
             InputHelper.Setup(this);
+
+            Assets.LoadAssets(Content, GraphicsDevice);
+
+            ClientSizeChanged(null, null);
+
+            _s = new SpriteBatch(GraphicsDevice);
+            _sb = new ShapeBatch(GraphicsDevice);
+        }
+
+        protected void ClientSizeChanged(object sender, EventArgs e) {
+            int w = Window.ClientBounds.Width;
+            int h = Window.ClientBounds.Height;
+            if (w < 1) {
+                w = 1;
+            }
+            if (h < 1) {
+                h = 1;
+            }
+            Width = w;
+            Height = h;
+
+            _target1?.Dispose();
+            _target2?.Dispose();
+            CreateTargets();
         }
 
         protected override void UnloadContent() {
-            if (!_settings.IsFullscreen) {
-                SaveWindow();
+            if (!Assets.Settings.IsFullscreen) {
+                Utility.SaveWindow();
             }
 
-            SaveJson<Settings>("Settings.json", _settings, SettingsContext.Default.Settings);
+            Utility.SaveJson("Settings.json", Assets.Settings, SettingsContext.Default.Settings);
 
             base.UnloadContent();
         }
@@ -60,125 +81,46 @@ namespace GameProject {
                 Exit();
 
             if (_toggleFullscreen.Pressed()) {
-                ToggleFullscreen();
+                Utility.ToggleFullscreen();
             }
             if (_toggleBorderless.Pressed()) {
-                ToggleBorderless();
+                Utility.ToggleBorderless();
             }
-
-            // TODO: Add your update logic here
 
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.SetRenderTarget(_target1);
+            GraphicsDevice.Clear(TWColor.Transparent);
 
-            // TODO: Add your drawing code here
+            _sb.Begin();
+            _sb.DrawCircle(new Vector2(100, 100), 20, TWColor.Red500, TWColor.White, 2);
+            _sb.End();
+
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(TWColor.Black);
+
+            Assets.Bokeh.Parameters["r"].SetValue(5f);
+
+            _s.Begin(effect: Assets.Bokeh);
+            _s.Draw(_target1, Vector2.Zero, TWColor.White);
+            _s.End();
 
             base.Draw(gameTime);
         }
 
-        private void ToggleFullscreen() {
-            bool oldIsFullscreen = _settings.IsFullscreen;
+        private void CreateTargets() {
+            _target1 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            _target2 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-            if (_settings.IsBorderless) {
-                _settings.IsBorderless = false;
-            } else {
-                _settings.IsFullscreen = !_settings.IsFullscreen;
-            }
-
-            ApplyFullscreenChange(oldIsFullscreen);
-        }
-        private void ToggleBorderless() {
-            bool oldIsFullscreen = _settings.IsFullscreen;
-
-            _settings.IsBorderless = !_settings.IsBorderless;
-            _settings.IsFullscreen = _settings.IsBorderless;
-
-            ApplyFullscreenChange(oldIsFullscreen);
-        }
-
-        public static string GetPath(string name) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name);
-        public static T LoadJson<T>(string name, JsonTypeInfo<T> typeInfo) where T : new() {
-            T json;
-            string jsonPath = GetPath(name);
-
-            if (File.Exists(jsonPath)) {
-                json = JsonSerializer.Deserialize<T>(File.ReadAllText(jsonPath), typeInfo);
-            } else {
-                json = new T();
-            }
-
-            return json;
-        }
-        public static void SaveJson<T>(string name, T json, JsonTypeInfo<T> typeInfo) {
-            string jsonPath = GetPath(name);
-            string jsonString = JsonSerializer.Serialize(json, typeInfo);
-            File.WriteAllText(jsonPath, jsonString);
-        }
-        public static T EnsureJson<T>(string name, JsonTypeInfo<T> typeInfo) where T : new() {
-            T json;
-            string jsonPath = GetPath(name);
-
-            if (File.Exists(jsonPath)) {
-                json = JsonSerializer.Deserialize<T>(File.ReadAllText(jsonPath), typeInfo);
-            } else {
-                json = new T();
-                string jsonString = JsonSerializer.Serialize(json, typeInfo);
-                File.WriteAllText(jsonPath, jsonString);
-            }
-
-            return json;
-        }
-
-        private void ApplyFullscreenChange(bool oldIsFullscreen) {
-            if (_settings.IsFullscreen) {
-                if (oldIsFullscreen) {
-                    ApplyHardwareMode();
-                } else {
-                    SetFullscreen();
-                }
-            } else {
-                UnsetFullscreen();
-            }
-        }
-        private void ApplyHardwareMode() {
-            _graphics.HardwareModeSwitch = !_settings.IsBorderless;
-            _graphics.ApplyChanges();
-        }
-        private void SetFullscreen() {
-            SaveWindow();
-
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.HardwareModeSwitch = !_settings.IsBorderless;
-
-            _graphics.IsFullScreen = true;
-            _graphics.ApplyChanges();
-        }
-        private void UnsetFullscreen() {
-            _graphics.IsFullScreen = false;
-            RestoreWindow();
-        }
-        private void SaveWindow() {
-            _settings.X = Window.ClientBounds.X;
-            _settings.Y = Window.ClientBounds.Y;
-            _settings.Width = Window.ClientBounds.Width;
-            _settings.Height = Window.ClientBounds.Height;
-        }
-        private void RestoreWindow() {
-            Window.Position = new Point(_settings.X, _settings.Y);
-            _graphics.PreferredBackBufferWidth = _settings.Width;
-            _graphics.PreferredBackBufferHeight = _settings.Height;
-            _graphics.ApplyChanges();
+            Assets.Bokeh.Parameters["unit"].SetValue(new Vector2(1f / Width, 1f / Height));
         }
 
         GraphicsDeviceManager _graphics;
         SpriteBatch _s;
-
-        Settings _settings;
+        ShapeBatch _sb;
 
         ICondition _quit =
             new AnyCondition(
@@ -191,5 +133,11 @@ namespace GameProject {
                 new KeyboardCondition(Keys.Enter)
             );
         ICondition _toggleBorderless = new KeyboardCondition(Keys.F11);
+
+        public static int Width;
+        public static int Height;
+
+        RenderTarget2D _target1;
+        RenderTarget2D _target2;
     }
 }
