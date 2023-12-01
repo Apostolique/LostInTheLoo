@@ -68,14 +68,14 @@ namespace GameProject {
             return !(left == right);
         }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj == null)
                 return false;
 
             if (obj.GetType() != base.GetType())
                 return false;
 
-            return (this == ((VertexShape)obj));
+            return this == ((VertexShape)obj);
         }
 
         static VertexShape() {

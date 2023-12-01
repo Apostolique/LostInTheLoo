@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Apos.Input;
 using Apos.Camera;
 using Apos.Tweens;
+using FontStashSharp;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -49,9 +50,11 @@ namespace GameProject {
             _sb = new ShapeBatch(GraphicsDevice);
 
             _camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
+
+            a1 = new Moves.Line(new Vector2(0f, 0f), new Vector2(1f, 1f));
         }
 
-        protected void ClientSizeChanged(object sender, EventArgs e) {
+        protected void ClientSizeChanged(object? sender, EventArgs? e) {
             int w = Window.ClientBounds.Width;
             int h = Window.ClientBounds.Height;
             if (w < 1) {
@@ -81,6 +84,7 @@ namespace GameProject {
         protected override void Update(GameTime gameTime) {
             InputHelper.UpdateSetup();
             TweenHelper.UpdateSetup(gameTime);
+            _fps.Update(gameTime);
 
             if (_quit.Pressed())
                 Exit();
@@ -94,11 +98,14 @@ namespace GameProject {
 
             UpdateCamera();
 
+            a1.Update(gameTime);
+
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
+            _fps.Draw(gameTime);
             GraphicsDevice.SetRenderTarget(_target2);
             GraphicsDevice.Clear(TWColor.Transparent);
             GraphicsDevice.SetRenderTarget(_target1);
@@ -115,7 +122,7 @@ namespace GameProject {
             PreserveRender(2f, -0.1f);
 
             _sb.Begin(view: _camera.GetView(0f));
-            _sb.DrawEllipse(new Vector2(-100f, 50f), 50f, 20f, TWColor.Pink300, TWColor.Gray800, 1f);
+            _sb.DrawEllipse(a1.XY, 50f, 20f, TWColor.Pink300, TWColor.Gray800, 1f);
             _sb.End();
             PreserveRender(0f, 0f);
 
@@ -128,6 +135,11 @@ namespace GameProject {
 
             _s.Begin();
             _s.Draw(_target2, Vector2.Zero, TWColor.White);
+            _s.End();
+
+            var font = Assets.FontSystem.GetFont(24);
+            _s.Begin();
+            _s.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate}", new Vector2(10, 10), TWColor.White);
             _s.End();
 
             base.Draw(gameTime);
@@ -203,6 +215,8 @@ namespace GameProject {
         SpriteBatch _s;
         ShapeBatch _sb;
 
+        FPSCounter _fps = new FPSCounter();
+
         Camera _camera;
 
         ICondition _quit =
@@ -238,5 +252,7 @@ namespace GameProject {
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
+
+        Moves.Line a1;
     }
 }

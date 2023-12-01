@@ -37,3 +37,6 @@
 /processorParam:DebugMode=Auto
 /build:bokeh.fx
 
+#begin source-code-pro-medium.ttf
+/copy:source-code-pro-medium.ttf
+
