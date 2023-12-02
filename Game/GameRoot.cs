@@ -20,8 +20,7 @@ namespace GameProject {
         }
 
         protected override void Initialize() {
-            Utility.Game = this;
-            Utility.Graphics = _graphics;
+            G.Setup(this, _graphics);
 
             Window.AllowUserResizing = true;
 
@@ -46,10 +45,8 @@ namespace GameProject {
             Window.ClientSizeChanged += ClientSizeChanged;
             ClientSizeChanged(null, null);
 
-            _s = new SpriteBatch(GraphicsDevice);
-            _sb = new ShapeBatch(GraphicsDevice);
-
-            _camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
+            G.S = new SpriteBatch(GraphicsDevice);
+            G.SB = new ShapeBatch(GraphicsDevice);
 
             a1 = new Moves.Line(new Vector2(0f, 0f), new Vector2(1f, 1f));
         }
@@ -106,53 +103,39 @@ namespace GameProject {
 
         protected override void Draw(GameTime gameTime) {
             _fps.Draw(gameTime);
-            GraphicsDevice.SetRenderTarget(_target2);
-            GraphicsDevice.Clear(TWColor.Transparent);
-            GraphicsDevice.SetRenderTarget(_target1);
-            GraphicsDevice.Clear(TWColor.Transparent);
+            G.R.Clear(_target2);
+            G.R.Clear(_target1);
 
-            _sb.Begin(view: _camera.GetView(-0.2f));
-            _sb.DrawCircle(new Vector2(100f, 100f), 20f, TWColor.Red500, TWColor.White, 2f);
-            _sb.End();
-            PreserveRender(10f, -0.2f);
+            G.SB.Begin(view: G.Camera.GetView(-0.2f));
+            G.SB.DrawCircle(new Vector2(100f, 100f), 20f, TWColor.Red500, TWColor.White, 2f);
+            G.SB.End();
+            G.R.ApplyBokeh(_target1, _target2, 10f, -0.2f);
 
-            _sb.Begin(view: _camera.GetView(-0.1f));
-            _sb.DrawCircle(new Vector2(0f, 0f), 20f, TWColor.Blue200, TWColor.Black, 1f);
-            _sb.End();
-            PreserveRender(2f, -0.1f);
+            G.SB.Begin(view: G.Camera.GetView(-0.1f));
+            G.SB.DrawCircle(new Vector2(0f, 0f), 20f, TWColor.Blue200, TWColor.Black, 1f);
+            G.SB.End();
+            G.R.ApplyBokeh(_target1, _target2, 2f, -0.1f);
 
-            _sb.Begin(view: _camera.GetView(0f));
-            _sb.DrawEllipse(a1.XY, 50f, 20f, TWColor.Pink300, TWColor.Gray800, 1f);
-            _sb.End();
-            PreserveRender(0f, 0f);
+            G.SB.Begin(view: G.Camera.GetView(0f));
+            G.SB.DrawEllipse(a1.XY, 50f, 20f, TWColor.Pink300, TWColor.Gray800, 1f);
+            G.SB.End();
+            G.R.DrawTo(_target1, _target2);
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(TWColor.Black);
 
-            _s.Begin(transformMatrix: _camera.GetView(-3f));
-            _s.Draw(Assets.Background, new Rectangle(-15000, -10000, Assets.Background.Width * 10, Assets.Background.Height * 10), TWColor.White);
-            _s.End();
+            G.S.Begin(transformMatrix: G.Camera.GetView(-3f));
+            G.S.Draw(Assets.Background, new Rectangle(-15000, -10000, Assets.Background.Width * 10, Assets.Background.Height * 10), TWColor.White);
+            G.S.End();
 
-            _s.Begin();
-            _s.Draw(_target2, Vector2.Zero, TWColor.White);
-            _s.End();
+            G.R.Draw(_target2);
 
             var font = Assets.FontSystem.GetFont(24);
-            _s.Begin();
-            _s.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate}", new Vector2(10, 10), TWColor.White);
-            _s.End();
+            G.S.Begin();
+            G.S.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate}", new Vector2(10, 10), TWColor.White);
+            G.S.End();
 
             base.Draw(gameTime);
-        }
-
-        private void PreserveRender(float blurRadius, float z) {
-            GraphicsDevice.SetRenderTarget(_target2);
-            Assets.Bokeh.Parameters["r"].SetValue(blurRadius * _camera.WorldToScreenScale(z));
-            _s.Begin(effect: Assets.Bokeh);
-            _s.Draw(_target1, Vector2.Zero, TWColor.White);
-            _s.End();
-            GraphicsDevice.SetRenderTarget(_target1);
-            GraphicsDevice.Clear(TWColor.Transparent);
         }
 
         private void CreateTargets() {
@@ -167,8 +150,8 @@ namespace GameProject {
                 SetExpTween(MathHelper.Clamp(_targetExp - MouseCondition.ScrollDelta * _expDistance, _maxExp, _minExp));
             }
 
-            _camera.Z = _camera.ScaleToZ(ExpToScale(_exp.Value), 0f);
-            _mouseWorld = _camera.ScreenToWorld(InputHelper.NewMouse.X, InputHelper.NewMouse.Y);
+            G.Camera.Z = G.Camera.ScaleToZ(ExpToScale(_exp.Value), 0f);
+            _mouseWorld = G.Camera.ScreenToWorld(InputHelper.NewMouse.X, InputHelper.NewMouse.Y);
 
             if (_dragCamera.Pressed()) {
                 _dragAnchor = _mouseWorld;
@@ -178,7 +161,7 @@ namespace GameProject {
                 _mouseWorld = _dragAnchor;
             }
 
-            _camera.XY = _xy.Value;
+            G.Camera.XY = _xy.Value;
         }
 
         private float ScaleToExp(float scale) {
@@ -204,7 +187,7 @@ namespace GameProject {
             _exp.Duration = duration;
         }
         private void SetZTween(float target, long duration = 1200) {
-            _targetExp = ScaleToExp(_camera.ZToScale(target, 0f));
+            _targetExp = ScaleToExp(G.Camera.ZToScale(target, 0f));
             _exp.A = _exp.Value;
             _exp.B = _targetExp;
             _exp.StartTime = TweenHelper.TotalMS;
@@ -212,12 +195,8 @@ namespace GameProject {
         }
 
         GraphicsDeviceManager _graphics;
-        SpriteBatch _s;
-        ShapeBatch _sb;
 
         FPSCounter _fps = new FPSCounter();
-
-        Camera _camera;
 
         ICondition _quit =
             new AnyCondition(

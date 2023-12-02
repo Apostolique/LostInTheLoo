@@ -7,9 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameProject {
     public static class Utility {
-        public static GraphicsDeviceManager Graphics;
-        public static Game Game;
-
         public static void ToggleFullscreen() {
             bool oldIsFullscreen = Assets.Settings.IsFullscreen;
 
@@ -32,14 +29,14 @@ namespace GameProject {
 
         public static string GetPath(string name) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name);
         public static T LoadJson<T>(string name, JsonTypeInfo<T> typeInfo) where T : new() {
-            T json;
+            T? json = default;
             string jsonPath = GetPath(name);
 
             if (File.Exists(jsonPath)) {
                 json = JsonSerializer.Deserialize(File.ReadAllText(jsonPath), typeInfo);
-            } else {
-                json = new T();
             }
+
+            json ??= new T();
 
             return json;
         }
@@ -49,12 +46,13 @@ namespace GameProject {
             File.WriteAllText(jsonPath, jsonString);
         }
         public static T EnsureJson<T>(string name, JsonTypeInfo<T> typeInfo) where T : new() {
-            T json;
+            T? json = default;
             string jsonPath = GetPath(name);
 
             if (File.Exists(jsonPath)) {
                 json = JsonSerializer.Deserialize(File.ReadAllText(jsonPath), typeInfo);
-            } else {
+            }
+            if (json == null) {
                 json = new T();
                 string jsonString = JsonSerializer.Serialize(json, typeInfo);
                 File.WriteAllText(jsonPath, jsonString);
@@ -75,34 +73,34 @@ namespace GameProject {
             }
         }
         public static void ApplyHardwareMode() {
-            Graphics.HardwareModeSwitch = !Assets.Settings.IsBorderless;
-            Graphics.ApplyChanges();
+            G.Graphics.HardwareModeSwitch = !Assets.Settings.IsBorderless;
+            G.Graphics.ApplyChanges();
         }
         public static void SetFullscreen() {
             SaveWindow();
 
-            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            Graphics.HardwareModeSwitch = !Assets.Settings.IsBorderless;
+            G.Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            G.Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            G.Graphics.HardwareModeSwitch = !Assets.Settings.IsBorderless;
 
-            Graphics.IsFullScreen = true;
-            Graphics.ApplyChanges();
+            G.Graphics.IsFullScreen = true;
+            G.Graphics.ApplyChanges();
         }
         public static void UnsetFullscreen() {
-            Graphics.IsFullScreen = false;
+            G.Graphics.IsFullScreen = false;
             RestoreWindow();
         }
         public static void SaveWindow() {
-            Assets.Settings.X = Game.Window.ClientBounds.X;
-            Assets.Settings.Y = Game.Window.ClientBounds.Y;
-            Assets.Settings.Width = Game.Window.ClientBounds.Width;
-            Assets.Settings.Height = Game.Window.ClientBounds.Height;
+            Assets.Settings.X = G.Window.ClientBounds.X;
+            Assets.Settings.Y = G.Window.ClientBounds.Y;
+            Assets.Settings.Width = G.Window.ClientBounds.Width;
+            Assets.Settings.Height = G.Window.ClientBounds.Height;
         }
         public static void RestoreWindow() {
-            Game.Window.Position = new Point(Assets.Settings.X, Assets.Settings.Y);
-            Graphics.PreferredBackBufferWidth = Assets.Settings.Width;
-            Graphics.PreferredBackBufferHeight = Assets.Settings.Height;
-            Graphics.ApplyChanges();
+            G.Window.Position = new Point(Assets.Settings.X, Assets.Settings.Y);
+            G.Graphics.PreferredBackBufferWidth = Assets.Settings.Width;
+            G.Graphics.PreferredBackBufferHeight = Assets.Settings.Height;
+            G.Graphics.ApplyChanges();
         }
     }
 }
