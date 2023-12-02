@@ -10,14 +10,19 @@ namespace GameProject
 {
     public static class WorldGenerator
     {
+        private const int maxUnidentifiedBlob1 = 1000;
+
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
         private static CircleWithMaskRenderLogic circleWithMaskRenderLogic = new CircleWithMaskRenderLogic();
         private static LacrymariaOlorRenderLogic lacrymariaOlorRenderLogic = new LacrymariaOlorRenderLogic();
         private static LacrymariaOlorUpdateLogic lacrymariaOlorUpdateLogic = new LacrymariaOlorUpdateLogic();
+        private static UnidentifiedBlob1UpdateLogic unidentifiedBlob1UpdateLogic = new UnidentifiedBlob1UpdateLogic();
+        private static readonly Random random = new Random();
 
         public static void Generate()
         {
+            Enumerable.Range(0, maxUnidentifiedBlob1).ForEach(_ => CreateRandomUnidentifiedBlob1());
             CreateLacrymariaOlorEntity(50, 50);
             CreateCircleEntity(100, 100, 20, TWColor.Red500, TWColor.White, 2, -0.2f, 10);
             CreateCircleEntity(0, 0, 20, TWColor.Blue200, TWColor.Black, 1, -0.1f, 2);
@@ -88,6 +93,28 @@ namespace GameProject
             };
             G.Entities.Add(entity);
             G.EntitiesByLocation.Add(entity.AABB, entity);
+        }
+
+        public static void CreateRandomUnidentifiedBlob1()
+        {
+            var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var entity = new UnidentifiedBlob1Entity()
+            {
+                LocalPosition = position,
+                RenderLogic = ellipseRenderLogic,
+                UpdateLogic = unidentifiedBlob1UpdateLogic,
+                CourseDiviationSpeed = random.NextSingle() * 50 + 1,
+                TargetPosition = targetPosition,
+                Segment = new EllipseSegment(position.X, position.Y, 20, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z, 10),
+                MovementSpeedMultiplier = random.NextSingle() * 100 + 1,
+                NextMovementSpeedMultiplierChange = random.NextDouble() * 4 + 1,
+                Z = position.Z,
+            };
+            entity.Segments = new Segment[] { entity.Segment };
+            G.Entities.Add(entity);
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
+            entity.UpdateAbsoluteRecursive();
         }
     }
 }

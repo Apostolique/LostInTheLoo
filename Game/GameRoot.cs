@@ -99,11 +99,14 @@ namespace GameProject {
 
             UpdateCamera();
 
-            foreach (var entity in G.Entities)
+            if(gameTime.ElapsedGameTime.TotalSeconds > 0.0d)
             {
-                entity.UpdateLogic.Update(entity, gameTime);
+                _entitiesInView = G.EntitiesByLocation.Query(G.Camera.GetViewRect()).OrderBy(e => e.Z).ToArray();
+                foreach (var entity in _entitiesInView)
+                {
+                    entity.UpdateLogic.Update(entity, gameTime);
+                }
             }
-
 
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
@@ -114,7 +117,7 @@ namespace GameProject {
             G.R.Clear(Target2);
             G.R.Clear(Target1);
 
-            foreach (var entity in G.Entities.OrderBy(e => e.Z))
+            foreach (var entity in _entitiesInView)
             {
                 entity.RenderLogic.Render(entity);
             }
@@ -231,5 +234,7 @@ namespace GameProject {
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
+
+        Entity[] _entitiesInView = Array.Empty<Entity>();
     }
 }
