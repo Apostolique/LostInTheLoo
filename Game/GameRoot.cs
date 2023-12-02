@@ -47,6 +47,7 @@ namespace GameProject {
 
             G.S = new SpriteBatch(GraphicsDevice);
             G.SB = new ShapeBatch(GraphicsDevice);
+            G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
 
             a1 = new Moves.Line(new Vector2(0f, 0f), new Vector2(1f, 1f));
         }
@@ -65,6 +66,7 @@ namespace GameProject {
 
             _target1?.Dispose();
             _target2?.Dispose();
+            _target3?.Dispose();
             CreateTargets();
         }
 
@@ -121,6 +123,15 @@ namespace GameProject {
             G.SB.End();
             G.R.DrawTo(_target1, _target2);
 
+            G.R.DrawInfinite(Assets.Noise1, _target3, 0f, 1f, Vector2.Zero);
+
+            G.GraphicsDevice.SetRenderTarget(_target1);
+            G.GraphicsDevice.Clear(TWColor.Black);
+            G.SB.Begin(view: G.Camera.GetView(0f));
+            G.SB.FillCircle(new Vector2(-100f, -100f), 20f, TWColor.White);
+            G.SB.End();
+            G.R.ApplyMask(_target3, _target1, _target2);
+
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(TWColor.Black);
 
@@ -141,6 +152,7 @@ namespace GameProject {
         private void CreateTargets() {
             _target1 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             _target2 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            _target3 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             Assets.Bokeh.Parameters["unit"].SetValue(new Vector2(1f / Width, 1f / Height));
         }
@@ -220,6 +232,7 @@ namespace GameProject {
 
         RenderTarget2D _target1;
         RenderTarget2D _target2;
+        RenderTarget2D _target3;
 
         Vector2Tween _xy = new Vector2Tween(Vector2.Zero, Vector2.Zero, 0, Easing.QuintOut);
         FloatTween _exp = new FloatTween(0f, 0f, 0, Easing.QuintOut);

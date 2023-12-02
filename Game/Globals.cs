@@ -10,8 +10,6 @@ namespace GameProject {
             Graphics = graphics;
             GraphicsDevice = Game.GraphicsDevice;
 
-            Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
-
             R = new Renderer();
         }
 

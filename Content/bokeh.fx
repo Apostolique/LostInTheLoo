@@ -17,6 +17,12 @@ float r;
 
 sampler TextureSampler : register(s0);
 
+struct VertexToPixel {
+    float4 Position : SV_Position0;
+    float4 Color : COLOR0;
+    float4 TexCoord : TEXCOORD0;
+};
+
 float4 bokeh(float2 uv, float2 radius) {
     float4 col = float4(0.0, 0.0, 0.0, 0.0);
     for (float i = 0.0; i < samples; i++) {
@@ -27,10 +33,10 @@ float4 bokeh(float2 uv, float2 radius) {
     return pow(col / samples, 1.0 / gamma);
 }
 
-float4 PS(float4 position : SV_Position0, float4 color : COLOR0, float4 texCoord : TEXCOORD0) : SV_TARGET {
-    float4 c = bokeh(texCoord.xy, r * unit);
+float4 PS(VertexToPixel p) : SV_TARGET {
+    float4 c = bokeh(p.TexCoord.xy, r * unit);
 
-    return c * color;
+    return c * p.Color;
 }
 
 technique BokehBlur {

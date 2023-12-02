@@ -20,16 +20,22 @@ namespace GameProject {
         }
         private static void LoadTextures(ContentManager content) {
             Background = content.Load<Texture2D>("background");
+            Noise1 = content.Load<Texture2D>("noise1");
         }
         private static void LoadShaders(ContentManager content) {
             Shapes = content.Load<Effect>("apos-shapes");
             Bokeh = content.Load<Effect>("bokeh");
+            Infinite = content.Load<Effect>("infinite");
+            Mask = content.Load<Effect>("mask");
         }
 
         public static Settings Settings;
         public static FontSystem FontSystem;
         public static Texture2D Background;
+        public static Texture2D Noise1;
         public static Effect Bokeh;
         public static Effect Shapes;
+        public static Effect Infinite;
+        public static Effect Mask;
     }
 }

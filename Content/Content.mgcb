@@ -37,6 +37,30 @@
 /processorParam:DebugMode=Auto
 /build:bokeh.fx
 
+#begin infinite.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:infinite.fx
+
+#begin mask.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:mask.fx
+
+#begin noise1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:noise1.png
+
 #begin source-code-pro-medium.ttf
 /copy:source-code-pro-medium.ttf
 
