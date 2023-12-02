@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,6 +7,7 @@ using Apos.Camera;
 using Apos.Tweens;
 using FontStashSharp;
 using MonoGame.Extended;
+using System.Linq;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -113,7 +114,7 @@ namespace GameProject {
             G.R.Clear(Target2);
             G.R.Clear(Target1);
 
-            foreach (var entity in G.Entities)
+            foreach (var entity in G.Entities.OrderBy(e => e.Z))
             {
                 entity.RenderLogic.Render(entity);
             }

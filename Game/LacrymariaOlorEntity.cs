@@ -17,6 +17,5 @@ namespace GameProject
         public float HeadRotationMultiplier = 1.0f;
         public Vector2 BodyPosition;
         public Vector2 HeadPosition;
-        public float Z;
     }
 }

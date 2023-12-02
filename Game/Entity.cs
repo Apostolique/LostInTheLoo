@@ -15,5 +15,6 @@ namespace GameProject
         public UpdateLogic UpdateLogic;
         public Segment[] Segments;
         public RectangleF AABB;
+        public float Z;
     }
 }

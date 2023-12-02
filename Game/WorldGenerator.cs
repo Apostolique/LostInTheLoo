@@ -36,6 +36,7 @@ namespace GameProject
                     new CircleSegment(centerX, centerY, radius, color1, color2, thickness, z, bokehBlurRadius),
                 },
                 AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
+                Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
             G.Entities.Add(entity);
@@ -52,6 +53,7 @@ namespace GameProject
                     new EllipseSegment(centerX, centerY, radius1, radius2, color1, color2, thickness, rotation, z, bokehBlurRadius),
                 },
                 AABB = new RectangleF(centerX - radius1 * 0.5f, centerY - radius2 * 0.5f, radius1, radius2),
+                Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
             G.Entities.Add(entity);
@@ -68,6 +70,7 @@ namespace GameProject
                     new CircleWithMaskSegment(centerX, centerY, radius, color, z, texture, scale, offset, clearColor),
                 },
                 AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
+                Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
             G.Entities.Add(entity);
@@ -81,6 +84,7 @@ namespace GameProject
                 UpdateLogic = lacrymariaOlorUpdateLogic,
                 BodyPosition = new Vector2(x, y),
                 AABB = new RectangleF(x, y, 20, 20),
+                Z = 0f
             };
             G.Entities.Add(entity);
             G.EntitiesByLocation.Add(entity.AABB, entity);
