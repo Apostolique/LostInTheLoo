@@ -24,9 +24,9 @@ struct VertexToPixel {
     float4 TexCoord : TEXCOORD0;
 };
 
-float4 PS(VertexToPixel PSIn): SV_TARGET {
-    float4 diffuse = tex2D(TextureSampler, PSIn.TexCoord.xy);
-    float4 mask = tex2D(MaskSampler, PSIn.TexCoord.xy);
+float4 PS(VertexToPixel p): SV_TARGET {
+    float4 diffuse = tex2D(TextureSampler, p.TexCoord.xy);
+    float4 mask = tex2D(MaskSampler, p.TexCoord.xy);
 
     return diffuse * float4(mask.r, mask.r, mask.r, mask.r);
 }

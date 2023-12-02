@@ -269,6 +269,8 @@ namespace GameProject {
             if (_triangleCount == 0) return;
 
             _effect.Parameters["view_projection"].SetValue(_view * _projection);
+            _effect.Parameters["mask_texture"].SetValue(Assets.Noise1);
+            _effect.Parameters["mask_size"].SetValue(new Vector2(1f / Assets.Noise1.Width, 1f / Assets.Noise1.Height));
 
             if (_indicesChanged) {
                 _vertexBuffer.Dispose();

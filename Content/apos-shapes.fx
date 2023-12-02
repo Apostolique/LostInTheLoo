@@ -8,6 +8,18 @@
 
 float4x4 view_projection;
 
+Texture2D mask_texture;
+sampler MaskSampler {
+    Texture = ( mask_texture );
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+    AddressU = WRAP;
+    AddressV = WRAP;
+};
+
+float2 mask_size;
+
 struct VertexInput {
     float4 Position : POSITION0;
     float4 TexCoord : TEXCOORD0;
@@ -197,6 +209,8 @@ PixelInput SpriteVertexShader(VertexInput v) {
     return output;
 }
 float4 SpritePixelShader(PixelInput p) : SV_TARGET {
+    float4 mask = tex2D(MaskSampler, p.TexCoord.xy * mask_size);
+
     float ps = p.Meta2.x;
     float aaSize = ps * p.Meta2.y;
     float sdfSize = p.Meta1.z;
@@ -219,9 +233,9 @@ float4 SpritePixelShader(PixelInput p) : SV_TARGET {
 
     d -= p.Meta2.z;
 
-    float4 c1 = p.Color1 * Antialias(d + lineSize * 2.0 + aaSize - ps * 1.0, aaSize);
+    float4 c1 = p.Color1 * Antialias(d + lineSize * 2.0 + aaSize - ps * 1.0, aaSize) * mask.r;
     d = abs(d + lineSize) - lineSize + ps * 0.5;
-    float4 c2 = p.Color2 * Antialias(d, aaSize * 0.75);
+    float4 c2 = p.Color2 * Antialias(d, aaSize * 0.75) * mask.r;
 
     return c2 + c1 * (1.0 - c2.a);
 
