@@ -51,8 +51,6 @@ namespace GameProject {
             G.S = new SpriteBatch(GraphicsDevice);
             G.SB = new ShapeBatch(GraphicsDevice);
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
-
-            a1 = new Moves.Line(new Vector2(0f, 0f), new Vector2(1f, 1f));
         }
 
         protected void ClientSizeChanged(object? sender, EventArgs? e) {
@@ -99,8 +97,6 @@ namespace GameProject {
             }
 
             UpdateCamera();
-
-            a1.Update(gameTime);
 
             foreach (var entity in G.Entities)
             {
@@ -234,7 +230,5 @@ namespace GameProject {
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
-
-        Moves.Line a1;
     }
 }
