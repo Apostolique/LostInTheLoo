@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.IO;
 using Apos.Camera;
+using Apos.Spatial;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,5 +24,8 @@ namespace GameProject {
         public static ShapeBatch SB;
         public static Renderer R;
         public static Camera Camera;
+        public static AABBTree<Entity> EntitiesByLocation = new AABBTree<Entity>();
+        public static List<Entity> Entities = new List<Entity>();
+        public static bool DisableBokeh = File.Exists("bokeh.disable");
     }
 }

@@ -24,8 +24,9 @@ namespace GameProject {
         public void ApplyBokeh(RenderTarget2D source, RenderTarget2D destination, float blurRadius, float z) {
             G.GraphicsDevice.SetRenderTarget(destination);
 
+            var effect = G.DisableBokeh ? null : Assets.Bokeh;
             Assets.Bokeh.Parameters["r"].SetValue(blurRadius * G.Camera.WorldToScreenScale(z));
-            G.S.Begin(effect: Assets.Bokeh);
+            G.S.Begin(effect: effect);
             G.S.Draw(source, Vector2.Zero, TWColor.White);
             G.S.End();
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -6,6 +6,7 @@ using Apos.Input;
 using Apos.Camera;
 using Apos.Tweens;
 using FontStashSharp;
+using MonoGame.Extended;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -35,6 +36,8 @@ namespace GameProject {
             }
 
             base.Initialize();
+
+            WorldGenerator.Generate();
         }
 
         protected override void LoadContent() {
@@ -64,9 +67,9 @@ namespace GameProject {
             Width = w;
             Height = h;
 
-            _target1?.Dispose();
-            _target2?.Dispose();
-            _target3?.Dispose();
+            Target1?.Dispose();
+            Target2?.Dispose();
+            Target3?.Dispose();
             CreateTargets();
         }
 
@@ -99,38 +102,25 @@ namespace GameProject {
 
             a1.Update(gameTime);
 
+            foreach (var entity in G.Entities)
+            {
+                entity.UpdateLogic.Update(entity, gameTime);
+            }
+
+
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
             _fps.Draw(gameTime);
-            G.R.Clear(_target2);
-            G.R.Clear(_target1);
+            G.R.Clear(Target2);
+            G.R.Clear(Target1);
 
-            G.SB.Begin(view: G.Camera.GetView(-0.2f));
-            G.SB.DrawCircle(new Vector2(100f, 100f), 20f, TWColor.Red500, TWColor.White, 2f);
-            G.SB.End();
-            G.R.ApplyBokeh(_target1, _target2, 10f, -0.2f);
-
-            G.SB.Begin(view: G.Camera.GetView(-0.1f));
-            G.SB.DrawCircle(new Vector2(0f, 0f), 20f, TWColor.Blue200, TWColor.Black, 1f);
-            G.SB.End();
-            G.R.ApplyBokeh(_target1, _target2, 2f, -0.1f);
-
-            G.SB.Begin(view: G.Camera.GetView(0f));
-            G.SB.DrawEllipse(a1.XY, 50f, 20f, TWColor.Pink300, TWColor.Gray800, 1f);
-            G.SB.End();
-            G.R.DrawTo(_target1, _target2);
-
-            G.R.DrawInfinite(Assets.Noise1, _target3, 0f, 1f, Vector2.Zero);
-
-            G.GraphicsDevice.SetRenderTarget(_target1);
-            G.GraphicsDevice.Clear(TWColor.Black);
-            G.SB.Begin(view: G.Camera.GetView(0f));
-            G.SB.FillCircle(new Vector2(-100f, -100f), 20f, TWColor.White);
-            G.SB.End();
-            G.R.ApplyMask(_target3, _target1, _target2);
+            foreach (var entity in G.Entities)
+            {
+                entity.RenderLogic.Render(entity);
+            }
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(TWColor.Black);
@@ -139,7 +129,7 @@ namespace GameProject {
             G.S.Draw(Assets.Background, new Rectangle(-15000, -10000, Assets.Background.Width * 10, Assets.Background.Height * 10), TWColor.White);
             G.S.End();
 
-            G.R.Draw(_target2);
+            G.R.Draw(Target2);
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();
@@ -150,9 +140,9 @@ namespace GameProject {
         }
 
         private void CreateTargets() {
-            _target1 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            _target2 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            _target3 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Target1 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Target2 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Target3 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             Assets.Bokeh.Parameters["unit"].SetValue(new Vector2(1f / Width, 1f / Height));
         }
@@ -230,9 +220,9 @@ namespace GameProject {
         public static int Width;
         public static int Height;
 
-        RenderTarget2D _target1;
-        RenderTarget2D _target2;
-        RenderTarget2D _target3;
+        public static RenderTarget2D Target1;
+        public static RenderTarget2D Target2;
+        public static RenderTarget2D Target3;
 
         Vector2Tween _xy = new Vector2Tween(Vector2.Zero, Vector2.Zero, 0, Easing.QuintOut);
         FloatTween _exp = new FloatTween(0f, 0f, 0, Easing.QuintOut);
