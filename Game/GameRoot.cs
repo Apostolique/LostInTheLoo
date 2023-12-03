@@ -187,7 +187,7 @@ namespace GameProject {
             foreach (var group in G.EntitiesByLocation
                 .Query(G.Camera.GetViewRect())
                 .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
-                .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup))
+                .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup)) // changed from floor to round to limit the "teleport" from worst case almost 1.0f to 0.5f if Z distance
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
                 foreach (var entity in group) {
