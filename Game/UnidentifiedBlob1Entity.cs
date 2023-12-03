@@ -14,5 +14,10 @@ namespace GameProject
         public int Leaf;
         public float MovementSpeedMultiplier = 1.0f;
         public double NextMovementSpeedMultiplierChange;
+        public StaticFoodEntity TargetFood;
+        public double NextFoodScan;
+        public double DeathFromStarvationTime;
+        public Action<UnidentifiedBlob1Entity, GameTime> State;
+        public double DigestTimer;
     }
 }

@@ -37,7 +37,7 @@ namespace GameProject
         public static void Generate()
         {
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
-            Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(_ => CreateRandomUnidentifiedBlob1());
+            Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index));
             CreateLacrymariaOlorEntity(50, 50);
             CreateCircleEntity(100, 100, 20, TWColor.Red500, TWColor.White, 2, -0.2f, 10);
             CreateCircleEntity(0, 0, 20, TWColor.Blue200, TWColor.Black, 1, -0.1f, 2);
@@ -106,7 +106,7 @@ namespace GameProject
             G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
-        public static void CreateRandomUnidentifiedBlob1()
+        public static void CreateRandomUnidentifiedBlob1(int index)
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
@@ -121,6 +121,8 @@ namespace GameProject
                 MovementSpeedMultiplier = random.NextSingle() * 100 + 1,
                 NextMovementSpeedMultiplierChange = random.NextDouble() * 4 + 1,
                 Z = position.Z,
+                NextFoodScan = index * 0.2f,
+                DeathFromStarvationTime = random.NextDouble() * 240 + 1,
             };
             entity.Segments = new Segment[] { entity.Segment };
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
@@ -130,6 +132,11 @@ namespace GameProject
         public static void CreateStaticFood()
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            CreateStaticFood(position);
+        }
+
+        public static StaticFoodEntity CreateStaticFood(Vector3 position)
+        {
             var category = random.Next(0, StaticFoodCategories.MaxIndex + 1);
             var type = random.Next(0, StaticFoodTypes.MaxIndex + 1);
             var color1 = staticFoodColors1[type];
@@ -147,8 +154,9 @@ namespace GameProject
                 RenderLogic = circleRenderLogic,
                 AABB = new RectangleF(position.X - radius * 0.5f, position.Y - radius * 0.5f, radius, radius),
             };
-            G.EntitiesByLocation.Add(entity.AABB, entity);
-            G.StaticFoodEntitiesByLocation.Add(entity.AABB, entity);
+            entity.Leaf1 = G.EntitiesByLocation.Add(entity.AABB, entity);
+            entity.Leaf2 = G.StaticFoodEntitiesByLocation.Add(entity.AABB, entity);
+            return entity;
         }
     }
 }

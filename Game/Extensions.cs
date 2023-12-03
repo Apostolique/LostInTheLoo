@@ -30,5 +30,17 @@ namespace GameProject
             var result = new Vector3(x, y, z);
             return result;
         }
+
+        public static Vector3 ToVector3XY(this Vector2 vector, float z)
+        {
+            var result = new Vector3(vector.X, vector.Y, z);
+            return result;
+        }
+
+        public static Vector3 ToVector3XY(this MonoGame.Extended.Point2 vector, float z)
+        {
+            var result = new Vector3(vector.X, vector.Y, z);
+            return result;
+        }
     }
 }
