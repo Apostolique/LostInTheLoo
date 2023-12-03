@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Apos.Spatial;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -10,7 +11,8 @@ namespace GameProject
 {
     public static class WorldGenerator
     {
-        private const int maxUnidentifiedBlob1 = 1000;
+        private const int numberUnidentifiedBlob1ToCreate = 1000;
+        private const int numberOfStaticFoodsToCreate = 500;
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
@@ -19,10 +21,23 @@ namespace GameProject
         private static LacrymariaOlorUpdateLogic lacrymariaOlorUpdateLogic = new LacrymariaOlorUpdateLogic();
         private static UnidentifiedBlob1UpdateLogic unidentifiedBlob1UpdateLogic = new UnidentifiedBlob1UpdateLogic();
         private static readonly Random random = new Random();
+        private static readonly Color[] staticFoodColors1 = new Color[]
+        {
+            TWColor.Green600,
+            TWColor.Red600,
+            TWColor.Blue600,
+        };
+        private static readonly Color[] staticFoodColors2 = new Color[]
+        {
+            TWColor.Green900,
+            TWColor.Red900,
+            TWColor.Blue900,
+        };
 
         public static void Generate()
         {
-            Enumerable.Range(0, maxUnidentifiedBlob1).ForEach(_ => CreateRandomUnidentifiedBlob1());
+            Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
+            Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(_ => CreateRandomUnidentifiedBlob1());
             CreateLacrymariaOlorEntity(50, 50);
             CreateCircleEntity(100, 100, 20, TWColor.Red500, TWColor.White, 2, -0.2f, 10);
             CreateCircleEntity(0, 0, 20, TWColor.Blue200, TWColor.Black, 1, -0.1f, 2);
@@ -44,7 +59,6 @@ namespace GameProject
                 Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
-            G.Entities.Add(entity);
         }
 
         private static void CreateEllipseEntity(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z, float bokehBlurRadius)
@@ -61,7 +75,6 @@ namespace GameProject
                 Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
-            G.Entities.Add(entity);
         }
 
         private static void CreateCircleWithMaskEntity(float centerX, float centerY, float radius, Color color, float z, Texture2D texture, float scale, Vector2 offset, Color clearColor)
@@ -78,7 +91,6 @@ namespace GameProject
                 Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
-            G.Entities.Add(entity);
         }
 
         public static void CreateLacrymariaOlorEntity(float x, float y)
@@ -91,7 +103,6 @@ namespace GameProject
                 AABB = new RectangleF(x, y, 20, 20),
                 Z = 0f
             };
-            G.Entities.Add(entity);
             G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
@@ -112,9 +123,32 @@ namespace GameProject
                 Z = position.Z,
             };
             entity.Segments = new Segment[] { entity.Segment };
-            G.Entities.Add(entity);
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             entity.UpdateAbsoluteRecursive();
+        }
+
+        public static void CreateStaticFood()
+        {
+            var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var category = random.Next(0, StaticFoodCategories.MaxIndex + 1);
+            var type = random.Next(0, StaticFoodTypes.MaxIndex + 1);
+            var color1 = staticFoodColors1[type];
+            var color2 = staticFoodColors2[type];
+            var radius = random.NextSingle() * 4 + 1;
+            var entity = new StaticFoodEntity()
+            {
+                Category = category,
+                Type = type,
+                Segments = new Segment[]
+                {
+                    new CircleSegment(position.X, position.Y, radius, color1, color2, 0.1f, position.Z, 0.0f),
+                },
+                UpdateLogic = UpdateLogic.NullLogic,
+                RenderLogic = circleRenderLogic,
+                AABB = new RectangleF(position.X - radius * 0.5f, position.Y - radius * 0.5f, radius, radius),
+            };
+            G.EntitiesByLocation.Add(entity.AABB, entity);
+            G.StaticFoodEntitiesByLocation.Add(entity.AABB, entity);
         }
     }
 }

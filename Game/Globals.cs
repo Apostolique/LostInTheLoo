@@ -26,7 +26,7 @@ namespace GameProject {
         public static Renderer R;
         public static Camera Camera;
         public static AABBTree<Entity> EntitiesByLocation = new AABBTree<Entity>();
-        public static List<Entity> Entities = new List<Entity>();
+        public static AABBTree<Entity> StaticFoodEntitiesByLocation = new AABBTree<Entity>();
         public static bool DisableBokeh = File.Exists("bokeh.disable");
         public const float WorldSize = 10000;
         public const float WorldSizeHalf = WorldSize * 0.5f;
