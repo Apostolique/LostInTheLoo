@@ -165,7 +165,7 @@ namespace GameProject {
 
             if(gameTime.ElapsedGameTime.TotalSeconds > 0.0d)
             {
-                _entitiesInView = G.EntitiesByLocation.Query(G.Camera.GetViewRect()).OrderBy(e => e.Z).ToArray();
+                _entitiesInView = G.EntitiesByLocation.Query(G.Camera.GetViewRect()).OrderBy(e => e.Z).Where(e => G.Camera.IsZVisible(e.Z, 0.01f)).ToArray();
                 foreach (var entity in _entitiesInView)
                 {
                     entity.UpdateLogic.Update(entity, gameTime);
