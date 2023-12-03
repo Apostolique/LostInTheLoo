@@ -55,7 +55,7 @@ namespace GameProject
             var distance = Vector3.Distance(blob.AbsolutePosition, blob.TargetPosition);
             if(distance < 1.0f)
             {
-                var food = blob.TargetFood;       
+                var food = blob.TargetFood;
                 if(food != null)
                 {
                     food.HasBeenEaten = true;
@@ -157,7 +157,7 @@ namespace GameProject
             twin.NextMovementSpeedMultiplierChange = blob.NextMovementSpeedMultiplierChange;
             twin.RenderLogic = blob.RenderLogic;
             var segment = blob.Segment;
-            twin.Segment = new EllipseSegment(segment.Center.X, segment.Center.Y, segment.Radius1, segment.Radius2, segment.Color1, segment.Color2, segment.Thickness, segment.Rotation, segment.Z, segment.BokehBlurRadius);
+            twin.Segment = new EllipseSegment(segment.Center.X, segment.Center.Y, segment.Radius1, segment.Radius2, segment.Color1, segment.Color2, segment.Thickness, segment.Rotation, segment.Z);
             twin.Segments = new Segment[] { twin.Segment };
             twin.State = Null;
             twin.TargetFood = null!;

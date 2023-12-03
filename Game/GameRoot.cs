@@ -181,25 +181,23 @@ namespace GameProject {
             G.R.Clear(Target2);
             G.R.Clear(Target1);
 
-try
-{
-            var entitiesInView = G.EntitiesByLocation
+            float intervalGroup = 0.1f;
+            float focalPoint = 0.0f;
+            float focalDecay = 1f;
+            foreach (var group in G.EntitiesByLocation
                 .Query(G.Camera.GetViewRect())
-                .Where(entity => entity != null)
-                .OrderBy(e => e.Z)
                 .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
-                .ToArray()
-                ;
-            foreach (var entity in entitiesInView)
+                .GroupBy(e => MathF.Floor(e.Z / intervalGroup) * intervalGroup))
             {
-                // TODO: Right now every entities draw themselves and call Begin and End separately which kills the batches.
-                //       It would be better to group by Z depth and call Begin and the End before and after each group.
-                //       Would require thinking about how to unify the rendering to support our various entities or get
-                //       rid of some types.
-
-                entity.RenderLogic.Render(entity);
+                G.SB.Begin(view: G.Camera.GetView(group.Key));
+                foreach (var entity in group) {
+                    entity.RenderLogic.Render(entity);
+                }
+                G.SB.End();
+                float blur = MathF.Abs(group.Key - focalPoint) * focalDecay * 100f;
+                float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
+                G.R.ApplyBokeh(Target1, Target2, group.Key, blur, opacity);
             }
-}catch{}
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(TWColor.Black);

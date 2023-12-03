@@ -16,7 +16,6 @@ namespace GameProject
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
-        private static CircleWithMaskRenderLogic circleWithMaskRenderLogic = new CircleWithMaskRenderLogic();
         private static LacrymariaOlorRenderLogic lacrymariaOlorRenderLogic = new LacrymariaOlorRenderLogic();
         private static LacrymariaOlorUpdateLogic lacrymariaOlorUpdateLogic = new LacrymariaOlorUpdateLogic();
         private static UnidentifiedBlob1UpdateLogic unidentifiedBlob1UpdateLogic = new UnidentifiedBlob1UpdateLogic();
@@ -39,13 +38,10 @@ namespace GameProject
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
             Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index));
             CreateLacrymariaOlorEntity(50, 50);
-            CreateCircleEntity(100, 100, 20, TWColor.Red500, TWColor.White, 2, -0.2f, 10);
-            CreateCircleEntity(0, 0, 20, TWColor.Blue200, TWColor.Black, 1, -0.1f, 2);
-            CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0, 0);
-            CreateCircleWithMaskEntity(-100, -100, 20, TWColor.White, 0, Assets.Noise1, 1, Vector2.Zero, TWColor.Black);
+            CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0);
         }
 
-        private static void CreateCircleEntity(float centerX, float centerY, float radius, Color color1, Color color2, float thickness, float z, float bokehBlurRadius)
+        private static void CreateCircleEntity(float centerX, float centerY, float radius, Color color1, Color color2, float thickness, float z)
         {
             var entity = new Entity()
             {
@@ -53,7 +49,7 @@ namespace GameProject
                 UpdateLogic = UpdateLogic.NullLogic,
                 Segments = new Segment[]
                 {
-                    new CircleSegment(centerX, centerY, radius, color1, color2, thickness, z, bokehBlurRadius),
+                    new CircleSegment(centerX, centerY, radius, color1, color2, thickness, z),
                 },
                 AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
                 Z = z
@@ -61,7 +57,7 @@ namespace GameProject
             G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
-        private static void CreateEllipseEntity(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z, float bokehBlurRadius)
+        private static void CreateEllipseEntity(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z)
         {
             var entity = new Entity()
             {
@@ -69,25 +65,9 @@ namespace GameProject
                 UpdateLogic = UpdateLogic.NullLogic,
                 Segments = new Segment[]
                 {
-                    new EllipseSegment(centerX, centerY, radius1, radius2, color1, color2, thickness, rotation, z, bokehBlurRadius),
+                    new EllipseSegment(centerX, centerY, radius1, radius2, color1, color2, thickness, rotation, z),
                 },
                 AABB = new RectangleF(centerX - radius1 * 0.5f, centerY - radius2 * 0.5f, radius1, radius2),
-                Z = z
-            };
-            G.EntitiesByLocation.Add(entity.AABB, entity);
-        }
-
-        private static void CreateCircleWithMaskEntity(float centerX, float centerY, float radius, Color color, float z, Texture2D texture, float scale, Vector2 offset, Color clearColor)
-        {
-            var entity = new Entity()
-            {
-                RenderLogic = circleWithMaskRenderLogic,
-                UpdateLogic = UpdateLogic.NullLogic,
-                Segments = new Segment[]
-                {
-                    new CircleWithMaskSegment(centerX, centerY, radius, color, z, texture, scale, offset, clearColor),
-                },
-                AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
                 Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
@@ -117,7 +97,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new EllipseSegment(position.X, position.Y, 20, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z, 10),
+                Segment = new EllipseSegment(position.X, position.Y, 20, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z),
                 MovementSpeedMultiplier = random.NextSingle() * 100 + 1,
                 NextMovementSpeedMultiplierChange = random.NextDouble() * 4 + 1,
                 Z = position.Z,
@@ -149,7 +129,7 @@ namespace GameProject
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new CircleSegment(position.X, position.Y, radius, color1, color2, 0.1f, position.Z, 0.0f),
+                    new CircleSegment(position.X, position.Y, radius, color1, color2, 0.1f, position.Z),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = circleRenderLogic,
