@@ -184,7 +184,7 @@ namespace GameProject {
             float intervalGroup = 0.1f;
             float focalPoint = 0.0f;
             float focalDecay = 1f;
-            foreach (var group in _entitiesInView.GroupBy(e => MathF.Floor(e.Z / intervalGroup + 0.5f) * intervalGroup))
+            foreach (var group in _entitiesInView.GroupBy(e => MathF.Floor(e.Z / intervalGroup) * intervalGroup))
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
                 foreach (var entity in group) {
