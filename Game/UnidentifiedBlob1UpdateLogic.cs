@@ -34,7 +34,6 @@ namespace GameProject
                 var food = blob.TargetFood;
                 if(food == null || food.HasBeenEaten)
                 {
-                    try{
                     var bounds = blob.AABB;
                     bounds.Inflate(100, 100);
                     food = G.StaticFoodEntitiesByLocation
@@ -48,7 +47,6 @@ namespace GameProject
                         blob.TargetFood = food;
                         blob.TargetPosition = ((CircleSegment)food.Segments[0]).Center.ToVector3XY(food.Z);
                     }
-                    }catch{}
                 }
             }
 
@@ -60,8 +58,8 @@ namespace GameProject
                 {
                     food.HasBeenEaten = true;
                     blob.TargetFood = null!;
-                    G.EntitiesByLocation.Remove(food.Leaf1);
-                    G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
+                    food.Leaf1 = G.EntitiesByLocation.Remove(food.Leaf1);
+                    food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
                     var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
                     blob.Segment.Radius1 += foodRadius * 0.5f;
                     blob.Segment.Radius2 += foodRadius * 0.5f;
