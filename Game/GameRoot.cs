@@ -183,6 +183,11 @@ namespace GameProject {
 
             foreach (var entity in _entitiesInView)
             {
+                // TODO: Right now every entities draw themselves and call Begin and End separately which kills the batches.
+                //       It would be better to group by Z depth and call Begin and the End before and after each group.
+                //       Would require thinking about how to unify the rendering to support our various entities or get
+                //       rid of some types.
+
                 entity.RenderLogic.Render(entity);
             }
 
