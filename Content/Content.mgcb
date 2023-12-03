@@ -49,6 +49,60 @@
 /processorParam:DebugMode=Auto
 /build:mask.fx
 
+#begin music/LITL T1 Death.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 Death.ogg
+
+#begin music/LITL T1 High.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 High.ogg
+
+#begin music/LITL T1 Low.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 Low.ogg
+
+#begin music/LITL T1 Medium High.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 Medium High.ogg
+
+#begin music/LITL T1 Medium.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 Medium.ogg
+
+#begin music/LITL T1 S1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 S1.ogg
+
+#begin music/LITL T1 S2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 S2.ogg
+
+#begin music/LITL T1 S3.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 S3.ogg
+
+#begin music/LITL T1 S4.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T1 S4.ogg
+
 #begin noise1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -60,6 +114,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:noise1.png
+
+#begin noise2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:noise2.png
 
 #begin source-code-pro-medium.ttf
 /copy:source-code-pro-medium.ttf

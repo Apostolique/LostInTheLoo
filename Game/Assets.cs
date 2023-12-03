@@ -1,5 +1,6 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,6 +10,7 @@ namespace GameProject {
             LoadFonts(content);
             LoadTextures(content);
             LoadShaders(content);
+            LoadSounds(content);
         }
 
         public static void LoadJson() {
@@ -28,6 +30,17 @@ namespace GameProject {
             Infinite = content.Load<Effect>("infinite");
             Mask = content.Load<Effect>("mask");
         }
+        private static void LoadSounds(ContentManager content) {
+            Death = content.Load<SoundEffect>("music/LITL T1 Death");
+            S1 = content.Load<SoundEffect>("music/LITL T1 S1");
+            S2 = content.Load<SoundEffect>("music/LITL T1 S2");
+            S3 = content.Load<SoundEffect>("music/LITL T1 S3");
+            S4 = content.Load<SoundEffect>("music/LITL T1 S4");
+            Low = content.Load<SoundEffect>("music/LITL T1 Low");
+            Medium = content.Load<SoundEffect>("music/LITL T1 Medium");
+            MediumHigh = content.Load<SoundEffect>("music/LITL T1 Medium High");
+            High = content.Load<SoundEffect>("music/LITL T1 High");
+        }
 
         public static Settings Settings;
         public static FontSystem FontSystem;
@@ -37,5 +50,15 @@ namespace GameProject {
         public static Effect Shapes;
         public static Effect Infinite;
         public static Effect Mask;
+
+        public static SoundEffect Death;
+        public static SoundEffect S1;
+        public static SoundEffect S2;
+        public static SoundEffect S3;
+        public static SoundEffect S4;
+        public static SoundEffect Low;
+        public static SoundEffect Medium;
+        public static SoundEffect MediumHigh;
+        public static SoundEffect High;
     }
 }

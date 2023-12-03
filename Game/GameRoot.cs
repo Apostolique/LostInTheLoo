@@ -8,6 +8,7 @@ using Apos.Tweens;
 using FontStashSharp;
 using MonoGame.Extended;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -52,6 +53,24 @@ namespace GameProject {
             G.S = new SpriteBatch(GraphicsDevice);
             G.SB = new ShapeBatch(GraphicsDevice);
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
+
+            _low = Assets.Low.CreateInstance();
+            _medium = Assets.Medium.CreateInstance();
+            _mediumHigh = Assets.MediumHigh.CreateInstance();
+            _high = Assets.High.CreateInstance();
+            _low.IsLooped = true;
+            _medium.IsLooped = true;
+            _mediumHigh.IsLooped = true;
+            _high.IsLooped = true;
+            _low.Volume = 0f;
+            _medium.Volume = 0f;
+            _mediumHigh.Volume = 0f;
+            _high.Volume = 0f;
+            _low.Play();
+            _medium.Play();
+            _mediumHigh.Play();
+            _high.Play();
+            _currentTrack = _lowVolume;
         }
 
         protected void ClientSizeChanged(object? sender, EventArgs? e) {
@@ -96,6 +115,51 @@ namespace GameProject {
             if (_toggleBorderless.Pressed()) {
                 Utility.ToggleBorderless();
             }
+
+            if (_0.Pressed()) { SetVolume(0.0f); }
+            if (_1.Pressed()) { SetVolume(0.2f); }
+            if (_2.Pressed()) { SetVolume(0.3f); }
+            if (_3.Pressed()) { SetVolume(0.4f); }
+            if (_4.Pressed()) { SetVolume(0.5f); }
+            if (_5.Pressed()) { SetVolume(0.6f); }
+            if (_6.Pressed()) { SetVolume(0.7f); }
+            if (_7.Pressed()) { SetVolume(0.8f); }
+            if (_8.Pressed()) { SetVolume(0.9f); }
+            if (_9.Pressed()) { SetVolume(1.0f); }
+
+            if (_lowTrigger.Pressed()) {
+                _currentTrack = _lowVolume;
+                FadeTrack(_lowVolume, _maxVolume);
+                FadeTrack(_mediumVolume, 0f);
+                FadeTrack(_mediumHighVolume, 0f);
+                FadeTrack(_highVolume, 0f);
+            }
+            if (_mediumTrigger.Pressed()) {
+                _currentTrack = _mediumVolume;
+                FadeTrack(_lowVolume, 0f);
+                FadeTrack(_mediumVolume, _maxVolume);
+                FadeTrack(_mediumHighVolume, 0f);
+                FadeTrack(_highVolume, 0f);
+            }
+            if (_mediumHighTrigger.Pressed()) {
+                _currentTrack = _mediumHighVolume;
+                FadeTrack(_lowVolume, 0f);
+                FadeTrack(_mediumVolume, 0f);
+                FadeTrack(_mediumHighVolume, _maxVolume);
+                FadeTrack(_highVolume, 0f);
+            }
+            if (_highTrigger.Pressed()) {
+                _currentTrack = _highVolume;
+                FadeTrack(_lowVolume, 0f);
+                FadeTrack(_mediumVolume, 0f);
+                FadeTrack(_mediumHighVolume, 0f);
+                FadeTrack(_highVolume, _maxVolume);
+            }
+
+            _low.Volume = _lowVolume.Value;
+            _medium.Volume = _mediumVolume.Value;
+            _mediumHigh.Volume = _mediumHighVolume.Value;
+            _high.Volume = _highVolume.Value;
 
             UpdateCamera();
 
@@ -166,6 +230,27 @@ namespace GameProject {
             G.Camera.XY = _xy.Value;
         }
 
+        private void SetVolume(float v) {
+            _maxVolume = v;
+
+            CapVolume(_lowVolume, _maxVolume);
+            CapVolume(_mediumVolume, _maxVolume);
+            CapVolume(_mediumHighVolume, _maxVolume);
+            CapVolume(_highVolume, _maxVolume);
+        }
+        private void CapVolume(FloatTween ft, float v) {
+            if (_currentTrack == ft) {
+                _currentTrack.B = v;
+            } else if (ft.A > v) {
+                ft.A = v;
+            }
+        }
+        private void FadeTrack(FloatTween ft, float v) {
+            ft.A = ft.Value;
+            ft.B = v;
+            ft.StartTime = TweenHelper.TotalMS;
+        }
+
         private float ScaleToExp(float scale) {
             return -MathF.Log(scale);
         }
@@ -216,6 +301,33 @@ namespace GameProject {
                 new MouseCondition(MouseButton.RightButton),
                 new MouseCondition(MouseButton.MiddleButton)
             );
+
+        ICondition _lowTrigger = new KeyboardCondition(Keys.D1);
+        ICondition _mediumTrigger = new KeyboardCondition(Keys.D2);
+        ICondition _mediumHighTrigger = new KeyboardCondition(Keys.D3);
+        ICondition _highTrigger = new KeyboardCondition(Keys.D4);
+        SoundEffectInstance _low;
+        SoundEffectInstance _medium;
+        SoundEffectInstance _mediumHigh;
+        SoundEffectInstance _high;
+
+        ICondition _0 = new KeyboardCondition(Keys.NumPad0);
+        ICondition _1 = new KeyboardCondition(Keys.NumPad1);
+        ICondition _2 = new KeyboardCondition(Keys.NumPad2);
+        ICondition _3 = new KeyboardCondition(Keys.NumPad3);
+        ICondition _4 = new KeyboardCondition(Keys.NumPad4);
+        ICondition _5 = new KeyboardCondition(Keys.NumPad5);
+        ICondition _6 = new KeyboardCondition(Keys.NumPad6);
+        ICondition _7 = new KeyboardCondition(Keys.NumPad7);
+        ICondition _8 = new KeyboardCondition(Keys.NumPad8);
+        ICondition _9 = new KeyboardCondition(Keys.NumPad9);
+
+        float _maxVolume = 0.3f;
+        FloatTween _lowVolume = new FloatTween(0f, 0.3f, 20000, Easing.Linear);
+        FloatTween _mediumVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
+        FloatTween _mediumHighVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
+        FloatTween _highVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
+        FloatTween _currentTrack;
 
         public static int Width;
         public static int Height;
