@@ -165,8 +165,8 @@ namespace GameProject {
 
             if(gameTime.ElapsedGameTime.TotalSeconds > 0.0d)
             {
-                _entitiesInView = G.EntitiesByLocation.Query(G.Camera.GetViewRect()).OrderBy(e => e.Z).Where(e => G.Camera.IsZVisible(e.Z, 0.01f)).ToArray();
-                foreach (var entity in _entitiesInView)
+                var entities = G.EntitiesByLocation.ToArray();
+                foreach (var entity in entities)
                 {
                     entity.UpdateLogic.Update(entity, gameTime);
                 }
@@ -181,10 +181,13 @@ namespace GameProject {
             G.R.Clear(Target2);
             G.R.Clear(Target1);
 
-            float intervalGroup = 0.1f;
+            float intervalGroup = 0.05f;
             float focalPoint = 0.0f;
             float focalDecay = 1f;
-            foreach (var group in _entitiesInView.GroupBy(e => MathF.Floor(e.Z / intervalGroup) * intervalGroup))
+            foreach (var group in G.EntitiesByLocation
+                .Query(G.Camera.GetViewRect())
+                .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
+                .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup)) // changed from floor to round to limit the "teleport" from worst case almost 1.0f to 0.5f if Z distance
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
                 foreach (var entity in group) {
@@ -356,7 +359,5 @@ namespace GameProject {
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
-
-        Entity[] _entitiesInView = Array.Empty<Entity>();
     }
 }

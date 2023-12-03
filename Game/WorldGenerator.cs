@@ -12,7 +12,7 @@ namespace GameProject
     public static class WorldGenerator
     {
         private const int numberUnidentifiedBlob1ToCreate = 1000;
-        private const int numberOfStaticFoodsToCreate = 500;
+        private const int numberOfStaticFoodsToCreate = 5000;
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
@@ -86,7 +86,7 @@ namespace GameProject
             G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
-        public static void CreateRandomUnidentifiedBlob1(int index)
+        public static UnidentifiedBlob1Entity CreateRandomUnidentifiedBlob1(int index)
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
@@ -107,6 +107,7 @@ namespace GameProject
             entity.Segments = new Segment[] { entity.Segment };
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             entity.UpdateAbsoluteRecursive();
+            return entity;
         }
 
         public static void CreateStaticFood()
