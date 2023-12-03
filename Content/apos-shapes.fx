@@ -18,23 +18,23 @@ sampler MaskSampler {
     AddressV = WRAP;
 };
 
-float2 mask_size;
-
 struct VertexInput {
     float4 Position : POSITION0;
     float4 TexCoord : TEXCOORD0;
+    float4 TexCoord2 : TEXCOORD1;
     float4 Color1 : COLOR0;
     float4 Color2 : COLOR1;
-    float4 Meta1 : TEXCOORD1;
-    float4 Meta2 : TEXCOORD2;
+    float4 Meta1 : TEXCOORD2;
+    float4 Meta2 : TEXCOORD3;
 };
 struct PixelInput {
     float4 Position : SV_Position0;
     float4 TexCoord : TEXCOORD0;
+    float4 TexCoord2 : TEXCOORD1;
     float4 Color1 : COLOR0;
     float4 Color2 : COLOR1;
-    float4 Meta1 : TEXCOORD1;
-    float4 Meta2 : TEXCOORD2;
+    float4 Meta1 : TEXCOORD2;
+    float4 Meta2 : TEXCOORD3;
 };
 
 // https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
@@ -202,6 +202,7 @@ PixelInput SpriteVertexShader(VertexInput v) {
 
     output.Position = mul(v.Position, view_projection);
     output.TexCoord = v.TexCoord;
+    output.TexCoord2 = v.TexCoord2;
     output.Color1 = v.Color1;
     output.Color2 = v.Color2;
     output.Meta1 = v.Meta1;
@@ -209,7 +210,7 @@ PixelInput SpriteVertexShader(VertexInput v) {
     return output;
 }
 float4 SpritePixelShader(PixelInput p) : SV_TARGET {
-    float4 mask = tex2D(MaskSampler, p.TexCoord.xy * mask_size);
+    float4 mask = tex2D(MaskSampler, p.TexCoord2.xy);
 
     float ps = p.Meta2.x;
     float aaSize = ps * p.Meta2.y;

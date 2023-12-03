@@ -18,6 +18,8 @@ namespace GameProject {
 
             _indexBuffer = new IndexBuffer(_graphicsDevice, typeof(uint), _indices.Length, BufferUsage.WriteOnly);
             _indexBuffer.SetData(_indices);
+
+            _maskTexture = Assets.Noise2;
         }
 
         public void Begin(Matrix? view = null, Matrix? projection = null) {
@@ -48,10 +50,18 @@ namespace GameProject {
             var bottomRight = center + new Vector2(radius1);
             var bottomLeft = center + new Vector2(-radius1, radius1);
 
-            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-radius1, -radius1), 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
-            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(radius1, -radius1), 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
-            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(radius1, radius1), 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
-            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-radius1, radius1), 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
+            float uvWidth = (radius1 * 2f) / _maskTexture.Width;
+            float uvHeight = (radius1 * 2f) / _maskTexture.Height;
+
+            var maskTopLeft = new Vector2(0f, 0f);
+            var maskTopRight = new Vector2(uvWidth, 0f);
+            var maskBottomRight = new Vector2(uvWidth, uvHeight);
+            var maskBottomLeft = new Vector2(0f, uvHeight);
+
+            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-radius1, -radius1), maskTopLeft, 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
+            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(radius1, -radius1), maskTopRight, 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
+            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(radius1, radius1), maskBottomRight, 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
+            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-radius1, radius1), maskBottomLeft, 0f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize);
 
             _triangleCount += 2;
             _vertexCount += 4;
@@ -81,6 +91,14 @@ namespace GameProject {
             var bottomRight = xy + size1;
             var bottomLeft = xy + new Vector2(0, size1.Y);
 
+            float uvWidth = size1.X / _maskTexture.Width;
+            float uvHeight = size1.Y / _maskTexture.Height;
+
+            var maskTopLeft = new Vector2(0f, 0f);
+            var maskTopRight = new Vector2(uvWidth, 0f);
+            var maskBottomRight = new Vector2(uvWidth, uvHeight);
+            var maskBottomLeft = new Vector2(0f, uvHeight);
+
             if (rotation != 0f) {
                 Vector2 center = xy + half1;
                 topLeft = Rotate(topLeft, center, rotation);
@@ -89,10 +107,10 @@ namespace GameProject {
                 bottomLeft = Rotate(bottomLeft, center, rotation);
             }
 
-            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-half1.X, -half1.Y), 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(half1.X, -half1.Y), 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(half1.X, half1.Y), 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-half1.X, half1.Y), 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-half1.X, -half1.Y), maskTopLeft, 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(half1.X, -half1.Y), maskTopRight, 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(half1.X, half1.Y), maskBottomRight, 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-half1.X, half1.Y), maskBottomLeft, 1f, c1, c2, thickness, half.X, _pixelSize, half.Y, aaSize: _aaSize, rounded: rounded);
 
             _triangleCount += 2;
             _vertexCount += 4;
@@ -122,10 +140,18 @@ namespace GameProject {
             var height = Vector2.Distance(a, b) + radius;
             var height1 = Vector2.Distance(topLeft, bottomLeft) - _aaOffset; // Account for AA.
 
-            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-_aaOffset, -_aaOffset), 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
-            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(width1, -_aaOffset), 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
-            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(width1, height1), 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
-            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-_aaOffset, height1), 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
+            float uvWidth = (width1 + _aaOffset) / _maskTexture.Width;
+            float uvHeight = (height1 + _aaOffset) / _maskTexture.Height;
+
+            var maskTopLeft = new Vector2(0f, 0f);
+            var maskTopRight = new Vector2(uvWidth, 0f);
+            var maskBottomRight = new Vector2(uvWidth, uvHeight);
+            var maskBottomLeft = new Vector2(0f, uvHeight);
+
+            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-_aaOffset, -_aaOffset), maskTopLeft, 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
+            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(width1, -_aaOffset), maskTopRight, 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
+            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(width1, height1), maskBottomRight, 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
+            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-_aaOffset, height1), maskBottomLeft, 2f, c1, c2, thickness, radius, _pixelSize, height, aaSize: _aaSize);
 
             _triangleCount += 2;
             _vertexCount += 4;
@@ -156,6 +182,14 @@ namespace GameProject {
             var bottomRight = center + size;
             var bottomLeft = center + new Vector2(-size.X, size.Y);
 
+            float uvWidth = (width1 * 2f) / _maskTexture.Width;
+            float uvHeight = (radius1 * 2f) / _maskTexture.Height;
+
+            var maskTopLeft = new Vector2(0f, 0f);
+            var maskTopRight = new Vector2(uvWidth, 0f);
+            var maskBottomRight = new Vector2(uvWidth, uvHeight);
+            var maskBottomLeft = new Vector2(0f, uvHeight);
+
             if (rotation != 0f) {
                 topLeft = Rotate(topLeft, center, rotation);
                 topRight = Rotate(topRight, center, rotation);
@@ -163,10 +197,10 @@ namespace GameProject {
                 bottomLeft = Rotate(bottomLeft, center, rotation);
             }
 
-            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-size.X, -size.Y), 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(size.X, -size.Y), 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(size.X, size.Y), 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-size.X, size.Y), 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-size.X, -size.Y), maskTopLeft, 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(size.X, -size.Y), maskTopRight, 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(size.X, size.Y), maskBottomRight, 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-size.X, size.Y), maskBottomLeft, 3f, c1, c2, thickness, radius, _pixelSize, aaSize: _aaSize, rounded: rounded);
 
             _triangleCount += 2;
             _vertexCount += 4;
@@ -195,6 +229,14 @@ namespace GameProject {
             float incircle1 = incircle + _aaOffset; // Account for AA.
             float circumcircle1 = circumcircle + _aaOffset; // Account for AA.
 
+            float uvWidth = (halfWidth1 * 2f) / _maskTexture.Width;
+            float uvHeight = (incircle1 + circumcircle1) / _maskTexture.Height;
+
+            var maskTopLeft = new Vector2(0f, 0f);
+            var maskTopRight = new Vector2(uvWidth, 0f);
+            var maskBottomRight = new Vector2(uvWidth, uvHeight);
+            var maskBottomLeft = new Vector2(0f, uvHeight);
+
             halfWidth -= rounded * MathF.Sqrt(3f);
 
             var topLeft = center - new Vector2(halfWidth1, incircle1);
@@ -209,10 +251,10 @@ namespace GameProject {
                 bottomLeft = Rotate(bottomLeft, center, rotation);
             }
 
-            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-halfWidth1, -incircle1), 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(halfWidth1, -incircle1), 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(halfWidth1, circumcircle1), 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
-            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-halfWidth1, circumcircle1), 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-halfWidth1, -incircle1), maskTopLeft, 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(halfWidth1, -incircle1), maskTopRight, 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(halfWidth1, circumcircle1), maskBottomRight, 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
+            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-halfWidth1, circumcircle1), maskBottomLeft, 4f, c1, c2, thickness, halfWidth, _pixelSize, aaSize: _aaSize, rounded: rounded);
 
             _triangleCount += 2;
             _vertexCount += 4;
@@ -236,6 +278,14 @@ namespace GameProject {
             var bottomRight = center + new Vector2(radius3, radius4);
             var bottomLeft = center + new Vector2(-radius3, radius4);
 
+            float uvWidth = (radius3 * 2f) / _maskTexture.Width;
+            float uvHeight = (radius4 * 2f) / _maskTexture.Height;
+
+            var maskTopLeft = new Vector2(0f, 0f);
+            var maskTopRight = new Vector2(uvWidth, 0f);
+            var maskBottomRight = new Vector2(uvWidth, uvHeight);
+            var maskBottomLeft = new Vector2(0f, uvHeight);
+
             if (rotation != 0f) {
                 topLeft = Rotate(topLeft, center, rotation);
                 topRight = Rotate(topRight, center, rotation);
@@ -243,10 +293,10 @@ namespace GameProject {
                 bottomLeft = Rotate(bottomLeft, center, rotation);
             }
 
-            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-radius3, -radius4), 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
-            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(radius3, -radius4), 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
-            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(radius3, radius4), 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
-            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-radius3, radius4), 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
+            _vertices[_vertexCount + 0] = new VertexShape(new Vector3(topLeft, 0), new Vector2(-radius3, -radius4), maskTopLeft, 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
+            _vertices[_vertexCount + 1] = new VertexShape(new Vector3(topRight, 0), new Vector2(radius3, -radius4), maskTopRight, 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
+            _vertices[_vertexCount + 2] = new VertexShape(new Vector3(bottomRight, 0), new Vector2(radius3, radius4), maskBottomRight, 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
+            _vertices[_vertexCount + 3] = new VertexShape(new Vector3(bottomLeft, 0), new Vector2(-radius3, radius4), maskBottomLeft, 5f, c1, c2, thickness, radius1, _pixelSize, radius2, aaSize: _aaSize);
 
             _triangleCount += 2;
             _vertexCount += 4;
@@ -269,8 +319,7 @@ namespace GameProject {
             if (_triangleCount == 0) return;
 
             _effect.Parameters["view_projection"].SetValue(_view * _projection);
-            _effect.Parameters["mask_texture"].SetValue(Assets.Noise1);
-            _effect.Parameters["mask_size"].SetValue(new Vector2(1f / Assets.Noise1.Width, 1f / Assets.Noise1.Height));
+            _effect.Parameters["mask_texture"].SetValue(_maskTexture);
 
             if (_indicesChanged) {
                 _vertexBuffer.Dispose();
@@ -380,5 +429,7 @@ namespace GameProject {
 
         private bool _indicesChanged = false;
         private int _fromIndex = 0;
+
+        private Texture2D _maskTexture;
     }
 }
