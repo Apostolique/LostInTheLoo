@@ -39,7 +39,7 @@ namespace GameProject
                 blob.NextMovementSpeedMultiplierChange = G.Random.NextDouble() * 10 + 1;
                 blob.MovementSpeedMultiplier = G.Random.NextSingle() * 100;
             }
-            
+
             var movement = Vector3.Normalize(direction + courseDiviation) * blob.MovementSpeedMultiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
             blob.LocalPosition += movement;
             blob.LocalRotationSpin = MathF.Atan2(movement.Y, -movement.X);
@@ -50,7 +50,10 @@ namespace GameProject
             blob.Segment.Roation = (float)gameTime.TotalGameTime.TotalSeconds; // I don't think rotation works
             blob.AABB.X = blob.AbsolutePosition.X;
             blob.AABB.Y = blob.AbsolutePosition.Y;
+            blob.AABB.Width = 40f;
+            blob.AABB.Height = 20f;
             blob.Z = blob.AbsolutePosition.Z;
+            entity.AABB = blob.AABB;
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
         }
     }

@@ -13,6 +13,7 @@ namespace GameProject
 
             G.SB.Begin(view: G.Camera.GetView(segment.Z));
             G.SB.FillCircle(segment.Center, segment.Radius, segment.Color);
+            G.SB.BorderRectangle(entity.AABB.Position, entity.AABB.Size, TWColor.White, 4f);
             G.SB.End();
 
             G.R.DrawInfinite(segment.Texture, GameRoot.Target3, segment.Z, segment.Scale, segment.Offset);

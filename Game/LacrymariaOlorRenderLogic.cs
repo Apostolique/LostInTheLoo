@@ -14,11 +14,8 @@ namespace GameProject
 
             G.SB.Begin(view: G.Camera.GetView(olor.Z));
             G.SB.DrawEllipse(olor.BodyPosition - Vector2.UnitX * 35, 40, 10, TWColor.Blue500, TWColor.Red500, 1);
-            G.SB.End();
-            G.R.ApplyBokeh(GameRoot.Target1, GameRoot.Target2, 1, olor.Z);
-
-            G.SB.Begin(view: G.Camera.GetView(olor.Z));
             G.SB.DrawLine(olor.HeadPosition, olor.BodyPosition, 5, TWColor.Blue500, TWColor.Red500, 1);
+            G.SB.BorderRectangle(entity.AABB.Position, entity.AABB.Size, TWColor.Black, 4f);
             G.SB.End();
             G.R.ApplyBokeh(GameRoot.Target1, GameRoot.Target2, 1, olor.Z);
         }
