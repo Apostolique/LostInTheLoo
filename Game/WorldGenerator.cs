@@ -38,8 +38,6 @@ namespace GameProject
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
             Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index));
             CreateLacrymariaOlorEntity(50, 50);
-            CreateCircleEntity(100, 100, 20, TWColor.Red500, TWColor.White, 2, -0.2f);
-            CreateCircleEntity(0, 0, 20, TWColor.Blue200, TWColor.Black, 1, -0.1f);
             CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0);
         }
 
