@@ -193,7 +193,7 @@ namespace GameProject {
                 G.SB.End();
                 float blur = MathF.Abs(group.Key - focalPoint) * focalDecay * 100f;
                 float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
-                G.R.ApplyBokeh(GameRoot.Target1, GameRoot.Target2, group.Key, blur, opacity);
+                G.R.ApplyBokeh(Target1, Target2, group.Key, blur, opacity);
             }
 
             GraphicsDevice.SetRenderTarget(null);
