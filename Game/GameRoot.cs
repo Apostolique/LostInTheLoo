@@ -165,8 +165,8 @@ namespace GameProject {
 
             if(gameTime.ElapsedGameTime.TotalSeconds > 0.0d)
             {
-                _entitiesInView = G.EntitiesByLocation.Query(G.Camera.GetViewRect()).OrderBy(e => e.Z).Where(e => G.Camera.IsZVisible(e.Z, 0.01f)).ToArray();
-                foreach (var entity in _entitiesInView)
+                var entities = G.EntitiesByLocation.Where(entity => entity != null).ToArray();
+                foreach (var entity in entities)
                 {
                     entity.UpdateLogic.Update(entity, gameTime);
                 }
@@ -181,7 +181,16 @@ namespace GameProject {
             G.R.Clear(Target2);
             G.R.Clear(Target1);
 
-            foreach (var entity in _entitiesInView)
+try
+{
+            var entitiesInView = G.EntitiesByLocation
+                .Query(G.Camera.GetViewRect())
+                .Where(entity => entity != null)
+                .OrderBy(e => e.Z)
+                .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
+                .ToArray()
+                ;
+            foreach (var entity in entitiesInView)
             {
                 // TODO: Right now every entities draw themselves and call Begin and End separately which kills the batches.
                 //       It would be better to group by Z depth and call Begin and the End before and after each group.
@@ -190,6 +199,7 @@ namespace GameProject {
 
                 entity.RenderLogic.Render(entity);
             }
+}catch{}
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(TWColor.Black);
@@ -351,7 +361,5 @@ namespace GameProject {
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
-
-        Entity[] _entitiesInView = Array.Empty<Entity>();
     }
 }

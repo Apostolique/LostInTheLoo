@@ -19,5 +19,7 @@ namespace GameProject
         public double DeathFromStarvationTime;
         public Action<UnidentifiedBlob1Entity, GameTime> State;
         public double DigestTimer;
+        public UnidentifiedBlob1Entity Twin;
+        public double SplitTimer;
     }
 }
