@@ -23,6 +23,7 @@ namespace GameProject {
         private static void LoadTextures(ContentManager content) {
             Background = content.Load<Texture2D>("background");
             Noise1 = content.Load<Texture2D>("noise1");
+            Noise2 = content.Load<Texture2D>("noise2");
         }
         private static void LoadShaders(ContentManager content) {
             Shapes = content.Load<Effect>("apos-shapes");
@@ -44,8 +45,11 @@ namespace GameProject {
 
         public static Settings Settings;
         public static FontSystem FontSystem;
+
         public static Texture2D Background;
         public static Texture2D Noise1;
+        public static Texture2D Noise2;
+
         public static Effect Bokeh;
         public static Effect Shapes;
         public static Effect Infinite;
