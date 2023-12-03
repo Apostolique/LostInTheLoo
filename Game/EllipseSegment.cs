@@ -14,7 +14,6 @@ namespace GameProject
         public Color Color1;
         public Color Color2;
         public float Thickness;
-        public float Roation;
         public float Z;
         public float Rotation;
 
@@ -26,7 +25,7 @@ namespace GameProject
             this.Color1 = color1;
             this.Color2 = color2;
             this.Thickness = thickness;
-            this.Roation = rotation;
+            this.Rotation = rotation;
             this.Z = z;
         }
 

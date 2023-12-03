@@ -9,7 +9,6 @@ namespace GameProject
     {
         public int Category;
         public int Type;
-        public int Leaf1;
         public int Leaf2;
         public bool HasBeenEaten;
     }

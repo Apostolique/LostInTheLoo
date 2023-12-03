@@ -54,7 +54,7 @@ namespace GameProject
                 AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
                 Z = z
             };
-            G.EntitiesByLocation.Add(entity.AABB, entity);
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
         private static void CreateEllipseEntity(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z)
@@ -67,10 +67,10 @@ namespace GameProject
                 {
                     new EllipseSegment(centerX, centerY, radius1, radius2, color1, color2, thickness, rotation, z),
                 },
-                AABB = new RectangleF(centerX - radius1 * 0.5f, centerY - radius2 * 0.5f, radius1, radius2),
+                AABB = G.SB.GetEllipseAABB(new Vector2(centerX, centerY), radius1, radius2, rotation),
                 Z = z
             };
-            G.EntitiesByLocation.Add(entity.AABB, entity);
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
         public static void CreateLacrymariaOlorEntity(float x, float y)
@@ -83,7 +83,7 @@ namespace GameProject
                 AABB = new RectangleF(x, y, 20, 20),
                 Z = 0f
             };
-            G.EntitiesByLocation.Add(entity.AABB, entity);
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
         public static UnidentifiedBlob1Entity CreateRandomUnidentifiedBlob1(int index)
@@ -133,9 +133,9 @@ namespace GameProject
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = circleRenderLogic,
-                AABB = new RectangleF(position.X - radius * 0.5f, position.Y - radius * 0.5f, radius, radius),
+                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius),
             };
-            entity.Leaf1 = G.EntitiesByLocation.Add(entity.AABB, entity);
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             entity.Leaf2 = G.StaticFoodEntitiesByLocation.Add(entity.AABB, entity);
             return entity;
         }

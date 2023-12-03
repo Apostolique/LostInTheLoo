@@ -65,7 +65,7 @@ namespace GameProject
                 {
                     food.HasBeenEaten = true;
                     blob.TargetFood = null!;
-                    food.Leaf1 = G.EntitiesByLocation.Remove(food.Leaf1);
+                    food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
                     food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
                     var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
                     blob.Segment.Radius1 += foodRadius * (blob.Segment.Radius2 / blob.Segment.Radius1);
@@ -126,11 +126,8 @@ namespace GameProject
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
             blob.Segment.Z = blob.AbsolutePosition.Z;
-            blob.Segment.Roation = (float)gameTime.TotalGameTime.TotalSeconds; // I don't think rotation works
-            blob.AABB.X = blob.AbsolutePosition.X - blob.Segment.Radius1 * 0.5f;
-            blob.AABB.Y = blob.AbsolutePosition.Y - blob.Segment.Radius2 * 0.5f;
-            blob.AABB.Width = blob.Segment.Radius1;
-            blob.AABB.Height = blob.Segment.Radius2;
+            blob.Segment.Rotation = (float)gameTime.TotalGameTime.TotalSeconds; // I don't think rotation works
+            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Segment.Radius1, blob.Segment.Radius2, blob.Segment.Rotation);
             blob.Z = blob.AbsolutePosition.Z;
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
         }
@@ -216,16 +213,10 @@ namespace GameProject
             twin.Segment.Center = twin.AbsolutePosition.ToVector2XY();
             twin.Segment.Z = twin.AbsolutePosition.Z;
 
-            blob.AABB.X = blob.AbsolutePosition.X - blob.Segment.Radius1 * 0.5f;
-            blob.AABB.Y = blob.AbsolutePosition.Y - blob.Segment.Radius2 * 0.5f;
-            blob.AABB.Width = blob.Segment.Radius1;
-            blob.AABB.Height = blob.Segment.Radius2;
+            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Segment.Radius1, blob.Segment.Radius2, blob.Segment.Rotation);
             blob.Z = blob.AbsolutePosition.Z;
 
-            twin.AABB.X = twin.AbsolutePosition.X - twin.Segment.Radius1 * 0.5f;
-            twin.AABB.Y = twin.AbsolutePosition.Y - twin.Segment.Radius2 * 0.5f;
-            twin.AABB.Width = twin.Segment.Radius1;
-            twin.AABB.Height = twin.Segment.Radius2;
+            twin.AABB = G.SB.GetEllipseAABB(twin.Segment.Center, twin.Segment.Radius1, twin.Segment.Radius2, twin.Segment.Rotation);
             twin.Z = twin.AbsolutePosition.Z;
 
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
@@ -258,7 +249,7 @@ namespace GameProject
 
             if(blob.DeathFromStarvationTime <= gameTime.TotalGameTime.TotalSeconds)
             {
-                G.EntitiesByLocation.Remove(blob.Leaf);
+                blob.Leaf = G.EntitiesByLocation.Remove(blob.Leaf);
                 var min = blob.AABB.TopLeft.ToVector3XY(blob.Z);
                 var max = blob.AABB.BottomRight.ToVector3XY(blob.Z);
                 while(blob.Segment.Radius1 > 0.0f)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace GameProject
 {
@@ -20,6 +21,12 @@ namespace GameProject
             var y = MathF.Sin(olor.HeadRotationCurrent);
             var headOffset = Vector2.Normalize(new Vector2(x, y)) * olor.NeckLengthCurrent * olor.NeckMaxLength;
             olor.HeadPosition = olor.BodyPosition + headOffset;
+
+            RectangleF aabb1 = G.SB.GetEllipseAABB(olor.BodyPosition - Vector2.UnitX * 35, 40, 10, 0f);
+            RectangleF aabb2 = G.SB.GetLineAABB(olor.BodyPosition, olor.HeadPosition, 5);
+            entity.AABB = RectangleF.Union(aabb1, aabb2);
+
+            G.EntitiesByLocation.Update(olor.Leaf, entity.AABB);
         }
     }
 }

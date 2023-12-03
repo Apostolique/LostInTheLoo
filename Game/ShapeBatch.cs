@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace GameProject {
     public class ShapeBatch {
@@ -313,6 +314,129 @@ namespace GameProject {
             Flush();
 
             // TODO: Restore old states like rasterizer, depth stencil, blend state?
+        }
+
+        public RectangleF GetCircleAABB(Vector2 center, float radius) {
+            float radius1 = radius + _aaOffset; // Account for AA.
+
+            var topLeft = center + new Vector2(-radius1);
+            var topRight = center + new Vector2(radius1, -radius1);
+            var bottomRight = center + new Vector2(radius1);
+            var bottomLeft = center + new Vector2(-radius1, radius1);
+
+            return new RectangleF(topLeft, bottomRight - topLeft);
+        }
+        public RectangleF GetRectangleAABB(Vector2 xy, Vector2 size, float rotation = 0f) {
+            xy -= new Vector2(_aaOffset); // Account for AA.
+            Vector2 size1 = size + new Vector2(_aaOffset * 2f); // Account for AA.
+            Vector2 half = size / 2f;
+            Vector2 half1 = half + new Vector2(_aaOffset); // Account for AA.
+
+            var topLeft = xy;
+            var topRight = xy + new Vector2(size1.X, 0);
+            var bottomRight = xy + size1;
+            var bottomLeft = xy + new Vector2(0, size1.Y);
+
+            if (rotation != 0f) {
+                Vector2 center = xy + half1;
+                topLeft = Rotate(topLeft, center, rotation);
+                topRight = Rotate(topRight, center, rotation);
+                bottomRight = Rotate(bottomRight, center, rotation);
+                bottomLeft = Rotate(bottomLeft, center, rotation);
+            }
+
+            var realTopLeft = Vector2.Min(Vector2.Min(Vector2.Min(topLeft, topRight), bottomRight), bottomLeft);
+            var realBottomRight = Vector2.Max(Vector2.Max(Vector2.Max(topLeft, topRight), bottomRight), bottomLeft);
+
+            return new RectangleF(realTopLeft, realBottomRight - realTopLeft);
+        }
+        public RectangleF GetLineAABB(Vector2 a, Vector2 b, float radius) {
+            var radius1 = radius + _aaOffset; // Account for AA.
+
+            var c = Slide(a, b, radius1);
+            var d = Slide(b, a, radius1);
+
+            var topLeft = CounterClockwise(d, c, radius1);
+            var topRight = Clockwise(d, c, radius1);
+            var bottomRight = CounterClockwise(c, d, radius1);
+            var bottomLeft = Clockwise(c, d, radius1);
+
+            var realTopLeft = Vector2.Min(Vector2.Min(Vector2.Min(topLeft, topRight), bottomRight), bottomLeft);
+            var realBottomRight = Vector2.Max(Vector2.Max(Vector2.Max(topLeft, topRight), bottomRight), bottomLeft);
+
+            return new RectangleF(realTopLeft, realBottomRight - realTopLeft);
+        }
+        public RectangleF GetHexagonAABB(Vector2 center, float radius, float rotation = 0f) {
+            float radius1 = radius + _aaOffset; // Account for AA.
+            float width1 = 2f * radius / MathF.Sqrt(3f) + _aaOffset; // Account for AA.
+
+            Vector2 size = new Vector2(width1, radius1);
+
+            var topLeft = center - size;
+            var topRight = center + new Vector2(size.X, -size.Y);
+            var bottomRight = center + size;
+            var bottomLeft = center + new Vector2(-size.X, size.Y);
+
+            if (rotation != 0f) {
+                topLeft = Rotate(topLeft, center, rotation);
+                topRight = Rotate(topRight, center, rotation);
+                bottomRight = Rotate(bottomRight, center, rotation);
+                bottomLeft = Rotate(bottomLeft, center, rotation);
+            }
+
+            var realTopLeft = Vector2.Min(Vector2.Min(Vector2.Min(topLeft, topRight), bottomRight), bottomLeft);
+            var realBottomRight = Vector2.Max(Vector2.Max(Vector2.Max(topLeft, topRight), bottomRight), bottomLeft);
+
+            return new RectangleF(realTopLeft, realBottomRight - realTopLeft);
+        }
+        public RectangleF GetEquilateralTriangleAABB(Vector2 center, float radius, float rotation = 0f) {
+            float height = radius * 3f;
+
+            float halfWidth = height / MathF.Sqrt(3f);
+            float incircle = height / 3f;
+            float circumcircle = 2f * height / 3f;
+
+            float halfWidth1 = halfWidth + _aaOffset; // Account for AA.
+            float incircle1 = incircle + _aaOffset; // Account for AA.
+            float circumcircle1 = circumcircle + _aaOffset; // Account for AA.
+
+            var topLeft = center - new Vector2(halfWidth1, incircle1);
+            var topRight = center + new Vector2(halfWidth1, -incircle1);
+            var bottomRight = center + new Vector2(halfWidth1, circumcircle1);
+            var bottomLeft = center + new Vector2(-halfWidth1, circumcircle1);
+
+            if (rotation != 0f) {
+                topLeft = Rotate(topLeft, center, rotation);
+                topRight = Rotate(topRight, center, rotation);
+                bottomRight = Rotate(bottomRight, center, rotation);
+                bottomLeft = Rotate(bottomLeft, center, rotation);
+            }
+
+            var realTopLeft = Vector2.Min(Vector2.Min(Vector2.Min(topLeft, topRight), bottomRight), bottomLeft);
+            var realBottomRight = Vector2.Max(Vector2.Max(Vector2.Max(topLeft, topRight), bottomRight), bottomLeft);
+
+            return new RectangleF(realTopLeft, realBottomRight - realTopLeft);
+        }
+        public RectangleF GetEllipseAABB(Vector2 center, float radius1, float radius2, float rotation = 0f) {
+            float radius3 = radius1 + _aaOffset; // Account for AA.
+            float radius4 = radius2 + _aaOffset; // Account for AA.
+
+            var topLeft = center + new Vector2(-radius3, -radius4);
+            var topRight = center + new Vector2(radius3, -radius4);
+            var bottomRight = center + new Vector2(radius3, radius4);
+            var bottomLeft = center + new Vector2(-radius3, radius4);
+
+            if (rotation != 0f) {
+                topLeft = Rotate(topLeft, center, rotation);
+                topRight = Rotate(topRight, center, rotation);
+                bottomRight = Rotate(bottomRight, center, rotation);
+                bottomLeft = Rotate(bottomLeft, center, rotation);
+            }
+
+            var realTopLeft = Vector2.Min(Vector2.Min(Vector2.Min(topLeft, topRight), bottomRight), bottomLeft);
+            var realBottomRight = Vector2.Max(Vector2.Max(Vector2.Max(topLeft, topRight), bottomRight), bottomLeft);
+
+            return new RectangleF(realTopLeft, realBottomRight - realTopLeft);
         }
 
         private void Flush() {

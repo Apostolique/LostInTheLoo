@@ -11,7 +11,6 @@ namespace GameProject
         public Vector3 TargetPosition;
         public float CourseDiviationSpeed;
         public EllipseSegment Segment;
-        public int Leaf;
         public float MovementSpeedMultiplier = 1.0f;
         public double NextMovementSpeedMultiplierChange;
         public StaticFoodEntity TargetFood;

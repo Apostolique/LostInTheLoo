@@ -16,5 +16,6 @@ namespace GameProject
         public Segment[] Segments;
         public RectangleF AABB;
         public float Z;
+        public int Leaf;
     }
 }
