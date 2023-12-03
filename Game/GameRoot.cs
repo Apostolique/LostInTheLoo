@@ -182,6 +182,8 @@ namespace GameProject {
             G.R.Clear(Target1);
 
             float intervalGroup = 0.1f;
+            float focalPoint = 0.0f;
+            float focalDecay = 1f;
             foreach (var group in _entitiesInView.GroupBy(e => MathF.Floor(e.Z / intervalGroup + 0.5f) * intervalGroup))
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
@@ -189,7 +191,9 @@ namespace GameProject {
                     entity.RenderLogic.Render(entity);
                 }
                 G.SB.End();
-                G.R.ApplyBokeh(GameRoot.Target1, GameRoot.Target2, 0f, group.Key);
+                float blur = MathF.Abs(group.Key - focalPoint) * focalDecay * 100f;
+                float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
+                G.R.ApplyBokeh(GameRoot.Target1, GameRoot.Target2, group.Key, blur, opacity);
             }
 
             GraphicsDevice.SetRenderTarget(null);

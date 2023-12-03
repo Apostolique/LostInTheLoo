@@ -16,10 +16,9 @@ namespace GameProject
         public float Thickness;
         public float Roation;
         public float Z;
-        public float BokehBlurRadius;
         public float Rotation;
 
-        public EllipseSegment(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z, float bokehBlurRadius)
+        public EllipseSegment(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z)
         {
             this.Center = new Vector2(centerX, centerY);
             this.Radius1 = radius1;
@@ -29,7 +28,6 @@ namespace GameProject
             this.Thickness = thickness;
             this.Roation = rotation;
             this.Z = z;
-            this.BokehBlurRadius = bokehBlurRadius;
         }
 
     }
