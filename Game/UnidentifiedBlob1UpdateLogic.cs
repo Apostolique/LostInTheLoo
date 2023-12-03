@@ -48,10 +48,10 @@ namespace GameProject
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
             blob.Segment.Z = blob.AbsolutePosition.Z;
             blob.Segment.Roation = (float)gameTime.TotalGameTime.TotalSeconds; // I don't think rotation works
-            blob.AABB.X = blob.AbsolutePosition.X;
-            blob.AABB.Y = blob.AbsolutePosition.Y;
-            blob.AABB.Width = 40f;
-            blob.AABB.Height = 20f;
+            blob.AABB.X = blob.AbsolutePosition.X - blob.Segment.Radius1 * 0.5f;
+            blob.AABB.Y = blob.AbsolutePosition.Y - blob.Segment.Radius2 * 0.5f;
+            blob.AABB.Width = blob.Segment.Radius1;
+            blob.AABB.Height = blob.Segment.Radius2;
             blob.Z = blob.AbsolutePosition.Z;
             entity.AABB = blob.AABB;
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
