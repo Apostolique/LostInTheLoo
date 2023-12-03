@@ -165,7 +165,7 @@ namespace GameProject {
 
             if(gameTime.ElapsedGameTime.TotalSeconds > 0.0d)
             {
-                var entities = G.EntitiesByLocation.Where(entity => entity != null).ToArray();
+                var entities = G.EntitiesByLocation.ToArray();
                 foreach (var entity in entities)
                 {
                     entity.UpdateLogic.Update(entity, gameTime);
@@ -181,13 +181,13 @@ namespace GameProject {
             G.R.Clear(Target2);
             G.R.Clear(Target1);
 
-            float intervalGroup = 0.1f;
+            float intervalGroup = 0.05f;
             float focalPoint = 0.0f;
             float focalDecay = 1f;
             foreach (var group in G.EntitiesByLocation
                 .Query(G.Camera.GetViewRect())
                 .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
-                .GroupBy(e => MathF.Floor(e.Z / intervalGroup) * intervalGroup))
+                .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup))
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
                 foreach (var entity in group) {

@@ -28,9 +28,9 @@ namespace GameProject {
         public static AABBTree<Entity> EntitiesByLocation = new AABBTree<Entity>();
         public static AABBTree<Entity> StaticFoodEntitiesByLocation = new AABBTree<Entity>();
         public static readonly bool DisableBokeh = File.Exists("bokeh.disable");
-        public const float WorldSize = 100;
+        public const float WorldSize = 10000;
         public const float WorldSizeHalf = WorldSize * 0.5f;
-        public const float WorldDepth = 0.5f;
+        public const float WorldDepth = 0.25f;
         public const float WorldDepthHalf = WorldDepth * 0.5f;
         public static readonly Vector3 MaxWorldPosition = new Vector3(WorldSizeHalf, WorldSizeHalf, WorldDepth);
         public static readonly Vector3 MinWorldPosition = new Vector3(-WorldSizeHalf, -WorldSizeHalf, 0);

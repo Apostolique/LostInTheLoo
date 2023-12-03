@@ -11,8 +11,8 @@ namespace GameProject
 {
     public static class WorldGenerator
     {
-        private const int numberUnidentifiedBlob1ToCreate = 10;
-        private const int numberOfStaticFoodsToCreate = 5;
+        private const int numberUnidentifiedBlob1ToCreate = 1000;
+        private const int numberOfStaticFoodsToCreate = 5000;
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
