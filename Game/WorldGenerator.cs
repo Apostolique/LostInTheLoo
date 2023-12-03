@@ -16,7 +16,6 @@ namespace GameProject
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
-        private static CircleWithMaskRenderLogic circleWithMaskRenderLogic = new CircleWithMaskRenderLogic();
         private static LacrymariaOlorRenderLogic lacrymariaOlorRenderLogic = new LacrymariaOlorRenderLogic();
         private static LacrymariaOlorUpdateLogic lacrymariaOlorUpdateLogic = new LacrymariaOlorUpdateLogic();
         private static UnidentifiedBlob1UpdateLogic unidentifiedBlob1UpdateLogic = new UnidentifiedBlob1UpdateLogic();
@@ -42,7 +41,6 @@ namespace GameProject
             CreateCircleEntity(100, 100, 20, TWColor.Red500, TWColor.White, 2, -0.2f, 10);
             CreateCircleEntity(0, 0, 20, TWColor.Blue200, TWColor.Black, 1, -0.1f, 2);
             CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0, 0);
-            CreateCircleWithMaskEntity(-100, -100, 20, TWColor.White, 0, Assets.Noise1, 1, Vector2.Zero, TWColor.Black);
         }
 
         private static void CreateCircleEntity(float centerX, float centerY, float radius, Color color1, Color color2, float thickness, float z, float bokehBlurRadius)
@@ -72,22 +70,6 @@ namespace GameProject
                     new EllipseSegment(centerX, centerY, radius1, radius2, color1, color2, thickness, rotation, z, bokehBlurRadius),
                 },
                 AABB = new RectangleF(centerX - radius1 * 0.5f, centerY - radius2 * 0.5f, radius1, radius2),
-                Z = z
-            };
-            G.EntitiesByLocation.Add(entity.AABB, entity);
-        }
-
-        private static void CreateCircleWithMaskEntity(float centerX, float centerY, float radius, Color color, float z, Texture2D texture, float scale, Vector2 offset, Color clearColor)
-        {
-            var entity = new Entity()
-            {
-                RenderLogic = circleWithMaskRenderLogic,
-                UpdateLogic = UpdateLogic.NullLogic,
-                Segments = new Segment[]
-                {
-                    new CircleWithMaskSegment(centerX, centerY, radius, color, z, texture, scale, offset, clearColor),
-                },
-                AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
                 Z = z
             };
             G.EntitiesByLocation.Add(entity.AABB, entity);
