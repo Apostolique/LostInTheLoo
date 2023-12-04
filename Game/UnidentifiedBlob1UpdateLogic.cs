@@ -88,20 +88,12 @@ namespace GameProject
             }
 
             var direction = blob.TargetPosition - blob.AbsolutePosition;
-            if(direction != Vector3.Zero)
-            {
-                direction.Normalize();
-            }
 
             var courseDiviation = new Vector3(
                 (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
                 (float)Math.Cos(gameTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
                 0
             );
-            if(courseDiviation != Vector3.Zero)
-            {
-                courseDiviation.Normalize();
-            }
 
             if(blob.NextMovementSpeedMultiplierChange <= gameTime.TotalGameTime.TotalSeconds)
             {
@@ -117,8 +109,13 @@ namespace GameProject
             else
             {
                 direction += courseDiviation;
+            }
+
+            if(direction != Vector3.Zero)
+            {
                 direction.Normalize();
             }
+
             var movement = direction * amount;
             blob.LocalPosition += movement;
             blob.LocalRotationSpin = MathF.Atan2(movement.Y, -movement.X);

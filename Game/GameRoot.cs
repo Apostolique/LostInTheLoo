@@ -38,8 +38,6 @@ namespace GameProject {
             }
 
             base.Initialize();
-
-            WorldGenerator.Generate();
         }
 
         protected override void LoadContent() {
@@ -71,6 +69,8 @@ namespace GameProject {
             _mediumHigh.Play();
             _high.Play();
             _currentTrack = _lowVolume;
+
+            WorldGenerator.Generate();
         }
 
         protected void ClientSizeChanged(object? sender, EventArgs? e) {
@@ -341,10 +341,10 @@ namespace GameProject {
         ICondition _9 = new KeyboardCondition(Keys.NumPad9);
 
         float _maxVolume = 0.3f;
-        FloatTween _lowVolume = new FloatTween(0f, 0.3f, 20000, Easing.Linear);
-        FloatTween _mediumVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
-        FloatTween _mediumHighVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
-        FloatTween _highVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
+        FloatTween _lowVolume = new FloatTween(0f, 0.3f, 5000, Easing.Linear);
+        FloatTween _mediumVolume = new FloatTween(0f, 0f, 5000, Easing.Linear);
+        FloatTween _mediumHighVolume = new FloatTween(0f, 0f, 5000, Easing.Linear);
+        FloatTween _highVolume = new FloatTween(0f, 0f, 5000, Easing.Linear);
         FloatTween _currentTrack;
 
         public static int Width;
