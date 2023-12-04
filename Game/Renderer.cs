@@ -39,29 +39,24 @@ namespace GameProject {
                 G.GraphicsDevice.SetRenderTargets(real, imaginary);
                 G.GraphicsDevice.Clear(TWColor.Transparent);
 
-                var b1 = Assets.Bokeh.Techniques["VerticalBokeh"];
-                var b2 = Assets.Bokeh.Techniques["HorizontalBokeh"];
+                Assets.BokehVertical.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
+                Assets.BokehVertical.Parameters["kernel"]?.SetValue(_kernels[0]);
+                Assets.BokehVertical.Parameters["radius"]?.SetValue(blur);
 
-                Assets.Bokeh.CurrentTechnique = b1;
-                Assets.Bokeh.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
-                Assets.Bokeh.Parameters["kernel"]?.SetValue(_kernels[0]);
-                Assets.Bokeh.Parameters["radius"]?.SetValue(blur);
-
-                G.S.Begin(effect: Assets.Bokeh);
+                G.S.Begin(effect: Assets.BokehVertical);
                 G.S.Draw(source, Vector2.Zero, TWColor.White);
                 G.S.End();
 
                 G.GraphicsDevice.SetRenderTarget(destination);
 
-                Assets.Bokeh.CurrentTechnique = b2;
-                Assets.Bokeh.Parameters["radius"]?.SetValue(blur);
-                Assets.Bokeh.Parameters["real"]?.SetValue(real);
-                Assets.Bokeh.Parameters["imaginary"]?.SetValue(imaginary);
-                Assets.Bokeh.Parameters["z"]?.SetValue(_kernelParameters[0].Z);
-                Assets.Bokeh.Parameters["w"]?.SetValue(_kernelParameters[0].W);
-                G.S.Begin(effect: Assets.Bokeh);
+                Assets.BokehHorizontal.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
+                Assets.BokehHorizontal.Parameters["kernel"]?.SetValue(_kernels[0]);
+                Assets.BokehHorizontal.Parameters["radius"]?.SetValue(blur);
+                Assets.BokehHorizontal.Parameters["imaginary"]?.SetValue(imaginary);
+                Assets.BokehHorizontal.Parameters["z"]?.SetValue(_kernelParameters[0].Z);
+                Assets.BokehHorizontal.Parameters["w"]?.SetValue(_kernelParameters[0].W);
+                G.S.Begin(effect: Assets.BokehHorizontal);
                 G.S.Draw(real, Vector2.Zero, TWColor.White * opacity);
-                G.S.Draw(imaginary, Vector2.Zero, TWColor.White * opacity);
                 G.S.End();
             }
 

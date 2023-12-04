@@ -28,7 +28,8 @@ namespace GameProject {
         }
         private static void LoadShaders(ContentManager content) {
             Shapes = content.Load<Effect>("apos-shapes");
-            Bokeh = content.Load<Effect>("bokeh");
+            BokehVertical = content.Load<Effect>("bokeh-vertical");
+            BokehHorizontal = content.Load<Effect>("bokeh-horizontal");
             Infinite = content.Load<Effect>("infinite");
             Mask = content.Load<Effect>("mask");
         }
@@ -52,7 +53,8 @@ namespace GameProject {
         public static Texture2D Noise2;
         public static Texture2D Mask1;
 
-        public static Effect Bokeh;
+        public static Effect BokehVertical;
+        public static Effect BokehHorizontal;
         public static Effect Shapes;
         public static Effect Infinite;
         public static Effect Mask;

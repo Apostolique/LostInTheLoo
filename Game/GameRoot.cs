@@ -223,7 +223,8 @@ namespace GameProject {
             Real = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             Imaginary = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
 
-            Assets.Bokeh.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
+            Assets.BokehVertical.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
+            Assets.BokehHorizontal.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
         }
 
         private void UpdateCamera() {

@@ -31,11 +31,17 @@
 /processorParam:TextureFormat=Color
 /build:background.png
 
-#begin bokeh.fx
+#begin bokeh-vertical.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:bokeh.fx
+/build:bokeh-vertical.fx
+
+#begin bokeh-horizontal.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:bokeh-horizontal.fx
 
 #begin infinite.fx
 /importer:EffectImporter
@@ -141,4 +147,3 @@
 
 #begin source-code-pro-medium.ttf
 /copy:source-code-pro-medium.ttf
-
