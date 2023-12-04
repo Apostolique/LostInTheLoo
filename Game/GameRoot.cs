@@ -86,8 +86,9 @@ namespace GameProject {
             Height = h;
 
             Target1?.Dispose();
-            Target2?.Dispose();
-            Target3?.Dispose();
+            Composite?.Dispose();
+            Real?.Dispose();
+            Imaginary?.Dispose();
             CreateTargets();
         }
 
@@ -178,7 +179,7 @@ namespace GameProject {
 
         protected override void Draw(GameTime gameTime) {
             _fps.Draw(gameTime);
-            G.R.Clear(Target2);
+            G.R.Clear(Composite);
             G.R.Clear(Target1);
 
             float intervalGroup = 0.05f;
@@ -196,7 +197,7 @@ namespace GameProject {
                 G.SB.End();
                 float blur = MathF.Abs(group.Key - focalPoint) * focalDecay * 100f;
                 float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
-                G.R.ApplyBokeh(Target1, Target2, group.Key, blur, opacity);
+                G.R.ApplyBokeh(Target1, Real, Imaginary, Composite, group.Key, (int)blur, opacity);
             }
 
             GraphicsDevice.SetRenderTarget(null);
@@ -206,7 +207,7 @@ namespace GameProject {
             G.S.Draw(Assets.Background, new Rectangle(-15000, -10000, Assets.Background.Width * 10, Assets.Background.Height * 10), TWColor.White);
             G.S.End();
 
-            G.R.Draw(Target2);
+            G.R.Draw(Composite);
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();
@@ -218,10 +219,11 @@ namespace GameProject {
 
         private void CreateTargets() {
             Target1 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            Target2 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            Target3 = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Composite = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Real = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+            Imaginary = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
 
-            Assets.Bokeh.Parameters["unit"].SetValue(new Vector2(1f / Width, 1f / Height));
+            Assets.Bokeh.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
         }
 
         private void UpdateCamera() {
@@ -346,8 +348,9 @@ namespace GameProject {
         public static int Height;
 
         public static RenderTarget2D Target1;
-        public static RenderTarget2D Target2;
-        public static RenderTarget2D Target3;
+        public static RenderTarget2D Composite;
+        public static RenderTarget2D Real;
+        public static RenderTarget2D Imaginary;
 
         Vector2Tween _xy = new Vector2Tween(Vector2.Zero, Vector2.Zero, 0, Easing.QuintOut);
         FloatTween _exp = new FloatTween(0f, 0f, 0, Easing.QuintOut);
