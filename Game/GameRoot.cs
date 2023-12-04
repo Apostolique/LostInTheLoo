@@ -211,7 +211,7 @@ namespace GameProject {
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();
-            G.S.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate}", new Vector2(10, 10), TWColor.White);
+            G.S.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate} - Entities: {G.EntitiesByLocation.Count}", new Vector2(10, 10), TWColor.White);
             G.S.End();
 
             base.Draw(gameTime);
