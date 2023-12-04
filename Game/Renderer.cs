@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Apos.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-// using Complex64 = System.Numerics.Complex;
-// using Complex64 = (float Real, float Imaginary);
 
 namespace GameProject {
     public class Renderer {
@@ -27,36 +26,47 @@ namespace GameProject {
             Clear(source);
         }
 
-        public void ApplyBokeh(RenderTarget2D source, RenderTarget2D real, RenderTarget2D imaginary, RenderTarget2D destination, float z, int blur, float opacity) {
+        public void ApplyBokeh(RenderTarget2D source, RenderTarget2D real, RenderTarget2D imaginary, RenderTarget2D temp, RenderTarget2D destination, float z, float blur, float opacity) {
             if (G.DisableBokeh) {
                 G.GraphicsDevice.SetRenderTarget(destination);
                 G.S.Begin();
                 G.S.Draw(source, Vector2.Zero, TWColor.White * opacity);
                 G.S.End();
             } else {
-                Bokeh(5, 1);
-
-                G.GraphicsDevice.SetRenderTargets(real, imaginary);
+                Bokeh(16, 1);
+                G.GraphicsDevice.SetRenderTarget(temp);
                 G.GraphicsDevice.Clear(TWColor.Transparent);
 
-                Assets.BokehVertical.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
-                Assets.BokehVertical.Parameters["kernel"]?.SetValue(_kernels[0]);
-                Assets.BokehVertical.Parameters["radius"]?.SetValue(blur);
+                for (int i = 0; i < _componentsCount; i++) {
+                    G.GraphicsDevice.SetRenderTargets(real, imaginary);
+                    G.GraphicsDevice.Clear(TWColor.Transparent);
 
-                G.S.Begin(effect: Assets.BokehVertical);
-                G.S.Draw(source, Vector2.Zero, TWColor.White);
-                G.S.End();
+                    blur = InputHelper.NewMouse.X / 1000f;
+
+                    Assets.BokehVertical.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
+                    Assets.BokehVertical.Parameters["kernel"]?.SetValue(_kernels[i]);
+                    Assets.BokehVertical.Parameters["radius"]?.SetValue(blur);
+
+                    G.S.Begin(effect: Assets.BokehVertical);
+                    G.S.Draw(source, Vector2.Zero, TWColor.White);
+                    G.S.End();
+
+                    G.GraphicsDevice.SetRenderTarget(temp);
+
+                    Assets.BokehHorizontal.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
+                    Assets.BokehHorizontal.Parameters["kernel"]?.SetValue(_kernels[i]);
+                    Assets.BokehHorizontal.Parameters["radius"]?.SetValue(blur);
+                    Assets.BokehHorizontal.Parameters["imaginary"]?.SetValue(imaginary);
+                    Assets.BokehHorizontal.Parameters["z"]?.SetValue(_kernelParameters[i].Z);
+                    Assets.BokehHorizontal.Parameters["w"]?.SetValue(_kernelParameters[i].W);
+                    G.S.Begin(effect: Assets.BokehHorizontal);
+                    G.S.Draw(real, Vector2.Zero, TWColor.White);
+                    G.S.End();
+                }
 
                 G.GraphicsDevice.SetRenderTarget(destination);
-
-                Assets.BokehHorizontal.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
-                Assets.BokehHorizontal.Parameters["kernel"]?.SetValue(_kernels[0]);
-                Assets.BokehHorizontal.Parameters["radius"]?.SetValue(blur);
-                Assets.BokehHorizontal.Parameters["imaginary"]?.SetValue(imaginary);
-                Assets.BokehHorizontal.Parameters["z"]?.SetValue(_kernelParameters[0].Z);
-                Assets.BokehHorizontal.Parameters["w"]?.SetValue(_kernelParameters[0].W);
-                G.S.Begin(effect: Assets.BokehHorizontal);
-                G.S.Draw(real, Vector2.Zero, TWColor.White * opacity);
+                G.S.Begin();
+                G.S.Draw(temp, Vector2.Zero, TWColor.White);
                 G.S.End();
             }
 
@@ -141,7 +151,7 @@ namespace GameProject {
             int r = _radius;
             int n = -r;
 
-            for (int i = 0; i < _kernelSize; i++) {
+            for (int i = 0; i < _kernelSize; i++, n++) {
                 float value = n * _kernelsScale * (1f / r);
                 value *= value;
 

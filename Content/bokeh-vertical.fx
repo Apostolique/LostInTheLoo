@@ -12,7 +12,7 @@
 #define pi 3.14159265
 #define e 2.71828183
 
-#define RADIUS 5
+#define RADIUS 16
 #define KERNEL_SIZE (RADIUS * 2 + 1)
 
 float2 unit;
@@ -33,13 +33,13 @@ struct PixelShaderOutput {
     float4 Color1 : COLOR1;
 };
 
-PixelShaderOutput PS(VertexToPixel p) : SV_TARGET {
+PixelShaderOutput PS(VertexToPixel p) {
     float4 c0 = float4(0.0, 0.0, 0.0, 0.0);
     float4 c1 = float4(0.0, 0.0, 0.0, 0.0);
 
-    for (int i = 0; i < kernelSize; ++i) {
-        float offsetY = clamp(p.TexCoord.y + (i - RADIUS) * unit.y, 0.0, 1.0);
-        float offsetX = clamp(p.TexCoord.x, 0.0, 1.0);
+    for (int i = 0; i < KERNEL_SIZE; ++i) {
+        float offsetY = p.TexCoord.y + (i - RADIUS) * unit.y * radius;
+        float offsetX = p.TexCoord.x;
         float4 color = tex2D(TextureSampler, float2(offsetX, offsetY));
 
         float factorX = kernel[i].x;

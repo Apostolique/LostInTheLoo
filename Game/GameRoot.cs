@@ -89,6 +89,7 @@ namespace GameProject {
             Composite?.Dispose();
             Real?.Dispose();
             Imaginary?.Dispose();
+            Temp?.Dispose();
             CreateTargets();
         }
 
@@ -195,9 +196,9 @@ namespace GameProject {
                     entity.RenderLogic.Render(entity);
                 }
                 G.SB.End();
-                float blur = MathF.Abs(group.Key - focalPoint) * focalDecay * 100f;
+                float blur = MathF.Abs(group.Key - focalPoint) * focalDecay;
                 float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
-                G.R.ApplyBokeh(Target1, Real, Imaginary, Composite, group.Key, (int)blur, opacity);
+                G.R.ApplyBokeh(Target1, Real, Imaginary, Temp, Composite, group.Key, (int)blur, opacity);
             }
 
             GraphicsDevice.SetRenderTarget(null);
@@ -222,6 +223,7 @@ namespace GameProject {
             Composite = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             Real = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             Imaginary = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+            Temp = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             Assets.BokehVertical.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
             Assets.BokehHorizontal.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
@@ -352,6 +354,7 @@ namespace GameProject {
         public static RenderTarget2D Composite;
         public static RenderTarget2D Real;
         public static RenderTarget2D Imaginary;
+        public static RenderTarget2D Temp;
 
         Vector2Tween _xy = new Vector2Tween(Vector2.Zero, Vector2.Zero, 0, Easing.QuintOut);
         FloatTween _exp = new FloatTween(0f, 0f, 0, Easing.QuintOut);
