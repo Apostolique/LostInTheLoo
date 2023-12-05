@@ -13,12 +13,14 @@ namespace GameProject
     {
         private const int numberUnidentifiedBlob1ToCreate = 1000;
         private const int numberOfStaticFoodsToCreate = 15000;
+        private const int numberOfWasteRecycleBlobToCreate = 1000;
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
         private static LacrymariaOlorRenderLogic lacrymariaOlorRenderLogic = new LacrymariaOlorRenderLogic();
         private static LacrymariaOlorUpdateLogic lacrymariaOlorUpdateLogic = new LacrymariaOlorUpdateLogic();
         private static UnidentifiedBlob1UpdateLogic unidentifiedBlob1UpdateLogic = new UnidentifiedBlob1UpdateLogic();
+        private static WasteRecycleBlobUpdateLogic wasteRecycleBlobUpdateLogic = new WasteRecycleBlobUpdateLogic();
         private static readonly Random random = new Random();
         private static readonly Color[] staticFoodColors1 = new Color[]
         {
@@ -37,6 +39,7 @@ namespace GameProject
         {
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
             Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index));
+            Enumerable.Range(0, numberOfWasteRecycleBlobToCreate).ForEach(index => CreateWasteRecycleBlob(index));
             CreateLacrymariaOlorEntity(50, 50);
             CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0);
         }
@@ -104,6 +107,32 @@ namespace GameProject
                 Z = position.Z,
                 NextFoodScan = index * 0.2f,
                 DeathFromStarvationTime = random.NextDouble() * 240 + 1,
+                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
+            };
+            entity.Segments = new Segment[] { entity.Segment };
+            entity.UpdateAbsoluteRecursive();
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
+            return entity;
+        }
+
+        public static WasteRecycleBlobEntity CreateWasteRecycleBlob(int index)
+        {
+            var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var radius1 = random.NextSingle(WasteRecycleBlobEntity.MinRadius, WasteRecycleBlobEntity.MaxRadius);
+            var radius2 = radius1 * 0.33f;
+            var entity = new WasteRecycleBlobEntity()
+            {
+                OriginalRadius1 = radius1,
+                OriginalRadius2 = radius2,
+                Scale = 1,
+                LocalPosition = position,
+                RenderLogic = ellipseRenderLogic,
+                UpdateLogic = wasteRecycleBlobUpdateLogic,
+                TargetPosition = position,
+                Segment = new EllipseSegment(position.X, position.Y, radius1, radius2, Color.SaddleBrown, Color.BlueViolet, 2, 0, position.Z),
+                MovementSpeedMultiplier = WasteRecycleBlobEntity.RoamSpeedMultiplier,
+                Z = position.Z,
+                NextFoodScan = index * 0.005f,
                 AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
             };
             entity.Segments = new Segment[] { entity.Segment };

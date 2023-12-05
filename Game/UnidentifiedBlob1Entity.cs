@@ -8,6 +8,9 @@ namespace GameProject
 {
     public class UnidentifiedBlob1Entity : MatrixEntity
     {
+        public const float MinPoopTimeDelay = 5;
+        public const float MaxPoopTimeDelay = 10;
+
         public Vector3 TargetPosition;
         public float CourseDiviationSpeed;
         public EllipseSegment Segment;
@@ -23,5 +26,6 @@ namespace GameProject
         public float SplitRadius1ChangePerSecond;
         public float SplitRadius2ChangePerSecond;
         public float TargetRotation;
+        public double NextPoopTime;
     }
 }

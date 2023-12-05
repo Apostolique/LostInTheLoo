@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
@@ -27,6 +26,27 @@ namespace GameProject
 
         private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
         {
+            if(blob.NextPoopTime <= gameTime.TotalGameTime.TotalSeconds)
+            {
+                blob.NextPoopTime = gameTime.TotalGameTime.TotalSeconds + G.Random.NextSingle(UnidentifiedBlob1Entity.MinPoopTimeDelay, UnidentifiedBlob1Entity.MaxPoopTimeDelay);
+
+                blob.Segment.Radius2 -= blob.Segment.Radius2 / blob.Segment.Radius1;
+                blob.Segment.Radius1--;
+                if(blob.Segment.Radius1 <= 0.0f)
+                {
+                    blob.State = Dying;
+                    return;
+                }
+
+                var position = blob.AbsolutePosition;
+                var poop = WorldGenerator.CreateStaticFood(position);
+                var poopSegment = (CircleSegment)poop.Segments[0];
+                poopSegment.Radius = 1.0f;
+                poopSegment.Color1 = Color.Brown;
+                poopSegment.Color2 = Color.Brown;
+                poop.Type = StaticFoodTypes.Brown;
+            }
+
             var food = blob.TargetFood;
             if(food != null && food.HasBeenEaten)
             {
