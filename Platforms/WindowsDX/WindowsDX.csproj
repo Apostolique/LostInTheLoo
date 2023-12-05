@@ -12,7 +12,7 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
     <UseWindowsForms>true</UseWindowsForms>
-    <NoWarn>IDE0044;IDE0051;IDE0052;CA1859;CA2211;CA1822;IDE0090;CS8618</NoWarn>
+    <NoWarn>IDE0044;IDE0051;IDE0052;CA1859;CA2211;CA1822;IDE0090;CS8618;IDE0300</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
