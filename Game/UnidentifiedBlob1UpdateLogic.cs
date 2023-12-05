@@ -10,7 +10,7 @@ namespace GameProject
     public class UnidentifiedBlob1UpdateLogic : UpdateLogic
     {
         private const double digestTime = 2.0d;
-        private const float maxRadius = 40.0f;
+        private const float maxRadius = 20.0f;
         private const double splitTime = 11.0d;
 
         public override void Update(Entity entity, GameTime gameTime)
@@ -70,7 +70,7 @@ namespace GameProject
                     var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
                     blob.Segment.Radius1 += foodRadius * (blob.Segment.Radius2 / blob.Segment.Radius1);
                     blob.Segment.Radius2 += foodRadius * (1.0f - blob.Segment.Radius2 / blob.Segment.Radius1);
-                    blob.DeathFromStarvationTime = gameTime.TotalGameTime.TotalSeconds + 240.0d;
+                    blob.DeathFromStarvationTime = gameTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
                     blob.NextFoodScan += digestTime + 2.0d; // delay to search for food again
                     blob.State = Digest;
                     blob.DigestTimer = gameTime.TotalGameTime.TotalSeconds + digestTime;
@@ -118,12 +118,13 @@ namespace GameProject
 
             var movement = direction * amount;
             blob.LocalPosition += movement;
-            blob.LocalRotationSpin = MathF.Atan2(movement.Y, -movement.X);
+            blob.TargetRotation = MathF.Atan2(direction.Y, -direction.X);
+            blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
             blob.Segment.Z = blob.AbsolutePosition.Z;
-            blob.Segment.Rotation = (float)gameTime.TotalGameTime.TotalSeconds; // I don't think rotation works
+            blob.Segment.Rotation = blob.LocalRotationSpin;
             blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Segment.Radius1, blob.Segment.Radius2, blob.Segment.Rotation);
             blob.Z = blob.AbsolutePosition.Z;
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
@@ -249,11 +250,12 @@ namespace GameProject
                 blob.Leaf = G.EntitiesByLocation.Remove(blob.Leaf);
                 var min = blob.AABB.TopLeft.ToVector3XY(blob.Z);
                 var max = blob.AABB.BottomRight.ToVector3XY(blob.Z);
-                while(blob.Segment.Radius1 > 0.0f)
+                var radius = blob.Segment.Radius1 + blob.Segment.Radius2;
+                while(radius > 0.0f)
                 {
                     var position = G.Random.NextVector3(min, max);
                     var food = WorldGenerator.CreateStaticFood(position);
-                    blob.Segment.Radius1 -= food.AABB.Width;
+                    radius -= food.AABB.Width;
                 }
             }
         }

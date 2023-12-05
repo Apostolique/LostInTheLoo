@@ -22,5 +22,6 @@ namespace GameProject
         public double SplitTimer;
         public float SplitRadius1ChangePerSecond;
         public float SplitRadius2ChangePerSecond;
+        public float TargetRotation;
     }
 }

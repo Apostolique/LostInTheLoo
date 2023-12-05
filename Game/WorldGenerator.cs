@@ -12,7 +12,7 @@ namespace GameProject
     public static class WorldGenerator
     {
         private const int numberUnidentifiedBlob1ToCreate = 1000;
-        private const int numberOfStaticFoodsToCreate = 5000;
+        private const int numberOfStaticFoodsToCreate = 15000;
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
@@ -90,6 +90,7 @@ namespace GameProject
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var radius1 = 20;
             var entity = new UnidentifiedBlob1Entity()
             {
                 LocalPosition = position,
@@ -97,16 +98,17 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new EllipseSegment(position.X, position.Y, 20, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z),
+                Segment = new EllipseSegment(position.X, position.Y, radius1, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z),
                 MovementSpeedMultiplier = random.NextSingle() * 100 + 1,
                 NextMovementSpeedMultiplierChange = random.NextDouble() * 4 + 1,
                 Z = position.Z,
                 NextFoodScan = index * 0.2f,
                 DeathFromStarvationTime = random.NextDouble() * 240 + 1,
+                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
             };
             entity.Segments = new Segment[] { entity.Segment };
-            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             entity.UpdateAbsoluteRecursive();
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             return entity;
         }
 
