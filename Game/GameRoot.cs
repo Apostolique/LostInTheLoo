@@ -51,6 +51,7 @@ namespace GameProject {
             G.S = new SpriteBatch(GraphicsDevice);
             G.SB = new ShapeBatch(GraphicsDevice);
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
+            SetExpTween(-1.2f, 0);
 
             _low = Assets.Low.CreateInstance();
             _medium = Assets.Medium.CreateInstance();
@@ -360,10 +361,11 @@ namespace GameProject {
         Vector2Tween _xy = new Vector2Tween(Vector2.Zero, Vector2.Zero, 0, Easing.QuintOut);
         FloatTween _exp = new FloatTween(0f, 0f, 0, Easing.QuintOut);
 
+
         Vector2 _mouseWorld;
         Vector2 _dragAnchor = Vector2.Zero;
 
-        float _targetExp = 0f;
+        float _targetExp = 0.24f;
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
