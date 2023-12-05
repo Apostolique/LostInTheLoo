@@ -14,9 +14,9 @@ namespace GameProject
             base.Update(entity, gameTime);
 
             var olor = (LacrymariaOlorEntity)entity;
-            olor.NeckLengthSpeed = ((float)Math.Sin(gameTime.TotalGameTime.TotalSeconds) * 0.5f + 1.0f) * 2.0f;
-            olor.HeadRotationCurrent = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * olor.HeadRotationSpeed);
-            olor.NeckLengthCurrent = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * olor.NeckLengthSpeed) * 0.5f + 1.0f; // keep it between 0 and 1
+            olor.NeckLengthSpeed = ((float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds) * 0.5f + 1.0f) * 2.0f;
+            olor.HeadRotationCurrent = (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * olor.HeadRotationSpeed);
+            olor.NeckLengthCurrent = (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * olor.NeckLengthSpeed) * 0.5f + 1.0f; // keep it between 0 and 1
             var x = MathF.Cos(olor.HeadRotationCurrent);
             var y = MathF.Sin(olor.HeadRotationCurrent);
             var headOffset = Vector2.Normalize(new Vector2(x, y)) * olor.NeckLengthCurrent * olor.NeckMaxLength;

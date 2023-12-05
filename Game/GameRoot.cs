@@ -105,6 +105,7 @@ namespace GameProject {
         }
 
         protected override void Update(GameTime gameTime) {
+            WorldTime.Update(G.WorldTime, gameTime);
             InputHelper.UpdateSetup();
             TweenHelper.UpdateSetup(gameTime);
             _fps.Update(gameTime);
@@ -129,6 +130,8 @@ namespace GameProject {
             if (_7.Pressed()) { SetVolume(0.8f); }
             if (_8.Pressed()) { SetVolume(0.9f); }
             if (_9.Pressed()) { SetVolume(1.0f); }
+
+            if (_p.Pressed()) { G.WorldTime.IsPaused = !G.WorldTime.IsPaused; }
 
             if (_lowTrigger.Pressed()) {
                 _currentTrack = _lowVolume;
@@ -214,7 +217,7 @@ namespace GameProject {
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();
-            G.S.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate} - Entities: {G.EntitiesByLocation.Count} - Total time: {gameTime.TotalGameTime}", new Vector2(10, 10), TWColor.White);
+            G.S.DrawString(font, $"fps: {_fps.FramesPerSecond} - Dropped Frames: {_fps.DroppedFrames} - Draw ms: {_fps.TimePerFrame} - Update ms: {_fps.TimePerUpdate} - Entities: {G.EntitiesByLocation.Count} - TotalGameTime: {gameTime.TotalGameTime} - TotalWorldTime: {G.WorldTime.TotalGameTime}", new Vector2(10, 10), TWColor.White);
             G.S.End();
 
             base.Draw(gameTime);
@@ -341,6 +344,8 @@ namespace GameProject {
         ICondition _7 = new KeyboardCondition(Keys.NumPad7);
         ICondition _8 = new KeyboardCondition(Keys.NumPad8);
         ICondition _9 = new KeyboardCondition(Keys.NumPad9);
+
+        ICondition _p = new KeyboardCondition(Keys.P);
 
         float _maxVolume = 0.3f;
         FloatTween _lowVolume = new FloatTween(0f, 0.3f, 5000, Easing.Linear);

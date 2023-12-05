@@ -31,7 +31,7 @@ namespace GameProject
                 blob.TargetFood = null!;
             }
 
-            if(blob.NextFoodScan <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.NextFoodScan <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 blob.NextFoodScan += WasteRecycleBlobEntity.FoodScanDelay;
                 if(food == null)
@@ -71,10 +71,10 @@ namespace GameProject
                     blob.Scale += foodRadius;
                     blob.Segment.Radius1 = blob.OriginalRadius1 * blob.Scale;
                     blob.Segment.Radius2 = blob.OriginalRadius2 * blob.Scale;
-                    blob.DeathFromStarvationTime = gameTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
+                    blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
                     blob.NextFoodScan += digestTime + 2.0d; // delay to search for food again
                     blob.State = Digest;
-                    blob.DigestTimer = gameTime.TotalGameTime.TotalSeconds + digestTime;
+                    blob.DigestTimer = G.WorldTime.TotalGameTime.TotalSeconds + digestTime;
                 }
 
                 var newDistance = G.Random.NextSingle(50, 150);
@@ -85,7 +85,7 @@ namespace GameProject
 
             var direction = blob.TargetPosition - blob.AbsolutePosition;
 
-            var amount = blob.MovementSpeedMultiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var amount = blob.MovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
             if(amount > distance)
             {
                 amount = distance;
@@ -99,7 +99,7 @@ namespace GameProject
             var movement = direction * amount;
             blob.LocalPosition += movement;
             blob.TargetRotation = MathF.Atan2(direction.Y, -direction.X);
-            blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)G.WorldTime.ElapsedGameTime.TotalSeconds);
 
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
@@ -112,7 +112,7 @@ namespace GameProject
 
         private void Digest(WasteRecycleBlobEntity blob, GameTime gameTime)
         {
-            if(blob.DigestTimer > gameTime.TotalGameTime.TotalSeconds)
+            if(blob.DigestTimer > G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 return;
             }

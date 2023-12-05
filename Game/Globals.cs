@@ -36,5 +36,6 @@ namespace GameProject {
         public static readonly Vector3 MinWorldPosition = new Vector3(-WorldSizeHalf, -WorldSizeHalf, 0);
         public static readonly Random Random = new Random();
         public static readonly bool RenderAABB = File.Exists("renderaabb.enable");
+        public static readonly WorldTime WorldTime = new WorldTime();
     }
 }

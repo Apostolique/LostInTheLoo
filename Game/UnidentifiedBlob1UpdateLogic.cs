@@ -26,9 +26,9 @@ namespace GameProject
 
         private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
         {
-            if(blob.NextPoopTime <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.NextPoopTime <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
-                blob.NextPoopTime = gameTime.TotalGameTime.TotalSeconds + G.Random.NextSingle(UnidentifiedBlob1Entity.MinPoopTimeDelay, UnidentifiedBlob1Entity.MaxPoopTimeDelay);
+                blob.NextPoopTime = G.WorldTime.TotalGameTime.TotalSeconds + G.Random.NextSingle(UnidentifiedBlob1Entity.MinPoopTimeDelay, UnidentifiedBlob1Entity.MaxPoopTimeDelay);
 
                 blob.Segment.Radius2 -= blob.Segment.Radius2 / blob.Segment.Radius1;
                 blob.Segment.Radius1--;
@@ -53,7 +53,7 @@ namespace GameProject
                 blob.TargetFood = null!;
             }
 
-            if(blob.NextFoodScan <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.NextFoodScan <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 blob.NextFoodScan += 2.0d;
                 if(food == null)
@@ -90,19 +90,19 @@ namespace GameProject
                     var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
                     blob.Segment.Radius1 += foodRadius * (blob.Segment.Radius2 / blob.Segment.Radius1);
                     blob.Segment.Radius2 += foodRadius * (1.0f - blob.Segment.Radius2 / blob.Segment.Radius1);
-                    blob.DeathFromStarvationTime = gameTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
+                    blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
                     blob.NextFoodScan += digestTime + 2.0d; // delay to search for food again
                     blob.State = Digest;
-                    blob.DigestTimer = gameTime.TotalGameTime.TotalSeconds + digestTime;
+                    blob.DigestTimer = G.WorldTime.TotalGameTime.TotalSeconds + digestTime;
                 }
 
                 blob.TargetPosition = G.Random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
                 return;
             }
 
-            if(blob.DeathFromStarvationTime <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.DeathFromStarvationTime <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
-                blob.DeathFromStarvationTime = gameTime.TotalGameTime.TotalSeconds + 2.0d;
+                blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + 2.0d;
                 blob.State = Dying; // goodbye little blob 😥
                 return;
             }
@@ -110,18 +110,18 @@ namespace GameProject
             var direction = blob.TargetPosition - blob.AbsolutePosition;
 
             var courseDiviation = new Vector3(
-                (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
-                (float)Math.Cos(gameTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
+                (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
+                (float)Math.Cos(G.WorldTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
                 0
             );
 
-            if(blob.NextMovementSpeedMultiplierChange <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.NextMovementSpeedMultiplierChange <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 blob.NextMovementSpeedMultiplierChange = G.Random.NextDouble() * 10 + 1;
                 blob.MovementSpeedMultiplier = G.Random.NextSingle() * 100;
             }
 
-            var amount = blob.MovementSpeedMultiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var amount = blob.MovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
             if(amount > distance)
             {
                 amount = distance;
@@ -139,7 +139,7 @@ namespace GameProject
             var movement = direction * amount;
             blob.LocalPosition += movement;
             blob.TargetRotation = MathF.Atan2(direction.Y, -direction.X);
-            blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)G.WorldTime.ElapsedGameTime.TotalSeconds);
 
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
@@ -152,7 +152,7 @@ namespace GameProject
 
         private void Digest(UnidentifiedBlob1Entity blob, GameTime gameTime)
         {
-            if(blob.DigestTimer > gameTime.TotalGameTime.TotalSeconds)
+            if(blob.DigestTimer > G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 return;
             }
@@ -169,7 +169,7 @@ namespace GameProject
         private void BeginSplit(UnidentifiedBlob1Entity blob, GameTime gameTime)
         {
             blob.DeathFromStarvationTime += splitTime;
-            blob.SplitTimer = gameTime.TotalGameTime.TotalSeconds + splitTime;
+            blob.SplitTimer = G.WorldTime.TotalGameTime.TotalSeconds + splitTime;
             blob.SplitRadius1ChangePerSecond = blob.Segment.Radius1 * 0.5f / (float)splitTime;
             blob.SplitRadius2ChangePerSecond = blob.Segment.Radius2 * 0.5f / (float)splitTime;
 
@@ -214,12 +214,12 @@ namespace GameProject
         {
             var twin = blob.Twin;
 
-            var movement = Vector3.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var movement = Vector3.UnitX * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
             blob.LocalPosition += movement;
             twin.LocalPosition -= movement;
 
-            blob.Segment.Radius1 -= blob.SplitRadius1ChangePerSecond * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            blob.Segment.Radius2 -= blob.SplitRadius2ChangePerSecond * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            blob.Segment.Radius1 -= blob.SplitRadius1ChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            blob.Segment.Radius2 -= blob.SplitRadius2ChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
             twin.Segment.Radius1 = blob.Segment.Radius1;
             twin.Segment.Radius2 = blob.Segment.Radius2;
 
@@ -240,7 +240,7 @@ namespace GameProject
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
             G.EntitiesByLocation.Update(twin.Leaf, twin.AABB);
 
-            if(blob.SplitTimer <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.SplitTimer <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 blob.Twin = null!;
                 twin.Twin = null!;
@@ -260,12 +260,12 @@ namespace GameProject
         private void Dying(UnidentifiedBlob1Entity blob, GameTime gameTime)
         {
             const float jitterSpeed = 100;
-            var jitter = Vector3.UnitX * (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * jitterSpeed);
+            var jitter = Vector3.UnitX * (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * jitterSpeed);
             blob.LocalPosition += jitter;
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
 
-            if(blob.DeathFromStarvationTime <= gameTime.TotalGameTime.TotalSeconds)
+            if(blob.DeathFromStarvationTime <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 blob.Leaf = G.EntitiesByLocation.Remove(blob.Leaf);
                 var min = blob.AABB.TopLeft.ToVector3XY(blob.Z);
