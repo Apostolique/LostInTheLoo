@@ -212,10 +212,10 @@ namespace GameProject {
         private Vector2[][] _kernels;
         private float _kernelsScale;
 
-        private Dictionary<(int Radius, int ComponentsCount), (Vector4[] Parameters, float Scale, Vector2[][] Kernels)> _cache = [];
+        private Dictionary<(int Radius, int ComponentsCount), (Vector4[] Parameters, float Scale, Vector2[][] Kernels)> _cache = new();
 
         private float[] KernelScales = {1.4f, 1.2f, 1.2f, 1.2f, 1.2f, 1.2f};
-        private Vector4[][] KernelComponents = new[] {
+        private Vector4[][] KernelComponents = {
             // 1 component
             new[] {new Vector4(0.862325f, 1.624835f, 0.767583f, 1.862321f)},
 
