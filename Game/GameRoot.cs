@@ -185,7 +185,8 @@ namespace GameProject {
 
             float intervalGroup = 0.05f;
             float focalPoint = 0.0f;
-            float focalDecay = 1f;
+            float maxFocus = 0.5f;
+            float maxOpacity = 0.5f;
             foreach (var group in G.EntitiesByLocation
                 .Query(G.Camera.GetViewRect())
                 .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
@@ -196,9 +197,9 @@ namespace GameProject {
                     entity.RenderLogic.Render(entity);
                 }
                 G.SB.End();
-                float blur = MathF.Abs(group.Key - focalPoint) * focalDecay;
-                float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
-                G.R.ApplyBokeh(Target1, Real, Imaginary, Temp, Composite, group.Key, (int)blur, opacity);
+                float blur = MathF.Abs(group.Key - focalPoint) / maxFocus * G.Camera.WorldToScreenScale();
+                float opacity = MathF.Max(1f - MathF.Abs(group.Key - focalPoint) / maxOpacity, 0f);
+                G.R.ApplyBokeh(Target1, Real, Imaginary, Temp, Composite, group.Key, blur, opacity);
             }
 
             GraphicsDevice.SetRenderTarget(null);

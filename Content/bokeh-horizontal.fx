@@ -49,7 +49,7 @@ float4 PS(VertexToPixel p) : SV_TARGET {
     float4 resultReal = float4(0.0, 0.0, 0.0, 0.0);
     float4 resultImaginary = float4(0.0, 0.0, 0.0, 0.0);
 
-    for (int i = 0; i < KERNEL_SIZE; ++i) {
+    for (int i = 0; i < KERNEL_SIZE; i++) {
         float offsetX = p.TexCoord.x + (i - RADIUS) * unit.x * radius;
         float4 sourceReal = tex2D(RealSampler, float2(offsetX, offsetY));
         float4 sourceImaginary = tex2D(ImaginarySampler, float2(offsetX, offsetY));

@@ -37,7 +37,7 @@ PixelShaderOutput PS(VertexToPixel p) {
     float4 c0 = float4(0.0, 0.0, 0.0, 0.0);
     float4 c1 = float4(0.0, 0.0, 0.0, 0.0);
 
-    for (int i = 0; i < KERNEL_SIZE; ++i) {
+    for (int i = 0; i < KERNEL_SIZE; i++) {
         float offsetY = p.TexCoord.y + (i - RADIUS) * unit.y * radius;
         float offsetX = p.TexCoord.x;
         float4 color = tex2D(TextureSampler, float2(offsetX, offsetY));

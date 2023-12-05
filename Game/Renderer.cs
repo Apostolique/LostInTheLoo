@@ -27,7 +27,7 @@ namespace GameProject {
         }
 
         public void ApplyBokeh(RenderTarget2D source, RenderTarget2D real, RenderTarget2D imaginary, RenderTarget2D temp, RenderTarget2D destination, float z, float blur, float opacity) {
-            if (G.DisableBokeh) {
+            if (G.DisableBokeh || blur == 0f) {
                 G.GraphicsDevice.SetRenderTarget(destination);
                 G.S.Begin();
                 G.S.Draw(source, Vector2.Zero, TWColor.White * opacity);
@@ -40,8 +40,6 @@ namespace GameProject {
                 for (int i = 0; i < _componentsCount; i++) {
                     G.GraphicsDevice.SetRenderTargets(real, imaginary);
                     G.GraphicsDevice.Clear(TWColor.Transparent);
-
-                    blur = InputHelper.NewMouse.X / 1000f;
 
                     Assets.BokehVertical.Parameters["kernelSize"]?.SetValue((float)_kernelSize);
                     Assets.BokehVertical.Parameters["kernel"]?.SetValue(_kernels[i]);
@@ -66,7 +64,8 @@ namespace GameProject {
 
                 G.GraphicsDevice.SetRenderTarget(destination);
                 G.S.Begin();
-                G.S.Draw(temp, Vector2.Zero, TWColor.White);
+                G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
+                G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
                 G.S.End();
             }
 
