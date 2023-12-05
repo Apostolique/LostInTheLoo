@@ -193,7 +193,7 @@ namespace GameProject {
                 .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup)) // changed from floor to round to limit the "teleport" from worst case almost 1.0f to 0.5f if Z distance
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
-                foreach (var entity in group) {
+                foreach (var entity in group.OrderBy(e => e)) {
                     entity.RenderLogic.Render(entity);
                 }
                 G.SB.End();
@@ -206,7 +206,7 @@ namespace GameProject {
             GraphicsDevice.Clear(TWColor.Black);
 
             G.S.Begin(transformMatrix: G.Camera.GetView(-3f));
-            G.S.Draw(Assets.Background, new Rectangle(-15000, -10000, Assets.Background.Width * 10, Assets.Background.Height * 10), TWColor.White);
+            G.S.Draw(Assets.Background3, new Rectangle(-15000, -10000, Assets.Background3.Width * 50, Assets.Background3.Height * 50), TWColor.White);
             G.S.End();
 
             G.R.Draw(Composite);

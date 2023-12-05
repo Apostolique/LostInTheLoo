@@ -10,7 +10,7 @@ namespace GameProject
     /// <summary>
     /// Represents an organism, scent or the like.
     /// </summary>
-    public class Entity
+    public class Entity : IComparable<Entity>
     {
         public RenderLogic RenderLogic;
         public UpdateLogic UpdateLogic;
