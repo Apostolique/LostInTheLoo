@@ -14,7 +14,7 @@
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <NoBeautyFlag>True</NoBeautyFlag>
     <BeautyExcludes>SDL2*;libSDL2*;sdl2*;soft_oal*;openal*;MonoGame.Framework*</BeautyExcludes>
-    <NoWarn>IDE0044;IDE0051;IDE0052;CA1859;CA2211;CA1822;IDE0090;CS8618</NoWarn>
+    <NoWarn>IDE0044;IDE0051;IDE0052;CA1859;CA2211;CA1822;IDE0090;CS8618;IDE0300</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

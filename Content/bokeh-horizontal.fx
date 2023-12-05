@@ -12,7 +12,7 @@
 #define pi 3.14159265
 #define e 2.71828183
 
-#define RADIUS 5
+#define RADIUS 16
 #define KERNEL_SIZE (RADIUS * 2 + 1)
 
 float2 unit;
@@ -45,12 +45,12 @@ float4 weighted(float4 r, float4 i, float a, float b) {
 }
 
 float4 PS(VertexToPixel p) : SV_TARGET {
-    float offsetY = clamp(p.TexCoord.y, 0.0, 1.0);
+    float offsetY = p.TexCoord.y;
     float4 resultReal = float4(0.0, 0.0, 0.0, 0.0);
     float4 resultImaginary = float4(0.0, 0.0, 0.0, 0.0);
 
-    for (int i = 0; i < kernelSize; ++i) {
-        float offsetX = clamp(p.TexCoord.x + (i - RADIUS) * unit.x, 0.0, 1.0);
+    for (int i = 0; i < KERNEL_SIZE; i++) {
+        float offsetX = p.TexCoord.x + (i - RADIUS) * unit.x * radius;
         float4 sourceReal = tex2D(RealSampler, float2(offsetX, offsetY));
         float4 sourceImaginary = tex2D(ImaginarySampler, float2(offsetX, offsetY));
         float factorX = kernel[i].x;

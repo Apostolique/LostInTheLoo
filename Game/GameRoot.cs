@@ -38,8 +38,6 @@ namespace GameProject {
             }
 
             base.Initialize();
-
-            WorldGenerator.Generate();
         }
 
         protected override void LoadContent() {
@@ -53,6 +51,7 @@ namespace GameProject {
             G.S = new SpriteBatch(GraphicsDevice);
             G.SB = new ShapeBatch(GraphicsDevice);
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
+            SetExpTween(-1.2f, 0);
 
             _low = Assets.Low.CreateInstance();
             _medium = Assets.Medium.CreateInstance();
@@ -71,6 +70,8 @@ namespace GameProject {
             _mediumHigh.Play();
             _high.Play();
             _currentTrack = _lowVolume;
+
+            WorldGenerator.Generate();
         }
 
         protected void ClientSizeChanged(object? sender, EventArgs? e) {
@@ -89,6 +90,7 @@ namespace GameProject {
             Composite?.Dispose();
             Real?.Dispose();
             Imaginary?.Dispose();
+            Temp?.Dispose();
             CreateTargets();
         }
 
@@ -184,27 +186,28 @@ namespace GameProject {
 
             float intervalGroup = 0.05f;
             float focalPoint = 0.0f;
-            float focalDecay = 1f;
+            float maxFocus = 0.5f;
+            float maxOpacity = 0.5f;
             foreach (var group in G.EntitiesByLocation
                 .Query(G.Camera.GetViewRect())
                 .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
                 .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup)) // changed from floor to round to limit the "teleport" from worst case almost 1.0f to 0.5f if Z distance
             {
                 G.SB.Begin(view: G.Camera.GetView(group.Key));
-                foreach (var entity in group) {
+                foreach (var entity in group.OrderBy(e => e)) {
                     entity.RenderLogic.Render(entity);
                 }
                 G.SB.End();
-                float blur = MathF.Abs(group.Key - focalPoint) * focalDecay * 100f;
-                float opacity = MathF.Max(0f, -MathF.Abs(group.Key - focalPoint) + 1f);
-                G.R.ApplyBokeh(Target1, Real, Imaginary, Composite, group.Key, (int)blur, opacity);
+                float blur = MathF.Abs(group.Key - focalPoint) / maxFocus * G.Camera.WorldToScreenScale();
+                float opacity = MathF.Max(1f - MathF.Abs(group.Key - focalPoint) / maxOpacity, 0f);
+                G.R.ApplyBokeh(Target1, Real, Imaginary, Temp, Composite, group.Key, blur, opacity);
             }
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(TWColor.Black);
 
             G.S.Begin(transformMatrix: G.Camera.GetView(-3f));
-            G.S.Draw(Assets.Background, new Rectangle(-15000, -10000, Assets.Background.Width * 10, Assets.Background.Height * 10), TWColor.White);
+            G.S.Draw(Assets.Background3, new Rectangle(-15000, -10000, Assets.Background3.Width * 50, Assets.Background3.Height * 50), TWColor.White);
             G.S.End();
 
             G.R.Draw(Composite);
@@ -222,6 +225,7 @@ namespace GameProject {
             Composite = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             Real = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             Imaginary = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+            Temp = new RenderTarget2D(GraphicsDevice, Width, Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             Assets.BokehVertical.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
             Assets.BokehHorizontal.Parameters["unit"]?.SetValue(new Vector2(1f / Width, 1f / Height));
@@ -339,10 +343,10 @@ namespace GameProject {
         ICondition _9 = new KeyboardCondition(Keys.NumPad9);
 
         float _maxVolume = 0.3f;
-        FloatTween _lowVolume = new FloatTween(0f, 0.3f, 20000, Easing.Linear);
-        FloatTween _mediumVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
-        FloatTween _mediumHighVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
-        FloatTween _highVolume = new FloatTween(0f, 0f, 20000, Easing.Linear);
+        FloatTween _lowVolume = new FloatTween(0f, 0.3f, 5000, Easing.Linear);
+        FloatTween _mediumVolume = new FloatTween(0f, 0f, 5000, Easing.Linear);
+        FloatTween _mediumHighVolume = new FloatTween(0f, 0f, 5000, Easing.Linear);
+        FloatTween _highVolume = new FloatTween(0f, 0f, 5000, Easing.Linear);
         FloatTween _currentTrack;
 
         public static int Width;
@@ -352,14 +356,16 @@ namespace GameProject {
         public static RenderTarget2D Composite;
         public static RenderTarget2D Real;
         public static RenderTarget2D Imaginary;
+        public static RenderTarget2D Temp;
 
         Vector2Tween _xy = new Vector2Tween(Vector2.Zero, Vector2.Zero, 0, Easing.QuintOut);
         FloatTween _exp = new FloatTween(0f, 0f, 0, Easing.QuintOut);
 
+
         Vector2 _mouseWorld;
         Vector2 _dragAnchor = Vector2.Zero;
 
-        float _targetExp = 0f;
+        float _targetExp = 0.24f;
         float _expDistance = 0.002f;
         float _maxExp = -4f;
         float _minExp = 1f;
