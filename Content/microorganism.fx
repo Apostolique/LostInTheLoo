@@ -51,10 +51,10 @@ float4 SpritePixelShader(PixelInput p) : SV_TARGET {
     float4 colRamped = tex2D(Ramp, float2(colShape.r, p.Meta1.x));
     colRamped.rgb /= colRamped.a;
 
-    float2 uvTex = float2(p.UV2.x, p.UV2.y) + p.Meta2.xy * Time;
+    float2 uvTex = p.UV2.xy + p.Meta2.xy * Time;
     float4 colTex = tex2D(Core, uvTex);
 
-    uvTex = float2(p.UV2.x + 0.5, -p.UV2.y) - p.Meta2.xy * Time;
+    uvTex = float2(p.UV2.x + 0.5, p.UV2.y) - p.Meta2.xy * Time;
     float4 colTex2 = tex2D(Core, uvTex);
 
     colTex = lerp(colTex, colTex2, 0.5);
