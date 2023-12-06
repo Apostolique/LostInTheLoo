@@ -21,6 +21,7 @@ namespace GameProject
             DieFromStarvation(blob);
             FindRandomTargetPosition(blob);
             SetRandomMovementSpeed(blob);
+            SetSinusMovementSpeed(blob);
             SumTotalMovementSpeed(blob);
 
             var state = blob.State;
@@ -231,9 +232,18 @@ namespace GameProject
             }
         }
 
+        private void SetSinusMovementSpeed(TinyPetEntity pet)
+        {
+            var speed = pet.SinusMovementSpeedMultiplierSpeed;
+            var offset = pet.SinusMovementSpeedMultiplierOffset;
+            var scale = pet.SinusMovementSpeedMultiplierScale; //20.0f;
+            var time = G.WorldTime.TotalGameTime.TotalSeconds * speed + offset;
+            pet.SinusMovementSpeedMultiplier = (float)((Math.Sin(time) + 1.0d) * scale);
+        }
+
         private void SumTotalMovementSpeed(TinyPetEntity pet)
         {
-            pet.TotalMovementSpeedMultiplier = pet.RandomMovementSpeedMultiplier;
+            pet.TotalMovementSpeedMultiplier = pet.RandomMovementSpeedMultiplier + pet.SinusMovementSpeedMultiplier;
         }
 
         private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)

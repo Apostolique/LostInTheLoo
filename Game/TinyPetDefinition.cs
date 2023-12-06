@@ -24,5 +24,9 @@ namespace GameProject
         public double MaxRandomMovementSpeedDelay = 15;
         public float MinRandomMovementSpeedMultiplier = 0;
         public float MaxRandomMovementSpeedMultiplier = 100;
+        public double MinSinusMovementSpeedMultiplierSpeed = 2;
+        public double MaxSinusMovementSpeedMultiplierSpeed = 20;
+        public double MinSinusMovementSpeedMultiplierScale = 10;
+        public double MaxSinusMovementSpeedMultiplierScale = 30;
     }
 }

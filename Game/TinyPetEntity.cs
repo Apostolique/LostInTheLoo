@@ -23,6 +23,10 @@ namespace GameProject
         public float RandomMovementSpeedMultiplier = 1.0f;
         public double NextRandomMovementSpeedMultiplierChange;
         public float TotalMovementSpeedMultiplier = 1.0f;
+        public float SinusMovementSpeedMultiplier;
+        public double SinusMovementSpeedMultiplierSpeed;
+        public double SinusMovementSpeedMultiplierOffset;
+        public double SinusMovementSpeedMultiplierScale;
 
         public virtual float Radius1
         {

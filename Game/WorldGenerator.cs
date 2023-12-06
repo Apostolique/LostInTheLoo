@@ -60,6 +60,10 @@ namespace GameProject
                 MaxRandomMovementSpeedDelay = 11,
                 MinRandomMovementSpeedMultiplier = 0,
                 MaxRandomMovementSpeedMultiplier = 100,
+                MinSinusMovementSpeedMultiplierScale = 20,
+                MaxSinusMovementSpeedMultiplierScale = 22,
+                MinSinusMovementSpeedMultiplierSpeed = 10,
+                MaxSinusMovementSpeedMultiplierSpeed = 12,
             };
 
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
@@ -134,6 +138,9 @@ namespace GameProject
                 NextFoodScan = index * 0.2f,
                 DeathFromStarvationTime = random.NextDouble() * 240 + 1,
                 AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
+                SinusMovementSpeedMultiplierSpeed = random.NextDouble(definition.MinSinusMovementSpeedMultiplierSpeed, definition.MaxSinusMovementSpeedMultiplierSpeed),
+                SinusMovementSpeedMultiplierOffset = random.NextDouble(-Math.PI, Math.PI),
+                SinusMovementSpeedMultiplierScale = random.NextDouble(definition.MinSinusMovementSpeedMultiplierScale, definition.MaxSinusMovementSpeedMultiplierScale),
             };
             entity.Segments = new Segment[] { entity.Segment };
             entity.UpdateAbsoluteRecursive();
