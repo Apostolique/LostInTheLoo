@@ -32,16 +32,8 @@ namespace GameProject {
 
         VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
 
-        public override int GetHashCode() {
-            unchecked {
-                var hashCode = Position.GetHashCode();
-                hashCode = (hashCode * 397) ^ TextureCoordinate1.GetHashCode();
-                hashCode = (hashCode * 397) ^ TextureCoordinate2.GetHashCode();
-                hashCode = (hashCode * 397) ^ Color1.GetHashCode();
-                hashCode = (hashCode * 397) ^ Color2.GetHashCode();
-                hashCode = (hashCode * 397) ^ Meta1.GetHashCode();
-                return hashCode;
-            }
+        public override readonly int GetHashCode() {
+            return System.HashCode.Combine(Position, TextureCoordinate1, TextureCoordinate2, Color1, Color2, Meta1, Meta2);
         }
 
         public override string ToString() {

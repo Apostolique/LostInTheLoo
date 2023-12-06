@@ -14,15 +14,18 @@ namespace GameProject {
             _defaultEffect = _effect;
             _defaultPass = _effect.CurrentTechnique.Passes[0];
 
-            _vertices = new VertexPositionColorTexture[_initialVertices];
+            _vertices = new VertexMicro[_initialVertices];
             _indices = new uint[_initialIndices];
 
             GenerateIndexArray();
 
-            _vertexBuffer = new DynamicVertexBuffer(_graphicsDevice, typeof(VertexPositionColorTexture), _vertices.Length, BufferUsage.WriteOnly);
+            _vertexBuffer = new DynamicVertexBuffer(_graphicsDevice, typeof(VertexMicro), _vertices.Length, BufferUsage.WriteOnly);
 
             _indexBuffer = new IndexBuffer(_graphicsDevice, typeof(uint), _indices.Length, BufferUsage.WriteOnly);
             _indexBuffer.SetData(_indices);
+
+            _shapes = Assets.MicroShapes;
+            _core = Assets.Core01;
         }
 
         // TODO: Shapes (filled, borders)
@@ -50,12 +53,7 @@ namespace GameProject {
                 _projection = Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
             }
         }
-        public void Draw(Texture2D texture, MicroShapes shape, MicroRamps ramp, Num.Matrix3x2? world = null, Num.Matrix3x2? source = null, Color? color = null) {
-            if (_texture != texture) {
-                _texture = texture;
-                Flush();
-            }
-
+        public void Draw(MicroShapes shape, MicroRamps ramp, float coreBlendBegin, float coreBlendEnd, Vector2 direction, Num.Matrix3x2? world = null, Color? color = null) {
             EnsureSizeOrDouble(ref _vertices, _vertexCount + 4);
             _indicesChanged = EnsureSizeOrDouble(ref _indices, _indexCount + 6);
 
@@ -64,46 +62,63 @@ namespace GameProject {
                 world = Num.Matrix3x2.Identity;
             }
 
-            Num.Vector2 topLeft;
-            Num.Vector2 topRight;
-            Num.Vector2 bottomRight;
-            Num.Vector2 bottomLeft;
-            if (source == null) {
-                topLeft = new Num.Vector2(0, 0);
-                topRight = new Num.Vector2(texture.Width, 0);
-                bottomRight = new Num.Vector2(texture.Width, texture.Height);
-                bottomLeft = new Num.Vector2(0, texture.Height);
-            } else {
-                topLeft = Num.Vector2.Transform(new Num.Vector2(0f, 0f), source.Value);
-                topRight = Num.Vector2.Transform(new Num.Vector2(1f, 0f), source.Value);
-                bottomRight = Num.Vector2.Transform(new Num.Vector2(1f, 1f), source.Value);
-                bottomLeft = Num.Vector2.Transform(new Num.Vector2(0, 1f), source.Value);
+            if (direction != Vector2.Zero) {
+                direction.Normalize();
             }
 
-            Num.Vector2 wTopLeft = Num.Vector2.Transform(topLeft, world.Value);
-            Num.Vector2 wTopRight = Num.Vector2.Transform(topRight, world.Value);
-            Num.Vector2 wBottomRight = Num.Vector2.Transform(bottomRight, world.Value);
-            Num.Vector2 wBottomLeft = Num.Vector2.Transform(bottomLeft, world.Value);
+            float r = ((float)ramp + 0.1f) / (float)MicroRamps.Count;
 
-            _vertices[_vertexCount + 0] = new VertexPositionColorTexture(
+            float shapeOffset = (float)shape;
+
+            Num.Vector2 topLeft = new Num.Vector2(shapeOffset, 0);
+            Num.Vector2 topRight = new Num.Vector2(shapeOffset + 256, 0);
+            Num.Vector2 bottomRight = new Num.Vector2(shapeOffset + 256, 256);
+            Num.Vector2 bottomLeft = new Num.Vector2(shapeOffset, 256);
+
+            Num.Vector2 wTopLeft = Num.Vector2.Transform(new Num.Vector2(0f, 0f), world.Value);
+            Num.Vector2 wTopRight = Num.Vector2.Transform(new Num.Vector2(256f, 0f), world.Value);
+            Num.Vector2 wBottomRight = Num.Vector2.Transform(new Num.Vector2(256f, 256f), world.Value);
+            Num.Vector2 wBottomLeft = Num.Vector2.Transform(new Num.Vector2(0, 256f), world.Value);
+
+            _vertices[_vertexCount + 0] = new VertexMicro(
                 new Vector3(wTopLeft.X, wTopLeft.Y, 0f),
+                GetUV(_shapes, topLeft),
+                GetUV(_core, topLeft),
                 color ?? Color.White,
-                GetUV(texture, topLeft)
+                r,
+                coreBlendBegin,
+                coreBlendEnd,
+                direction
             );
-            _vertices[_vertexCount + 1] = new VertexPositionColorTexture(
+            _vertices[_vertexCount + 1] = new VertexMicro(
                 new Vector3(wTopRight.X, wTopRight.Y, 0f),
+                GetUV(_shapes, topRight),
+                GetUV(_core, topRight),
                 color ?? Color.White,
-                GetUV(texture, topRight)
+                r,
+                coreBlendBegin,
+                coreBlendEnd,
+                direction
             );
-            _vertices[_vertexCount + 2] = new VertexPositionColorTexture(
+            _vertices[_vertexCount + 2] = new VertexMicro(
                 new Vector3(wBottomRight.X, wBottomRight.Y, 0f),
+                GetUV(_shapes, bottomRight),
+                GetUV(_core, bottomRight),
                 color ?? Color.White,
-                GetUV(texture, bottomRight)
+                r,
+                coreBlendBegin,
+                coreBlendEnd,
+                direction
             );
-            _vertices[_vertexCount + 3] = new VertexPositionColorTexture(
+            _vertices[_vertexCount + 3] = new VertexMicro(
                 new Vector3(wBottomLeft.X, wBottomLeft.Y, 0f),
+                GetUV(_shapes, bottomLeft),
+                GetUV(_core, bottomLeft),
                 color ?? Color.White,
-                GetUV(texture, bottomLeft)
+                r,
+                coreBlendBegin,
+                coreBlendEnd,
+                direction
             );
 
             _triangleCount += 2;
@@ -120,8 +135,6 @@ namespace GameProject {
             if (_triangleCount == 0) return;
 
             _defaultEffect.Parameters["view_projection"]?.SetValue(_view * _projection);
-            _defaultEffect.Parameters["CoreBlendBegin"].SetValue(0.3f);
-            _defaultEffect.Parameters["CoreBlendEnd"].SetValue(0.8f);
             _defaultEffect.Parameters["Ramp"]?.SetValue(Assets.MicroRamps);
             _defaultEffect.Parameters["Core"]?.SetValue(Assets.Core01);
             // Apply the default pass in case a custom shader doesn't provide a vertex shader.
@@ -131,7 +144,7 @@ namespace GameProject {
                 _vertexBuffer.Dispose();
                 _indexBuffer.Dispose();
 
-                _vertexBuffer = new DynamicVertexBuffer(_graphicsDevice, typeof(VertexPositionColorTexture), _vertices.Length, BufferUsage.WriteOnly);
+                _vertexBuffer = new DynamicVertexBuffer(_graphicsDevice, typeof(VertexMicro), _vertices.Length, BufferUsage.WriteOnly);
 
                 GenerateIndexArray();
 
@@ -153,12 +166,12 @@ namespace GameProject {
             if (_customEffect) {
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes) {
                     pass.Apply();
-                    _graphicsDevice.Textures[0] = _texture;
+                    _graphicsDevice.Textures[0] = _shapes;
 
                     _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _triangleCount);
                 }
             } else {
-                _graphicsDevice.Textures[0] = _texture;
+                _graphicsDevice.Textures[0] = _shapes;
                 _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _triangleCount);
             }
 
@@ -197,17 +210,18 @@ namespace GameProject {
         }
 
         public enum MicroRamps {
-            Ramp02,
-            Ramp03,
-            Ramp04,
-            Ramp05
+            Ramp02 = 0,
+            Ramp03 = 1,
+            Ramp04 = 2,
+            Ramp05 = 3,
+            Count = 4
         }
 
         public enum MicroShapes {
-            Bean,
-            Bell,
-            Drill,
-            Skewer
+            Bean = 0,
+            Bell = 256,
+            Drill = 512,
+            Skewer = 768
         }
 
         private const int _initialSprites = 2048;
@@ -220,12 +234,13 @@ namespace GameProject {
             CullMode = CullMode.None
         };
 
-        private VertexPositionColorTexture[] _vertices;
+        private VertexMicro[] _vertices;
         private uint[] _indices;
         private int _triangleCount = 0;
         private int _vertexCount = 0;
         private int _indexCount = 0;
-        private Texture2D _texture;
+        private Texture2D _shapes;
+        private Texture2D _core;
 
         private DynamicVertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;

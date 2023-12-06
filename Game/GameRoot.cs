@@ -222,7 +222,10 @@ namespace GameProject {
             Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.0005f));
 
             G.B.Begin();
-            G.B.Draw(Assets.Drill, Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, Matrix32.CreateTranslation(new Vector2(100, 100)), Matrix32.CreateScale(256, 256));
+            G.B.Draw(Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0, 1f), Matrix32.CreateTranslation(new Vector2(100, 100)));
+            G.B.Draw(Batch.MicroShapes.Drill, Batch.MicroRamps.Ramp03, 0.3f, 0.8f, new Vector2(1f, 0f), Matrix32.CreateTranslation(new Vector2(356, 100)));
+            G.B.Draw(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp04, 0.3f, 0.8f, new Vector2(1f, 1f), Matrix32.CreateTranslation(new Vector2(612, 100)));
+            G.B.Draw(Batch.MicroShapes.Bell, Batch.MicroRamps.Ramp05, 0.3f, 0.8f, new Vector2(-1f, 0), Matrix32.CreateTranslation(new Vector2(868, 100)));
             G.B.End();
 
             var font = Assets.FontSystem.GetFont(24);
