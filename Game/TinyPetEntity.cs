@@ -20,6 +20,9 @@ namespace GameProject
         public double DeathFromStarvationTime;
         public double DeathTime;
         public double DigestTimer;
+        public float RandomMovementSpeedMultiplier = 1.0f;
+        public double NextRandomMovementSpeedMultiplierChange;
+        public float TotalMovementSpeedMultiplier = 1.0f;
 
         public virtual float Radius1
         {

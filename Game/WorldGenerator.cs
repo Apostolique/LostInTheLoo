@@ -56,6 +56,10 @@ namespace GameProject
                 MinDigestTime = 2,
                 MaxDigestTime = 4,
                 CanDieFromStarvation = true,
+                MinRandomMovementSpeedDelay = 10,
+                MaxRandomMovementSpeedDelay = 11,
+                MinRandomMovementSpeedMultiplier = 0,
+                MaxRandomMovementSpeedMultiplier = 100,
             };
 
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
@@ -124,8 +128,8 @@ namespace GameProject
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
                 Segment = new EllipseSegment(position.X, position.Y, radius1, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z),
-                MovementSpeedMultiplier = random.NextSingle() * 100 + 1,
-                NextMovementSpeedMultiplierChange = random.NextDouble() * 4 + 1,
+                RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
+                NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
                 NextFoodScan = index * 0.2f,
                 DeathFromStarvationTime = random.NextDouble() * 240 + 1,

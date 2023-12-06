@@ -20,6 +20,8 @@ namespace GameProject
             EatFood(blob);
             DieFromStarvation(blob);
             FindRandomTargetPosition(blob);
+            SetRandomMovementSpeed(blob);
+            SumTotalMovementSpeed(blob);
 
             var state = blob.State;
             if(state == null)
@@ -219,7 +221,21 @@ namespace GameProject
 
             pet.TargetPosition = G.Random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
         }
-        
+
+        private void SetRandomMovementSpeed(TinyPetEntity pet)
+        {
+            if(pet.NextRandomMovementSpeedMultiplierChange <= G.WorldTime.TotalGameTime.TotalSeconds)
+            {
+                pet.NextRandomMovementSpeedMultiplierChange = G.Random.NextDouble(pet.Definition.MinRandomMovementSpeedDelay, pet.Definition.MaxRandomMovementSpeedDelay);
+                pet.RandomMovementSpeedMultiplier = G.Random.NextSingle(pet.Definition.MinRandomMovementSpeedMultiplier, pet.Definition.MaxRandomMovementSpeedMultiplier);
+            }
+        }
+
+        private void SumTotalMovementSpeed(TinyPetEntity pet)
+        {
+            pet.TotalMovementSpeedMultiplier = pet.RandomMovementSpeedMultiplier;
+        }
+
         private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
         {
             var direction = blob.TargetPosition - blob.AbsolutePosition;
@@ -230,13 +246,7 @@ namespace GameProject
                 0
             );
 
-            if(blob.NextMovementSpeedMultiplierChange <= G.WorldTime.TotalGameTime.TotalSeconds)
-            {
-                blob.NextMovementSpeedMultiplierChange = G.Random.NextDouble() * 10 + 1;
-                blob.MovementSpeedMultiplier = G.Random.NextSingle() * 100;
-            }
-
-            var amount = blob.MovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            var amount = blob.TotalMovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
             if(amount > blob.DistanceToTargetPositon)
             {
                 amount = blob.DistanceToTargetPositon;
@@ -300,9 +310,9 @@ namespace GameProject
             twin.LocalRotationSpin = blob.LocalRotationSpin;
             twin.LocalScale = blob.LocalScale;
             twin.LocalWorld = blob.LocalWorld;
-            twin.MovementSpeedMultiplier = blob.MovementSpeedMultiplier;
+            twin.RandomMovementSpeedMultiplier = blob.RandomMovementSpeedMultiplier;
             twin.NextFoodScan = blob.NextFoodScan;
-            twin.NextMovementSpeedMultiplierChange = blob.NextMovementSpeedMultiplierChange;
+            twin.NextRandomMovementSpeedMultiplierChange = blob.NextRandomMovementSpeedMultiplierChange;
             twin.RenderLogic = blob.RenderLogic;
             var segment = blob.Segment;
             twin.Segment = new EllipseSegment(segment.Center.X, segment.Center.Y, blob.Radius1, blob.Radius2, segment.Color1, segment.Color2, segment.Thickness, segment.Rotation, segment.Z);

@@ -10,8 +10,6 @@ namespace GameProject
     {
         public float CourseDiviationSpeed;
         public EllipseSegment Segment;
-        public float MovementSpeedMultiplier = 1.0f;
-        public double NextMovementSpeedMultiplierChange;
         public UnidentifiedBlob1Entity Twin;
         public double SplitTimer;
         public float SplitScaleChangePerSecond;

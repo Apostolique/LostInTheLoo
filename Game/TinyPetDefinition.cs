@@ -20,5 +20,9 @@ namespace GameProject
         public double MaxDigestTime = 2;
         public bool CanDieFromStarvation;
         public double DeathAnimationTime = 2; // how long is the death animation
+        public double MinRandomMovementSpeedDelay = 10;
+        public double MaxRandomMovementSpeedDelay = 15;
+        public float MinRandomMovementSpeedMultiplier = 0;
+        public float MaxRandomMovementSpeedMultiplier = 100;
     }
 }
