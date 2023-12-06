@@ -13,6 +13,12 @@ namespace GameProject
         public Action<UnidentifiedBlob1Entity, GameTime> State;
         public bool IsDying;
         public float Scale = 1.0f;
+        public StaticFoodEntity TargetFood;
+        public double NextFoodScan;
+        public Vector3 TargetPosition;
+        public float DistanceToTargetPositon;
+        public double DeathFromStarvationTime;
+        public double DigestTimer;
 
         public virtual float Radius1
         {

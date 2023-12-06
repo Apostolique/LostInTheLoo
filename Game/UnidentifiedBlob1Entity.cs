@@ -8,15 +8,10 @@ namespace GameProject
 {
     public class UnidentifiedBlob1Entity : TinyPetEntity
     {
-        public Vector3 TargetPosition;
         public float CourseDiviationSpeed;
         public EllipseSegment Segment;
         public float MovementSpeedMultiplier = 1.0f;
         public double NextMovementSpeedMultiplierChange;
-        public StaticFoodEntity TargetFood;
-        public double NextFoodScan;
-        public double DeathFromStarvationTime;
-        public double DigestTimer;
         public UnidentifiedBlob1Entity Twin;
         public double SplitTimer;
         public float SplitScaleChangePerSecond;

@@ -45,6 +45,16 @@ namespace GameProject
                 MaxScale = 3,
                 BaseRadius1 = 20,
                 BaseRadius2 = 10,
+                CanEatFood = true,
+                EatsFoods = new int[]
+                {
+                    StaticFoodTypes.Blue,
+                    StaticFoodTypes.Green,
+                    StaticFoodTypes.Red,
+                },
+                FoodBonusMultiplier = 15,
+                MinDigestTime = 2,
+                MaxDigestTime = 4,
             };
 
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());

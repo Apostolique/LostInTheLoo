@@ -13,5 +13,10 @@ namespace GameProject
         public float BaseRadius1 = 1;
         public float BaseRadius2 = 1;
         public float MaxScale = 5;
+        public bool CanEatFood;
+        public int[] EatsFoods = Array.Empty<int>();
+        public float FoodBonusMultiplier = 1;
+        public double MinDigestTime = 1;
+        public double MaxDigestTime = 2;
     }
 }

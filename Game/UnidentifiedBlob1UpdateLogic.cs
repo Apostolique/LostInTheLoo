@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
@@ -8,7 +9,6 @@ namespace GameProject
 {
     public class UnidentifiedBlob1UpdateLogic : UpdateLogic
     {
-        private const double digestTime = 2.0d;
         private const double splitTime = 11.0d;
 
         public override void Update(Entity entity, GameTime gameTime)
@@ -16,6 +16,8 @@ namespace GameProject
             var blob = (UnidentifiedBlob1Entity)entity;
             Poop(blob);
             DieFromSize(blob);
+            FindFood(blob);
+            EatFood(blob);
 
             var state = blob.State;
             if(state == null)
@@ -33,14 +35,14 @@ namespace GameProject
                 return;
             }
 
-            if(pet.NextPoopTime > G.WorldTime.TotalGameTime.TotalSeconds)
+            if (pet.NextPoopTime > G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 return;
             }
 
             pet.NextPoopTime = G.WorldTime.TotalGameTime.TotalSeconds + G.Random.NextDouble(pet.Definition.MinPoopTimeDelay, pet.Definition.MaxPoopTimeDelay);
 
-            if (pet.Scale < 2)
+            if (pet.Scale <= 1.0f)
             {
                 return;
             }
@@ -68,63 +70,92 @@ namespace GameProject
             }
         }
 
-        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void FindFood(TinyPetEntity pet)
         {
-            var food = blob.TargetFood;
-            if(food != null && food.HasBeenEaten)
+            if (!pet.Definition.CanEatFood)
             {
-                blob.TargetFood = null!;
-            }
-
-            if(blob.NextFoodScan <= G.WorldTime.TotalGameTime.TotalSeconds)
-            {
-                blob.NextFoodScan += 2.0d;
-                if(food == null)
-                {
-                    var bounds = blob.AABB;
-                    bounds.Inflate(100, 100);
-                    food = G.StaticFoodEntitiesByLocation
-                        .Query(bounds)
-                        .Where(entity => entity != null)
-                        .OfType<StaticFoodEntity>()
-                        .Where(entity => !entity.HasBeenEaten)
-                        .Where(entity => entity.Type != StaticFoodTypes.Brown)
-                        .Take(3)
-                        .OrderBy(_ => G.Random.NextDouble())
-                        .FirstOrDefault()
-                        ;
-                    if(food != null)
-                    {
-                        blob.TargetFood = food;
-                        blob.TargetPosition = ((CircleSegment)food.Segments[0]).Center.ToVector3XY(food.Z);
-                    }
-                }
-            }
-
-            var distance = Vector3.Distance(blob.AbsolutePosition, blob.TargetPosition);
-            if(distance < 0.2f)
-            {
-                food = blob.TargetFood;
-                if(food != null)
-                {
-                    food.HasBeenEaten = true;
-                    blob.TargetFood = null!;
-                    food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
-                    food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
-                    var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
-                    blob.Scale += foodRadius / blob.Definition.BaseRadius1;
-                    blob.Radius1 = blob.Definition.BaseRadius1 * blob.Scale;
-                    blob.Radius2 = blob.Definition.BaseRadius2 * blob.Scale;
-                    blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
-                    blob.NextFoodScan += digestTime + 2.0d; // delay to search for food again
-                    blob.State = Digest;
-                    blob.DigestTimer = G.WorldTime.TotalGameTime.TotalSeconds + digestTime;
-                }
-
-                blob.TargetPosition = G.Random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
                 return;
             }
 
+            if (pet.TargetFood != null)
+            {
+                if (!pet.TargetFood.HasBeenEaten)
+                {
+                    return;
+                }
+                pet.TargetFood = null!;
+            }
+
+            if (pet.NextFoodScan > G.WorldTime.TotalGameTime.TotalSeconds)
+            {
+                return;
+            }
+            pet.NextFoodScan += 2.0d;
+
+            var bounds = pet.AABB;
+            bounds.Inflate(100, 100);
+            var food = G.StaticFoodEntitiesByLocation
+                .Query(bounds)
+                .Where(entity => entity != null)
+                .OfType<StaticFoodEntity>()
+                .Where(entity => !entity.HasBeenEaten)
+                .Where(entity => pet.Definition.EatsFoods.Contains(entity.Type))
+                .Take(3)
+                .OrderBy(_ => G.Random.NextDouble())
+                .FirstOrDefault()
+                ;
+            if(food != null)
+            {
+                pet.TargetFood = food;
+                pet.TargetPosition = ((CircleSegment)food.Segments[0]).Center.ToVector3XY(food.Z);
+            }
+        }
+
+        private void EatFood(TinyPetEntity pet)
+        {
+            if (!pet.Definition.CanEatFood)
+            {
+                return;
+            }
+
+            if (pet.TargetFood == null)
+            {
+                return;
+            }
+
+            if (pet.TargetFood.HasBeenEaten)
+            {
+                pet.TargetFood = null!;
+                return;
+            }
+
+            if (pet.DistanceToTargetPositon >= 0.2f)
+            {
+                return;
+            }
+
+            var food = pet.TargetFood;
+            food.HasBeenEaten = true;
+            food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
+            food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
+
+            var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
+            pet.Scale += foodRadius / pet.Definition.BaseRadius1;
+            pet.Radius1 = pet.Definition.BaseRadius1 * pet.Scale;
+            pet.Radius2 = pet.Definition.BaseRadius2 * pet.Scale;
+            pet.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodRadius * pet.Definition.FoodBonusMultiplier;
+
+            pet.TargetFood = null!;
+            pet.TargetPosition = G.Random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+
+            var digestTime = G.Random.NextDouble(pet.Definition.MinDigestTime, pet.Definition.MaxDigestTime);
+            pet.NextFoodScan += digestTime + 2.0d; // delay to search for food again
+            pet.DigestTimer = G.WorldTime.TotalGameTime.TotalSeconds + digestTime;
+            pet.State = Digest;
+        }
+
+        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        {
             if(blob.DeathFromStarvationTime <= G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + 2.0d;
@@ -147,9 +178,9 @@ namespace GameProject
             }
 
             var amount = blob.MovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
-            if(amount > distance)
+            if(amount > blob.DistanceToTargetPositon)
             {
-                amount = distance;
+                amount = blob.DistanceToTargetPositon;
             }
             else
             {
@@ -163,6 +194,7 @@ namespace GameProject
 
             var movement = direction * amount;
             blob.LocalPosition += movement;
+            blob.DistanceToTargetPositon = Vector3.Distance(blob.AbsolutePosition, blob.TargetPosition);
             blob.TargetRotation = MathF.Atan2(-direction.Y, -direction.X);
             blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)G.WorldTime.ElapsedGameTime.TotalSeconds);
 
