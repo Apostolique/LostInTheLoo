@@ -37,8 +37,18 @@ namespace GameProject
 
         public static void Generate()
         {
+            var unidentifiedBlob1Definition = new TinyPetDefinition()
+            {
+                CanPoop = true,
+                MinPoopTimeDelay = 5,
+                MaxPoopTimeDelay = 10,
+                MaxScale = 3,
+                BaseRadius1 = 20,
+                BaseRadius2 = 10,
+            };
+
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
-            Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index));
+            Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index, unidentifiedBlob1Definition));
             Enumerable.Range(0, numberOfWasteRecycleBlobToCreate).ForEach(index => CreateWasteRecycleBlob(index));
             CreateLacrymariaOlorEntity(50, 50);
             CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0);
@@ -89,13 +99,14 @@ namespace GameProject
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
-        public static UnidentifiedBlob1Entity CreateRandomUnidentifiedBlob1(int index)
+        public static UnidentifiedBlob1Entity CreateRandomUnidentifiedBlob1(int index, TinyPetDefinition definition)
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var radius1 = 20;
             var entity = new UnidentifiedBlob1Entity()
             {
+                Definition = definition,
                 LocalPosition = position,
                 RenderLogic = ellipseRenderLogic,
                 UpdateLogic = unidentifiedBlob1UpdateLogic,

@@ -62,5 +62,11 @@ namespace GameProject
             var result = center + vector * radius;
             return result;
         }
+
+        public static double NextDouble(this Random random, double min, double max)
+        {
+            var result = random.NextDouble() * (max - min) + min;
+            return result;
+        }
     }
 }

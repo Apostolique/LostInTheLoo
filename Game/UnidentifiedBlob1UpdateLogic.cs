@@ -9,12 +9,14 @@ namespace GameProject
     public class UnidentifiedBlob1UpdateLogic : UpdateLogic
     {
         private const double digestTime = 2.0d;
-        private const float maxRadius = 20.0f;
         private const double splitTime = 11.0d;
 
         public override void Update(Entity entity, GameTime gameTime)
         {
             var blob = (UnidentifiedBlob1Entity)entity;
+            Poop(blob);
+            DieFromSize(blob);
+
             var state = blob.State;
             if(state == null)
             {
@@ -24,29 +26,50 @@ namespace GameProject
             state(blob, gameTime);
         }
 
-        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void Poop(TinyPetEntity pet)
         {
-            if(blob.NextPoopTime <= G.WorldTime.TotalGameTime.TotalSeconds)
+            if (!pet.Definition.CanPoop)
             {
-                blob.NextPoopTime = G.WorldTime.TotalGameTime.TotalSeconds + G.Random.NextSingle(UnidentifiedBlob1Entity.MinPoopTimeDelay, UnidentifiedBlob1Entity.MaxPoopTimeDelay);
-
-                blob.Segment.Radius2 -= blob.Segment.Radius2 / blob.Segment.Radius1;
-                blob.Segment.Radius1--;
-                if(blob.Segment.Radius1 <= 0.0f)
-                {
-                    blob.State = Dying;
-                    return;
-                }
-
-                var position = blob.AbsolutePosition;
-                var poop = WorldGenerator.CreateStaticFood(position);
-                var poopSegment = (CircleSegment)poop.Segments[0];
-                poopSegment.Radius = 1.0f;
-                poopSegment.Color1 = Color.Brown;
-                poopSegment.Color2 = Color.Brown;
-                poop.Type = StaticFoodTypes.Brown;
+                return;
             }
 
+            if(pet.NextPoopTime > G.WorldTime.TotalGameTime.TotalSeconds)
+            {
+                return;
+            }
+
+            pet.NextPoopTime = G.WorldTime.TotalGameTime.TotalSeconds + G.Random.NextDouble(pet.Definition.MinPoopTimeDelay, pet.Definition.MaxPoopTimeDelay);
+
+            if (pet.Scale < 2)
+            {
+                return;
+            }
+
+            pet.Scale -= 1.0f / pet.Definition.BaseRadius1;
+            pet.Radius1 = pet.Definition.BaseRadius1 * pet.Scale;
+            pet.Radius2 = pet.Definition.BaseRadius2 * pet.Scale;
+
+            var position = pet.AbsolutePosition;
+            var poop = WorldGenerator.CreateStaticFood(position);
+            var poopSegment = (CircleSegment)poop.Segments[0];
+            poopSegment.Radius = 1.0f;
+            poopSegment.Color1 = Color.Brown;
+            poopSegment.Color2 = Color.Brown;
+            poop.Type = StaticFoodTypes.Brown;
+        }
+
+        private void DieFromSize(TinyPetEntity pet)
+        {
+            if(pet.Radius1 <= 0.0f || pet.Radius2 <= 0.0f)
+            {
+                pet.IsDying = true;
+                pet.State = Dying;
+                return;
+            }
+        }
+
+        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        {
             var food = blob.TargetFood;
             if(food != null && food.HasBeenEaten)
             {
@@ -65,6 +88,7 @@ namespace GameProject
                         .Where(entity => entity != null)
                         .OfType<StaticFoodEntity>()
                         .Where(entity => !entity.HasBeenEaten)
+                        .Where(entity => entity.Type != StaticFoodTypes.Brown)
                         .Take(3)
                         .OrderBy(_ => G.Random.NextDouble())
                         .FirstOrDefault()
@@ -88,8 +112,9 @@ namespace GameProject
                     food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
                     food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
                     var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
-                    blob.Segment.Radius1 += foodRadius * (blob.Segment.Radius2 / blob.Segment.Radius1);
-                    blob.Segment.Radius2 += foodRadius * (1.0f - blob.Segment.Radius2 / blob.Segment.Radius1);
+                    blob.Scale += foodRadius / blob.Definition.BaseRadius1;
+                    blob.Radius1 = blob.Definition.BaseRadius1 * blob.Scale;
+                    blob.Radius2 = blob.Definition.BaseRadius2 * blob.Scale;
                     blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
                     blob.NextFoodScan += digestTime + 2.0d; // delay to search for food again
                     blob.State = Digest;
@@ -138,14 +163,14 @@ namespace GameProject
 
             var movement = direction * amount;
             blob.LocalPosition += movement;
-            blob.TargetRotation = MathF.Atan2(direction.Y, -direction.X);
+            blob.TargetRotation = MathF.Atan2(-direction.Y, -direction.X);
             blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)G.WorldTime.ElapsedGameTime.TotalSeconds);
 
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
             blob.Segment.Z = blob.AbsolutePosition.Z;
             blob.Segment.Rotation = blob.LocalRotationSpin;
-            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Segment.Radius1, blob.Segment.Radius2, blob.Segment.Rotation);
+            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Radius1, blob.Radius2, blob.Segment.Rotation);
             blob.Z = blob.AbsolutePosition.Z;
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
         }
@@ -157,7 +182,7 @@ namespace GameProject
                 return;
             }
 
-            if(blob.Segment.Radius1 > maxRadius)
+            if(blob.Scale > blob.Definition.MaxScale)
             {
                 blob.State = BeginSplit;
                 return;
@@ -170,10 +195,9 @@ namespace GameProject
         {
             blob.DeathFromStarvationTime += splitTime;
             blob.SplitTimer = G.WorldTime.TotalGameTime.TotalSeconds + splitTime;
-            blob.SplitRadius1ChangePerSecond = blob.Segment.Radius1 * 0.5f / (float)splitTime;
-            blob.SplitRadius2ChangePerSecond = blob.Segment.Radius2 * 0.5f / (float)splitTime;
+            blob.SplitScaleChangePerSecond = blob.Scale * 0.5f / (float)splitTime;
 
-            var twin = blob.Twin = WorldGenerator.CreateRandomUnidentifiedBlob1(0);
+            var twin = blob.Twin = WorldGenerator.CreateRandomUnidentifiedBlob1(0, blob.Definition);
             // twin.AbsolutePosition = blob.AbsolutePosition;
             // twin.AbsoluteRotation = blob.AbsoluteRotation;
             // twin.AbsoluteScale = blob.AbsoluteScale;
@@ -190,7 +214,7 @@ namespace GameProject
             twin.NextMovementSpeedMultiplierChange = blob.NextMovementSpeedMultiplierChange;
             twin.RenderLogic = blob.RenderLogic;
             var segment = blob.Segment;
-            twin.Segment = new EllipseSegment(segment.Center.X, segment.Center.Y, segment.Radius1, segment.Radius2, segment.Color1, segment.Color2, segment.Thickness, segment.Rotation, segment.Z);
+            twin.Segment = new EllipseSegment(segment.Center.X, segment.Center.Y, blob.Radius1, blob.Radius2, segment.Color1, segment.Color2, segment.Thickness, segment.Rotation, segment.Z);
             twin.Segments = new Segment[] { twin.Segment };
             twin.State = Null;
             twin.TargetFood = null!;
@@ -218,8 +242,9 @@ namespace GameProject
             blob.LocalPosition += movement;
             twin.LocalPosition -= movement;
 
-            blob.Segment.Radius1 -= blob.SplitRadius1ChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
-            blob.Segment.Radius2 -= blob.SplitRadius2ChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            blob.Scale -= blob.SplitScaleChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            blob.Radius1 = blob.Definition.BaseRadius1 * blob.Scale;
+            blob.Radius2 = blob.Definition.BaseRadius2 * blob.Scale;
             twin.Segment.Radius1 = blob.Segment.Radius1;
             twin.Segment.Radius2 = blob.Segment.Radius2;
 
@@ -231,10 +256,10 @@ namespace GameProject
             twin.Segment.Center = twin.AbsolutePosition.ToVector2XY();
             twin.Segment.Z = twin.AbsolutePosition.Z;
 
-            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Segment.Radius1, blob.Segment.Radius2, blob.Segment.Rotation);
+            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Radius1, blob.Radius2, blob.Segment.Rotation);
             blob.Z = blob.AbsolutePosition.Z;
 
-            twin.AABB = G.SB.GetEllipseAABB(twin.Segment.Center, twin.Segment.Radius1, twin.Segment.Radius2, twin.Segment.Rotation);
+            twin.AABB = G.SB.GetEllipseAABB(twin.Segment.Center, twin.Radius1, twin.Radius2, twin.Segment.Rotation);
             twin.Z = twin.AbsolutePosition.Z;
 
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
@@ -244,10 +269,8 @@ namespace GameProject
             {
                 blob.Twin = null!;
                 twin.Twin = null!;
-                blob.SplitRadius1ChangePerSecond = 0.0f;
-                twin.SplitRadius1ChangePerSecond = 0.0f;
-                blob.SplitRadius2ChangePerSecond = 0.0f;
-                twin.SplitRadius2ChangePerSecond = 0.0f;
+                blob.SplitScaleChangePerSecond = 0.0f;
+                twin.SplitScaleChangePerSecond = 0.0f;
                 blob.SplitTimer = 0.0d;
                 twin.SplitTimer = 0.0d;
 
@@ -270,7 +293,7 @@ namespace GameProject
                 blob.Leaf = G.EntitiesByLocation.Remove(blob.Leaf);
                 var min = blob.AABB.TopLeft.ToVector3XY(blob.Z);
                 var max = blob.AABB.BottomRight.ToVector3XY(blob.Z);
-                var radius = blob.Segment.Radius1 + blob.Segment.Radius2;
+                var radius = blob.Radius1 + blob.Radius2 * 2;
                 while(radius > 0.0f)
                 {
                     var position = G.Random.NextVector3(min, max);

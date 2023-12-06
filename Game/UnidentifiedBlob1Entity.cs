@@ -6,11 +6,8 @@ using Microsoft.Xna.Framework;
 
 namespace GameProject
 {
-    public class UnidentifiedBlob1Entity : MatrixEntity
+    public class UnidentifiedBlob1Entity : TinyPetEntity
     {
-        public const float MinPoopTimeDelay = 5;
-        public const float MaxPoopTimeDelay = 10;
-
         public Vector3 TargetPosition;
         public float CourseDiviationSpeed;
         public EllipseSegment Segment;
@@ -19,13 +16,13 @@ namespace GameProject
         public StaticFoodEntity TargetFood;
         public double NextFoodScan;
         public double DeathFromStarvationTime;
-        public Action<UnidentifiedBlob1Entity, GameTime> State;
         public double DigestTimer;
         public UnidentifiedBlob1Entity Twin;
         public double SplitTimer;
-        public float SplitRadius1ChangePerSecond;
-        public float SplitRadius2ChangePerSecond;
+        public float SplitScaleChangePerSecond;
         public float TargetRotation;
-        public double NextPoopTime;
+
+        public override float Radius1 { get => this.Segment.Radius1; set => this.Segment.Radius1 = value; }
+        public override float Radius2 { get => this.Segment.Radius2; set => this.Segment.Radius2 = value; }
     }
 }
