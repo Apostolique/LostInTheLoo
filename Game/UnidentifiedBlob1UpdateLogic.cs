@@ -13,7 +13,7 @@ namespace GameProject
 
         public override void Update(Entity entity, GameTime gameTime)
         {
-            var blob = (UnidentifiedBlob1Entity)entity;
+            var blob = (TinyPetEntity)entity;
             Poop(blob);
             DieFromSize(blob);
             FindFood(blob);
@@ -23,11 +23,12 @@ namespace GameProject
             SetRandomMovementSpeed(blob);
             SetSinusMovementSpeed(blob);
             SumTotalMovementSpeed(blob);
+            Move(blob);
 
             var state = blob.State;
             if(state == null)
             {
-                blob.State = state = Idle;
+                blob.State = state = Null;
             }
 
             state(blob, gameTime);
@@ -236,7 +237,7 @@ namespace GameProject
         {
             var speed = pet.SinusMovementSpeedMultiplierSpeed;
             var offset = pet.SinusMovementSpeedMultiplierOffset;
-            var scale = pet.SinusMovementSpeedMultiplierScale; //20.0f;
+            var scale = pet.SinusMovementSpeedMultiplierScale;
             var time = G.WorldTime.TotalGameTime.TotalSeconds * speed + offset;
             pet.SinusMovementSpeedMultiplier = (float)((Math.Sin(time) + 1.0d) * scale);
         }
@@ -246,20 +247,20 @@ namespace GameProject
             pet.TotalMovementSpeedMultiplier = pet.RandomMovementSpeedMultiplier + pet.SinusMovementSpeedMultiplier;
         }
 
-        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void Move(TinyPetEntity pet)
         {
-            var direction = blob.TargetPosition - blob.AbsolutePosition;
+            var direction = pet.TargetPosition - pet.AbsolutePosition;
 
             var courseDiviation = new Vector3(
-                (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
-                (float)Math.Cos(G.WorldTime.TotalGameTime.TotalSeconds * blob.CourseDiviationSpeed),
+                (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * pet.CourseDiviationSpeed),
+                (float)Math.Cos(G.WorldTime.TotalGameTime.TotalSeconds * pet.CourseDiviationSpeed),
                 0
             );
 
-            var amount = blob.TotalMovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
-            if(amount > blob.DistanceToTargetPositon)
+            var amount = pet.TotalMovementSpeedMultiplier * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            if(amount > pet.DistanceToTargetPositon)
             {
-                amount = blob.DistanceToTargetPositon;
+                amount = pet.DistanceToTargetPositon;
             }
             else
             {
@@ -272,21 +273,21 @@ namespace GameProject
             }
 
             var movement = direction * amount;
-            blob.LocalPosition += movement;
-            blob.DistanceToTargetPositon = Vector3.Distance(blob.AbsolutePosition, blob.TargetPosition);
-            blob.TargetRotation = MathF.Atan2(-direction.Y, -direction.X);
-            blob.LocalRotationSpin = MathHelper.Lerp(blob.LocalRotationSpin, blob.TargetRotation, (float)G.WorldTime.ElapsedGameTime.TotalSeconds);
+            pet.LocalPosition += movement;
+            pet.DistanceToTargetPositon = Vector3.Distance(pet.AbsolutePosition, pet.TargetPosition);
+            pet.TargetRotation = MathF.Atan2(-direction.Y, -direction.X);
+            pet.LocalRotationSpin = MathHelper.Lerp(pet.LocalRotationSpin, pet.TargetRotation, (float)G.WorldTime.ElapsedGameTime.TotalSeconds);
 
-            blob.UpdateAbsoluteRecursive();
-            blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
-            blob.Segment.Z = blob.AbsolutePosition.Z;
-            blob.Segment.Rotation = blob.LocalRotationSpin;
-            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Radius1, blob.Radius2, blob.Segment.Rotation);
-            blob.Z = blob.AbsolutePosition.Z;
-            G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
+            pet.UpdateAbsoluteRecursive();
+            pet.Segment.Center = pet.AbsolutePosition.ToVector2XY();
+            pet.Segment.Z = pet.AbsolutePosition.Z;
+            pet.Segment.Rotation = pet.LocalRotationSpin;
+            pet.AABB = G.SB.GetEllipseAABB(pet.Segment.Center, pet.Radius1, pet.Radius2, pet.Segment.Rotation);
+            pet.Z = pet.AbsolutePosition.Z;
+            G.EntitiesByLocation.Update(pet.Leaf, pet.AABB);
         }
 
-        private void Digest(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void Digest(TinyPetEntity blob, GameTime gameTime)
         {
             if(blob.DigestTimer > G.WorldTime.TotalGameTime.TotalSeconds)
             {
@@ -299,10 +300,10 @@ namespace GameProject
                 return;
             }
 
-            blob.State = Idle;
+            blob.State = Null;
         }
 
-        private void BeginSplit(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void BeginSplit(TinyPetEntity blob, GameTime gameTime)
         {
             blob.DeathFromStarvationTime += splitTime;
             blob.SplitTimer = G.WorldTime.TotalGameTime.TotalSeconds + splitTime;
@@ -340,12 +341,12 @@ namespace GameProject
             blob.State = Split;
         }
 
-        private void Null(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void Null(TinyPetEntity blob, GameTime gameTime)
         {
             // do nothing
         }
 
-        private void Split(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void Split(TinyPetEntity blob, GameTime gameTime)
         {
             var twin = blob.Twin;
 
@@ -386,12 +387,12 @@ namespace GameProject
                 twin.SplitTimer = 0.0d;
 
                 twin.UpdateLogic = blob.UpdateLogic;
-                blob.State = Idle;
-                twin.State = Idle;
+                blob.State = Null;
+                twin.State = Null;
             }
         }
 
-        private void Dying(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void Dying(TinyPetEntity blob, GameTime gameTime)
         {
             const float jitterSpeed = 100;
             var jitter = Vector3.UnitX * (float)Math.Sin(G.WorldTime.TotalGameTime.TotalSeconds * jitterSpeed);

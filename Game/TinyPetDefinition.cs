@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,5 +29,7 @@ namespace GameProject
         public double MaxSinusMovementSpeedMultiplierSpeed = 20;
         public double MinSinusMovementSpeedMultiplierScale = 10;
         public double MaxSinusMovementSpeedMultiplierScale = 30;
+        public Color Color1;
+        public Color Color2;
     }
 }

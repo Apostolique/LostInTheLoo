@@ -10,7 +10,7 @@ namespace GameProject
     {
         public TinyPetDefinition Definition;
         public double NextPoopTime;
-        public Action<UnidentifiedBlob1Entity, GameTime> State;
+        public Action<TinyPetEntity, GameTime> State;
         public bool IsDying;
         public float Scale = 1.0f;
         public StaticFoodEntity TargetFood;
@@ -27,17 +27,14 @@ namespace GameProject
         public double SinusMovementSpeedMultiplierSpeed;
         public double SinusMovementSpeedMultiplierOffset;
         public double SinusMovementSpeedMultiplierScale;
+        public float CourseDiviationSpeed;
+        public EllipseSegment Segment;
+        public TinyPetEntity Twin;
+        public double SplitTimer;
+        public float SplitScaleChangePerSecond;
+        public float TargetRotation;
 
-        public virtual float Radius1
-        {
-            get;
-            set;
-        }
-
-        public virtual float Radius2
-        {
-            get;
-            set;
-        }
+        public float Radius1 { get => this.Segment.Radius1; set => this.Segment.Radius1 = value; }
+        public float Radius2 { get => this.Segment.Radius2; set => this.Segment.Radius2 = value; }
     }
 }

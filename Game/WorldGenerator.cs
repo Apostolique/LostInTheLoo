@@ -64,6 +64,8 @@ namespace GameProject
                 MaxSinusMovementSpeedMultiplierScale = 22,
                 MinSinusMovementSpeedMultiplierSpeed = 10,
                 MaxSinusMovementSpeedMultiplierSpeed = 12,
+                Color1 = Color.LimeGreen,
+                Color2 = Color.YellowGreen,
             };
 
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
@@ -118,12 +120,13 @@ namespace GameProject
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
-        public static UnidentifiedBlob1Entity CreateRandomUnidentifiedBlob1(int index, TinyPetDefinition definition)
+        public static TinyPetEntity CreateRandomUnidentifiedBlob1(int index, TinyPetDefinition definition)
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
-            var radius1 = 20;
-            var entity = new UnidentifiedBlob1Entity()
+            var radius1 = definition.BaseRadius1;
+            var radius2 = definition.BaseRadius2;
+            var entity = new TinyPetEntity()
             {
                 Definition = definition,
                 LocalPosition = position,
@@ -131,7 +134,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new EllipseSegment(position.X, position.Y, radius1, 10, Color.LimeGreen, Color.GreenYellow, 2, 0, position.Z),
+                Segment = new EllipseSegment(position.X, position.Y, radius1, radius2, definition.Color1, definition.Color2, 2, 0, position.Z),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
