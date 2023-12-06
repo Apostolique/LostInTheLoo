@@ -55,6 +55,7 @@ namespace GameProject
                 FoodBonusMultiplier = 15,
                 MinDigestTime = 2,
                 MaxDigestTime = 4,
+                CanDieFromStarvation = true,
             };
 
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());

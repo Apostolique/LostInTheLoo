@@ -18,6 +18,8 @@ namespace GameProject
             DieFromSize(blob);
             FindFood(blob);
             EatFood(blob);
+            DieFromStarvation(blob);
+            FindRandomTargetPosition(blob);
 
             var state = blob.State;
             if(state == null)
@@ -30,6 +32,11 @@ namespace GameProject
 
         private void Poop(TinyPetEntity pet)
         {
+            if (pet.IsDying)
+            {
+                return;
+            }
+
             if (!pet.Definition.CanPoop)
             {
                 return;
@@ -62,8 +69,14 @@ namespace GameProject
 
         private void DieFromSize(TinyPetEntity pet)
         {
-            if(pet.Radius1 <= 0.0f || pet.Radius2 <= 0.0f)
+            if (pet.IsDying)
             {
+                return;
+            }
+            
+            if (pet.Radius1 <= 0.0f || pet.Radius2 <= 0.0f)
+            {
+                pet.DeathTime = G.WorldTime.TotalGameTime.TotalSeconds + pet.Definition.DeathAnimationTime;
                 pet.IsDying = true;
                 pet.State = Dying;
                 return;
@@ -72,6 +85,11 @@ namespace GameProject
 
         private void FindFood(TinyPetEntity pet)
         {
+            if (pet.IsDying)
+            {
+                return;
+            }
+            
             if (!pet.Definition.CanEatFood)
             {
                 return;
@@ -113,6 +131,11 @@ namespace GameProject
 
         private void EatFood(TinyPetEntity pet)
         {
+            if (pet.IsDying)
+            {
+                return;
+            }
+            
             if (!pet.Definition.CanEatFood)
             {
                 return;
@@ -154,15 +177,51 @@ namespace GameProject
             pet.State = Digest;
         }
 
-        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        private void DieFromStarvation(TinyPetEntity pet)
         {
-            if(blob.DeathFromStarvationTime <= G.WorldTime.TotalGameTime.TotalSeconds)
+            if (pet.IsDying)
             {
-                blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + 2.0d;
-                blob.State = Dying; // goodbye little blob 😥
+                return;
+            }
+            
+            if (!pet.Definition.CanDieFromStarvation)
+            {
                 return;
             }
 
+            if (pet.DeathFromStarvationTime > G.WorldTime.TotalGameTime.TotalSeconds)
+            {
+                return;
+            }
+
+            // goodbye little blob 😥
+            pet.DeathTime = G.WorldTime.TotalGameTime.TotalSeconds + pet.Definition.DeathAnimationTime;
+            pet.IsDying = true;
+            pet.State = Dying;
+        }
+
+        private void FindRandomTargetPosition(TinyPetEntity pet)
+        {
+            if (pet.IsDying)
+            {
+                return;
+            }
+
+            if (pet.DistanceToTargetPositon > 0.2f)
+            {
+                return;
+            }
+
+            if (pet.TargetFood != null)
+            {
+                return;
+            }
+
+            pet.TargetPosition = G.Random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+        }
+        
+        private void Idle(UnidentifiedBlob1Entity blob, GameTime gameTime)
+        {
             var direction = blob.TargetPosition - blob.AbsolutePosition;
 
             var courseDiviation = new Vector3(
@@ -320,18 +379,20 @@ namespace GameProject
             blob.UpdateAbsoluteRecursive();
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
 
-            if(blob.DeathFromStarvationTime <= G.WorldTime.TotalGameTime.TotalSeconds)
+            if (blob.DeathTime > G.WorldTime.TotalGameTime.TotalSeconds)
             {
-                blob.Leaf = G.EntitiesByLocation.Remove(blob.Leaf);
-                var min = blob.AABB.TopLeft.ToVector3XY(blob.Z);
-                var max = blob.AABB.BottomRight.ToVector3XY(blob.Z);
-                var radius = blob.Radius1 + blob.Radius2 * 2;
-                while(radius > 0.0f)
-                {
-                    var position = G.Random.NextVector3(min, max);
-                    var food = WorldGenerator.CreateStaticFood(position);
-                    radius -= food.AABB.Width;
-                }
+                return;
+            }
+
+            blob.Leaf = G.EntitiesByLocation.Remove(blob.Leaf);
+            var min = blob.AABB.TopLeft.ToVector3XY(blob.Z);
+            var max = blob.AABB.BottomRight.ToVector3XY(blob.Z);
+            var radius = blob.Radius1 + blob.Radius2 * 2;
+            while(radius > 0.0f)
+            {
+                var position = G.Random.NextVector3(min, max);
+                var food = WorldGenerator.CreateStaticFood(position);
+                radius -= food.AABB.Width;
             }
         }
     }

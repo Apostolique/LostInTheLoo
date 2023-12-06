@@ -18,5 +18,7 @@ namespace GameProject
         public float FoodBonusMultiplier = 1;
         public double MinDigestTime = 1;
         public double MaxDigestTime = 2;
+        public bool CanDieFromStarvation;
+        public double DeathAnimationTime = 2; // how long is the death animation
     }
 }

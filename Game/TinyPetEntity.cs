@@ -18,6 +18,7 @@ namespace GameProject
         public Vector3 TargetPosition;
         public float DistanceToTargetPositon;
         public double DeathFromStarvationTime;
+        public double DeathTime;
         public double DigestTimer;
 
         public virtual float Radius1
