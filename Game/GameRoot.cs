@@ -50,6 +50,7 @@ namespace GameProject {
 
             G.S = new SpriteBatch(GraphicsDevice);
             G.SB = new ShapeBatch(GraphicsDevice);
+            G.B = new Batch(GraphicsDevice);
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
             SetExpTween(-1.2f, 0);
 
@@ -214,6 +215,16 @@ namespace GameProject {
             G.S.End();
 
             G.R.Draw(Composite);
+
+            float seconds = (float) gameTime.TotalGameTime.TotalSeconds;
+            Vector4 shaderTime = new Vector4(seconds / 10, seconds, seconds * 2, seconds * 3);
+
+            Assets.Micro.Parameters["Time"].SetValue(shaderTime);
+            Assets.Micro.Parameters["SinTime"].SetValue(new Vector4(MathF.Sin(shaderTime.X), MathF.Sin(shaderTime.Y), MathF.Sin(shaderTime.Z), MathF.Sin(shaderTime.W)));
+
+            G.B.Begin();
+            G.B.Draw(Assets.Bean, Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, Matrix32.CreateTranslation(new Vector2(100, 100)), Matrix32.CreateScale(256, 256));
+            G.B.End();
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();

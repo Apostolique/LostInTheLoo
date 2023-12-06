@@ -23,6 +23,7 @@ namespace GameProject {
         public static GraphicsDevice GraphicsDevice;
         public static SpriteBatch S;
         public static ShapeBatch SB;
+        public static Batch B;
         public static Renderer R;
         public static Camera Camera;
         public static AABBTree<Entity> EntitiesByLocation = new AABBTree<Entity>();

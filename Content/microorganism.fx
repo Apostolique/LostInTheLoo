@@ -55,7 +55,7 @@ float4 SpritePixelShader(v2f i) : SV_TARGET
     return col;
 }
 
-technique SpriteBatch 
+technique SpriteBatch
 {
     pass
     {

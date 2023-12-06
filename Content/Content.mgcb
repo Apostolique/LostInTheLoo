@@ -79,6 +79,12 @@
 /processorParam:TextureFormat=Color
 /build:mask1.png
 
+#begin microorganism.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:microorganism.fx
+
 #begin music/LITL T1 Death.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -232,6 +238,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/ramps/ramp_05.png
 
+#begin textures/ramps/ramp-sheets.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/ramps/ramp-sheets.png
+
 #begin textures/shapes/shape_bean2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -279,4 +297,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/shapes/shape_skewer.png
+
+#begin textures/shapes/shape-sprites.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/shapes/shape-sprites.png
 

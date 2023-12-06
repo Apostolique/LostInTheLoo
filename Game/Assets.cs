@@ -26,6 +26,14 @@ namespace GameProject {
             Noise1 = content.Load<Texture2D>("noise1");
             Noise2 = content.Load<Texture2D>("noise2");
             Mask1 = content.Load<Texture2D>("mask1");
+            MicroRamps = content.Load<Texture2D>("textures/ramps/ramp-sheets");
+            MicroShapes = content.Load<Texture2D>("textures/shapes/shape-sprites");
+            Core01 = content.Load<Texture2D>("textures/cores/core_01");
+            Core02 = content.Load<Texture2D>("textures/cores/core_02");
+            Bean = content.Load<Texture2D>("textures/shapes/shape_bean2");
+            Bell = content.Load<Texture2D>("textures/shapes/shape_bell");
+            Drill = content.Load<Texture2D>("textures/shapes/shape_drill");
+            Skewer = content.Load<Texture2D>("textures/shapes/shape_skewer");
         }
         private static void LoadShaders(ContentManager content) {
             Shapes = content.Load<Effect>("apos-shapes");
@@ -33,6 +41,7 @@ namespace GameProject {
             BokehHorizontal = content.Load<Effect>("bokeh-horizontal");
             Infinite = content.Load<Effect>("infinite");
             Mask = content.Load<Effect>("mask");
+            Micro = content.Load<Effect>("microorganism");
         }
         private static void LoadSounds(ContentManager content) {
             Death = content.Load<SoundEffect>("music/LITL T1 Death");
@@ -54,12 +63,21 @@ namespace GameProject {
         public static Texture2D Noise1;
         public static Texture2D Noise2;
         public static Texture2D Mask1;
+        public static Texture2D MicroRamps;
+        public static Texture2D MicroShapes;
+        public static Texture2D Core01;
+        public static Texture2D Core02;
+        public static Texture2D Bean;
+        public static Texture2D Bell;
+        public static Texture2D Drill;
+        public static Texture2D Skewer;
 
         public static Effect BokehVertical;
         public static Effect BokehHorizontal;
         public static Effect Shapes;
         public static Effect Infinite;
         public static Effect Mask;
+        public static Effect Micro;
 
         public static SoundEffect Death;
         public static SoundEffect S1;
