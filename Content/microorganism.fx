@@ -9,8 +9,8 @@
 float4x4 view_projection;
 float CoreBlendBegin;
 float CoreBlendEnd;
-float4 SinTime;
-float4 Time;
+float SinTime;
+float Time;
 sampler Shape : register(s0);
 sampler Core;
 sampler Ramp;
@@ -33,16 +33,16 @@ float4 SpritePixelShader(v2f i) : SV_TARGET
 {
     float4 colShape = tex2D(Shape, i.uv);
     float4 colShape2 = tex2D(Shape, float2(i.uv.x, 1 - i.uv.y));
-    colShape = lerp(colShape, colShape2, (SinTime.w + 1) * 0.5);
+    colShape = lerp(colShape, colShape2, (SinTime + 1) * 0.5);
     clip(colShape.r - 0.01);
 
     float4 colRamped = tex2D(Ramp, float2(colShape.r, 0.5));
     colRamped.rgb /= colRamped.a;
 
-    float2 uvTex = float2(i.uv.x, i.uv.y + Time.x);
+    float2 uvTex = float2(i.uv.x, i.uv.y + Time);
     float4 colTex = tex2D(Core, uvTex);
 
-    uvTex = float2(i.uv.x + 0.5, -i.uv.y + Time.x);
+    uvTex = float2(i.uv.x + 0.5, -i.uv.y + Time);
     float4 colTex2 = tex2D(Core, uvTex);
 
     colTex = lerp(colTex, colTex2, 0.5);

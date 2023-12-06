@@ -216,14 +216,13 @@ namespace GameProject {
 
             G.R.Draw(Composite);
 
-            float seconds = (float) gameTime.TotalGameTime.TotalSeconds;
-            Vector4 shaderTime = new Vector4(seconds / 10, seconds, seconds * 2, seconds * 3);
+            float time = (float)gameTime.TotalGameTime.TotalMilliseconds;
 
-            Assets.Micro.Parameters["Time"].SetValue(shaderTime);
-            Assets.Micro.Parameters["SinTime"].SetValue(new Vector4(MathF.Sin(shaderTime.X), MathF.Sin(shaderTime.Y), MathF.Sin(shaderTime.Z), MathF.Sin(shaderTime.W)));
+            Assets.Micro.Parameters["Time"].SetValue(time * 0.00005f);
+            Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.0005f));
 
             G.B.Begin();
-            G.B.Draw(Assets.Bean, Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, Matrix32.CreateTranslation(new Vector2(100, 100)), Matrix32.CreateScale(256, 256));
+            G.B.Draw(Assets.Drill, Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, Matrix32.CreateTranslation(new Vector2(100, 100)), Matrix32.CreateScale(256, 256));
             G.B.End();
 
             var font = Assets.FontSystem.GetFont(24);
