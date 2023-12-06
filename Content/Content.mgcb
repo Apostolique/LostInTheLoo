@@ -139,6 +139,60 @@
 /processorParam:Quality=Best
 /build:music/LITL T1 S4.ogg
 
+#begin music/LITL T2 Death.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 Death.ogg
+
+#begin music/LITL T2 High.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 High.ogg
+
+#begin music/LITL T2 Low.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 Low.ogg
+
+#begin music/LITL T2 Medium High.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 Medium High.ogg
+
+#begin music/LITL T2 Medium.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 Medium.ogg
+
+#begin music/LITL T2 S1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 S1.ogg
+
+#begin music/LITL T2 S2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 S2.ogg
+
+#begin music/LITL T2 S3.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 S3.ogg
+
+#begin music/LITL T2 S4.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/LITL T2 S4.ogg
+
 #begin noise1.png
 /importer:TextureImporter
 /processor:TextureProcessor
