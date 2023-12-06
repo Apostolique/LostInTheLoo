@@ -14,6 +14,7 @@ namespace GameProject
         private const int numberUnidentifiedBlob1ToCreate = 1000;
         private const int numberOfStaticFoodsToCreate = 15000;
         private const int numberOfWasteRecycleBlobToCreate = 1000;
+        private const int numberOfWildlyRandomBlobsToCreate = 500;
 
         private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
         private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
@@ -71,6 +72,7 @@ namespace GameProject
             Enumerable.Range(0, numberOfStaticFoodsToCreate).ForEach(_ => CreateStaticFood());
             Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index, unidentifiedBlob1Definition));
             Enumerable.Range(0, numberOfWasteRecycleBlobToCreate).ForEach(index => CreateWasteRecycleBlob(index));
+            Enumerable.Range(0, numberOfWildlyRandomBlobsToCreate).ForEach(index => CreateWildlyRandomBlob(index));
             CreateLacrymariaOlorEntity(50, 50);
             CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0);
         }
@@ -122,6 +124,76 @@ namespace GameProject
 
         public static TinyPetEntity CreateRandomUnidentifiedBlob1(int index, TinyPetDefinition definition)
         {
+            var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
+            var radius1 = definition.BaseRadius1;
+            var radius2 = definition.BaseRadius2;
+            var entity = new TinyPetEntity()
+            {
+                Definition = definition,
+                LocalPosition = position,
+                RenderLogic = ellipseRenderLogic,
+                UpdateLogic = unidentifiedBlob1UpdateLogic,
+                CourseDiviationSpeed = random.NextSingle() * 50 + 1,
+                TargetPosition = targetPosition,
+                Segment = new EllipseSegment(position.X, position.Y, radius1, radius2, definition.Color1, definition.Color2, 2, 0, position.Z),
+                RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
+                NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
+                Z = position.Z,
+                NextFoodScan = index * 0.2f,
+                DeathFromStarvationTime = random.NextDouble() * 240 + 1,
+                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
+                SinusMovementSpeedMultiplierSpeed = random.NextDouble(definition.MinSinusMovementSpeedMultiplierSpeed, definition.MaxSinusMovementSpeedMultiplierSpeed),
+                SinusMovementSpeedMultiplierOffset = random.NextDouble(-Math.PI, Math.PI),
+                SinusMovementSpeedMultiplierScale = random.NextDouble(definition.MinSinusMovementSpeedMultiplierScale, definition.MaxSinusMovementSpeedMultiplierScale),
+            };
+            entity.Segments = new Segment[] { entity.Segment };
+            entity.UpdateAbsoluteRecursive();
+            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
+            return entity;
+        }
+
+        public static TinyPetEntity CreateWildlyRandomBlob(int index)
+        {
+            var twColorType = typeof(TWColor);
+            var twColorFields = twColorType
+                .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                .Where(field => field.FieldType == typeof(Color))
+                .ToArray()
+                ;
+            var foods = new int []
+            {
+                StaticFoodTypes.Blue,
+                StaticFoodTypes.Brown,
+                StaticFoodTypes.Green,
+                StaticFoodTypes.Red,
+            };
+            var definition = new TinyPetDefinition()
+            {
+                BaseRadius1 = random.NextSingle(2.0f, 30.0f),
+                BaseRadius2 = random.NextSingle(2.0f, 30.0f),
+                CanDieFromStarvation = random.NextDouble() > 0.5d,
+                CanEatFood = random.NextDouble() > 0.5d,
+                CanPoop = random.NextDouble() > 0.5d,
+                Color1 = (Color)twColorFields[random.Next(twColorFields.Length)].GetValue(null)!,
+                Color2 = (Color)twColorFields[random.Next(twColorFields.Length)].GetValue(null)!,
+                DeathAnimationTime = random.NextDouble(1, 10),
+                EatsFoods = foods.OrderBy(_ => random.NextDouble()).Take(random.Next(foods.Length+1)).ToArray(),
+                FoodBonusMultiplier = random.NextSingle(1.0f, 100.0f),
+                MinDigestTime = random.NextDouble(1, 10),
+                MaxDigestTime = random.NextDouble(10, 20),
+                MinPoopTimeDelay = random.NextDouble(5, 10),
+                MaxPoopTimeDelay = random.NextDouble(10, 20),
+                MinRandomMovementSpeedDelay = random.NextDouble(1, 10),
+                MaxRandomMovementSpeedDelay = random.NextDouble(10, 20),
+                MinRandomMovementSpeedMultiplier = random.NextSingle(0.5f, 15),
+                MaxRandomMovementSpeedMultiplier = random.NextSingle(15, 40),
+                MaxScale = 3,
+                MinSinusMovementSpeedMultiplierScale = random.NextDouble(1, 10),
+                MaxSinusMovementSpeedMultiplierScale = random.NextDouble(10, 20),
+                MinSinusMovementSpeedMultiplierSpeed = random.NextDouble(10, 20),
+                MaxSinusMovementSpeedMultiplierSpeed = random.NextDouble(20, 40),
+            };
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var radius1 = definition.BaseRadius1;
