@@ -64,7 +64,7 @@ namespace GameProject
             var position = pet.AbsolutePosition;
             var poop = WorldGenerator.CreateStaticFood(position);
             var poopSegment = (MicroSegment)poop.Segments[0];
-            poopSegment.Size = 1.0f;
+            poopSegment.Size = 10.0f;
             poopSegment.Color = Color.Brown;
             poop.Type = StaticFoodTypes.Brown;
         }
@@ -164,7 +164,7 @@ namespace GameProject
             food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
             food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
 
-            var foodSize = ((MicroSegment)food.Segments[0]).Size;
+            var foodSize = ((MicroSegment)food.Segments[0]).Size / 10f;
             pet.Scale += foodSize / pet.Definition.BaseSize;
             pet.Size = pet.Definition.BaseSize * pet.Scale;
             pet.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodSize * pet.Definition.FoodBonusMultiplier;
