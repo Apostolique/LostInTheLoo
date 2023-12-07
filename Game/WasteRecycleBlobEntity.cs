@@ -15,7 +15,7 @@ namespace GameProject
         public const double FoodScanDelay = 5;
 
         public Vector3 TargetPosition;
-        public EllipseSegment Segment;
+        public MicroSegment Segment;
         public float MovementSpeedMultiplier = 1.0f;
         public StaticFoodEntity TargetFood;
         public double NextFoodScan;
@@ -24,7 +24,6 @@ namespace GameProject
         public double DigestTimer;
         public float TargetRotation;
         public float Scale;
-        public float OriginalRadius1;
-        public float OriginalRadius2;
+        public float OriginalSize;
     }
 }

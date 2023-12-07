@@ -49,7 +49,6 @@ namespace GameProject {
             ClientSizeChanged(null, null);
 
             G.S = new SpriteBatch(GraphicsDevice);
-            G.SB = new ShapeBatch(GraphicsDevice);
             G.B = new Batch(GraphicsDevice);
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
             SetExpTween(-1.2f, 0);
@@ -197,11 +196,11 @@ namespace GameProject {
                 .Where(e => G.Camera.IsZVisible(e.Z, 0.01f))
                 .GroupBy(e => MathF.Round(e.Z / intervalGroup) * intervalGroup)) // changed from floor to round to limit the "teleport" from worst case almost 1.0f to 0.5f if Z distance
             {
-                G.SB.Begin(view: G.Camera.GetView(group.Key));
+                G.B.Begin(view: G.Camera.GetView(group.Key));
                 foreach (var entity in group.OrderBy(e => e)) {
                     entity.RenderLogic.Render(entity);
                 }
-                G.SB.End();
+                G.B.End();
                 float blur = MathF.Abs(group.Key - focalPoint) / maxFocus * G.Camera.WorldToScreenScale();
                 float opacity = MathF.Max(1f - MathF.Abs(group.Key - focalPoint) / maxOpacity, 0f);
                 G.R.ApplyBokeh(Target1, Real, Imaginary, Temp, Composite, group.Key, blur, opacity);
@@ -220,13 +219,6 @@ namespace GameProject {
 
             Assets.Micro.Parameters["Time"].SetValue(time * 0.00005f);
             Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.0005f));
-
-            G.B.Begin();
-            G.B.Draw(Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0, 1f), Matrix32.CreateTranslation(new Vector2(100, 100)));
-            G.B.Draw(Batch.MicroShapes.Drill, Batch.MicroRamps.Ramp03, 0.3f, 0.8f, new Vector2(1f, 0f), Matrix32.CreateTranslation(new Vector2(356, 100)));
-            G.B.Draw(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp04, 0.3f, 0.8f, new Vector2(1f, 1f), Matrix32.CreateTranslation(new Vector2(612, 100)));
-            G.B.Draw(Batch.MicroShapes.Bell, Batch.MicroRamps.Ramp05, 0.3f, 0.8f, new Vector2(-1f, 0), Matrix32.CreateTranslation(new Vector2(868, 100)));
-            G.B.End();
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();

@@ -62,8 +62,8 @@ namespace GameProject {
                 new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
                 new VertexElement(sizeof(float) * 5, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
                 new VertexElement(sizeof(float) * 7, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-                new VertexElement(sizeof(float) * 7 + sizeof(int), VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-                new VertexElement(sizeof(float) * 11 + sizeof(int), VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
+                new VertexElement(sizeof(float) * 8, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
+                new VertexElement(sizeof(float) * 12, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
             };
             VertexDeclaration = new VertexDeclaration(elements);
         }

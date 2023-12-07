@@ -16,10 +16,7 @@ namespace GameProject
         private const int numberOfWasteRecycleBlobToCreate = 1000;
         private const int numberOfWildlyRandomBlobsToCreate = 500;
 
-        private static CircleRenderLogic circleRenderLogic = new CircleRenderLogic();
-        private static EllipseRenderLogic ellipseRenderLogic = new EllipseRenderLogic();
-        private static LacrymariaOlorRenderLogic lacrymariaOlorRenderLogic = new LacrymariaOlorRenderLogic();
-        private static LacrymariaOlorUpdateLogic lacrymariaOlorUpdateLogic = new LacrymariaOlorUpdateLogic();
+        private static MicroRenderLogic microRenderLogic = new MicroRenderLogic();
         private static UnidentifiedBlob1UpdateLogic unidentifiedBlob1UpdateLogic = new UnidentifiedBlob1UpdateLogic();
         private static WasteRecycleBlobUpdateLogic wasteRecycleBlobUpdateLogic = new WasteRecycleBlobUpdateLogic();
         private static readonly Random random = new Random();
@@ -44,8 +41,7 @@ namespace GameProject
                 MinPoopTimeDelay = 5,
                 MaxPoopTimeDelay = 10,
                 MaxScale = 3,
-                BaseRadius1 = 20,
-                BaseRadius2 = 10,
+                BaseSize = 20,
                 CanEatFood = true,
                 EatsFoods = new int[]
                 {
@@ -73,76 +69,28 @@ namespace GameProject
             Enumerable.Range(0, numberUnidentifiedBlob1ToCreate).ForEach(index => CreateRandomUnidentifiedBlob1(index, unidentifiedBlob1Definition));
             Enumerable.Range(0, numberOfWasteRecycleBlobToCreate).ForEach(index => CreateWasteRecycleBlob(index));
             Enumerable.Range(0, numberOfWildlyRandomBlobsToCreate).ForEach(index => CreateWildlyRandomBlob(index));
-            CreateLacrymariaOlorEntity(50, 50);
-            CreateEllipseEntity(0, 0, 50, 20, TWColor.Pink300, TWColor.Gray800, 1, 0, 0);
-        }
-
-        private static void CreateCircleEntity(float centerX, float centerY, float radius, Color color1, Color color2, float thickness, float z)
-        {
-            var entity = new Entity()
-            {
-                RenderLogic = circleRenderLogic,
-                UpdateLogic = UpdateLogic.NullLogic,
-                Segments = new Segment[]
-                {
-                    new CircleSegment(centerX, centerY, radius, color1, color2, thickness, z),
-                },
-                AABB = new RectangleF(centerX - radius * 0.5f, centerY - radius * 0.5f, radius, radius),
-                Z = z
-            };
-            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
-        }
-
-        private static void CreateEllipseEntity(float centerX, float centerY, float radius1, float radius2, Color color1, Color color2, float thickness, float rotation, float z)
-        {
-            var entity = new Entity()
-            {
-                RenderLogic = ellipseRenderLogic,
-                UpdateLogic = UpdateLogic.NullLogic,
-                Segments = new Segment[]
-                {
-                    new EllipseSegment(centerX, centerY, radius1, radius2, color1, color2, thickness, rotation, z),
-                },
-                AABB = G.SB.GetEllipseAABB(new Vector2(centerX, centerY), radius1, radius2, rotation),
-                Z = z
-            };
-            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
-        }
-
-        public static void CreateLacrymariaOlorEntity(float x, float y)
-        {
-            var entity = new LacrymariaOlorEntity()
-            {
-                RenderLogic = lacrymariaOlorRenderLogic,
-                UpdateLogic = lacrymariaOlorUpdateLogic,
-                BodyPosition = new Vector2(x, y),
-                AABB = new RectangleF(x, y, 20, 20),
-                Z = 0f
-            };
-            entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
         }
 
         public static TinyPetEntity CreateRandomUnidentifiedBlob1(int index, TinyPetDefinition definition)
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
-            var radius1 = definition.BaseRadius1;
-            var radius2 = definition.BaseRadius2;
+            var radius1 = definition.BaseSize;
             var entity = new TinyPetEntity()
             {
                 Definition = definition,
                 LocalPosition = position,
-                RenderLogic = ellipseRenderLogic,
+                RenderLogic = microRenderLogic,
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new EllipseSegment(position.X, position.Y, radius1, radius2, definition.Color1, definition.Color2, 2, 0, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp02, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
                 NextFoodScan = index * 0.2f,
                 DeathFromStarvationTime = random.NextDouble() * 240 + 1,
-                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
+                AABB = MicroSegment.GetAABB(new Vector2(position.X, position.Y), radius1),
                 SinusMovementSpeedMultiplierSpeed = random.NextDouble(definition.MinSinusMovementSpeedMultiplierSpeed, definition.MaxSinusMovementSpeedMultiplierSpeed),
                 SinusMovementSpeedMultiplierOffset = random.NextDouble(-Math.PI, Math.PI),
                 SinusMovementSpeedMultiplierScale = random.NextDouble(definition.MinSinusMovementSpeedMultiplierScale, definition.MaxSinusMovementSpeedMultiplierScale),
@@ -170,8 +118,7 @@ namespace GameProject
             };
             var definition = new TinyPetDefinition()
             {
-                BaseRadius1 = random.NextSingle(2.0f, 30.0f),
-                BaseRadius2 = random.NextSingle(2.0f, 30.0f),
+                BaseSize = random.NextSingle(2.0f, 30.0f),
                 CanDieFromStarvation = random.NextDouble() > 0.5d,
                 CanEatFood = random.NextDouble() > 0.5d,
                 CanPoop = random.NextDouble() > 0.5d,
@@ -196,23 +143,22 @@ namespace GameProject
             };
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
             var targetPosition = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
-            var radius1 = definition.BaseRadius1;
-            var radius2 = definition.BaseRadius2;
+            var radius1 = definition.BaseSize;
             var entity = new TinyPetEntity()
             {
                 Definition = definition,
                 LocalPosition = position,
-                RenderLogic = ellipseRenderLogic,
+                RenderLogic = microRenderLogic,
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new EllipseSegment(position.X, position.Y, radius1, radius2, definition.Color1, definition.Color2, 2, 0, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Drill, Batch.MicroRamps.Ramp02, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
                 NextFoodScan = index * 0.2f,
                 DeathFromStarvationTime = random.NextDouble() * 240 + 1,
-                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
+                AABB = MicroSegment.GetAABB(new Vector2(position.X, position.Y), radius1),
                 SinusMovementSpeedMultiplierSpeed = random.NextDouble(definition.MinSinusMovementSpeedMultiplierSpeed, definition.MaxSinusMovementSpeedMultiplierSpeed),
                 SinusMovementSpeedMultiplierOffset = random.NextDouble(-Math.PI, Math.PI),
                 SinusMovementSpeedMultiplierScale = random.NextDouble(definition.MinSinusMovementSpeedMultiplierScale, definition.MaxSinusMovementSpeedMultiplierScale),
@@ -226,22 +172,20 @@ namespace GameProject
         public static WasteRecycleBlobEntity CreateWasteRecycleBlob(int index)
         {
             var position = random.NextVector3(G.MinWorldPosition, G.MaxWorldPosition);
-            var radius1 = random.NextSingle(WasteRecycleBlobEntity.MinRadius, WasteRecycleBlobEntity.MaxRadius);
-            var radius2 = radius1 * 0.33f;
+            var size = random.NextSingle(WasteRecycleBlobEntity.MinRadius, WasteRecycleBlobEntity.MaxRadius);
             var entity = new WasteRecycleBlobEntity()
             {
-                OriginalRadius1 = radius1,
-                OriginalRadius2 = radius2,
+                OriginalSize = size,
                 Scale = 1,
                 LocalPosition = position,
-                RenderLogic = ellipseRenderLogic,
+                RenderLogic = microRenderLogic,
                 UpdateLogic = wasteRecycleBlobUpdateLogic,
                 TargetPosition = position,
-                Segment = new EllipseSegment(position.X, position.Y, radius1, radius2, Color.SaddleBrown, Color.BlueViolet, 2, 0, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp02, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z),
                 MovementSpeedMultiplier = WasteRecycleBlobEntity.RoamSpeedMultiplier,
                 Z = position.Z,
                 NextFoodScan = index * 0.005f,
-                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius1),
+                AABB = MicroSegment.GetAABB(new Vector2(position.X, position.Y), size),
             };
             entity.Segments = new Segment[] { entity.Segment };
             entity.UpdateAbsoluteRecursive();
@@ -268,11 +212,11 @@ namespace GameProject
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new CircleSegment(position.X, position.Y, radius, color1, color2, 0.1f, position.Z),
+                    new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp02, position.X, position.Y, radius, 0.1f, color1, position.Z),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
-                RenderLogic = circleRenderLogic,
-                AABB = G.SB.GetCircleAABB(new Vector2(position.X, position.Y), radius),
+                RenderLogic = microRenderLogic,
+                AABB = MicroSegment.GetAABB(new Vector2(position.X, position.Y), radius),
             };
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             entity.Leaf2 = G.StaticFoodEntitiesByLocation.Add(entity.AABB, entity);

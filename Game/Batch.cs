@@ -55,7 +55,7 @@ namespace GameProject {
         }
         public void Draw(MicroShapes shape, MicroRamps ramp, float coreBlendBegin, float coreBlendEnd, Vector2 direction, Num.Matrix3x2? world = null, Color? color = null) {
             EnsureSizeOrDouble(ref _vertices, _vertexCount + 4);
-            _indicesChanged = EnsureSizeOrDouble(ref _indices, _indexCount + 6);
+            _indicesChanged = EnsureSizeOrDouble(ref _indices, _indexCount + 6) || _indicesChanged;
 
             // TODO: world shouldn't be null.
             if (world == null) {
@@ -76,9 +76,9 @@ namespace GameProject {
             Num.Vector2 bottomLeft = new Num.Vector2(shapeOffset, 256);
 
             Num.Vector2 wTopLeft = Num.Vector2.Transform(new Num.Vector2(0f, 0f), world.Value);
-            Num.Vector2 wTopRight = Num.Vector2.Transform(new Num.Vector2(256f, 0f), world.Value);
-            Num.Vector2 wBottomRight = Num.Vector2.Transform(new Num.Vector2(256f, 256f), world.Value);
-            Num.Vector2 wBottomLeft = Num.Vector2.Transform(new Num.Vector2(0, 256f), world.Value);
+            Num.Vector2 wTopRight = Num.Vector2.Transform(new Num.Vector2(1f, 0f), world.Value);
+            Num.Vector2 wBottomRight = Num.Vector2.Transform(new Num.Vector2(1f, 1f), world.Value);
+            Num.Vector2 wBottomLeft = Num.Vector2.Transform(new Num.Vector2(0, 1f), world.Value);
 
             _vertices[_vertexCount + 0] = new VertexMicro(
                 new Vector3(wTopLeft.X, wTopLeft.Y, 0f),
