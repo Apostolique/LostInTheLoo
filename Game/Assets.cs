@@ -44,15 +44,15 @@ namespace GameProject {
             Micro = content.Load<Effect>("microorganism");
         }
         private static void LoadSounds(ContentManager content) {
-            Death = content.Load<SoundEffect>("music/LITL T1 Death");
-            S1 = content.Load<SoundEffect>("music/LITL T1 S1");
-            S2 = content.Load<SoundEffect>("music/LITL T1 S2");
-            S3 = content.Load<SoundEffect>("music/LITL T1 S3");
-            S4 = content.Load<SoundEffect>("music/LITL T1 S4");
-            Low = content.Load<SoundEffect>("music/LITL T1 Low");
-            Medium = content.Load<SoundEffect>("music/LITL T1 Medium");
-            MediumHigh = content.Load<SoundEffect>("music/LITL T1 Medium High");
-            High = content.Load<SoundEffect>("music/LITL T1 High");
+            Death = content.Load<SoundEffect>("music/T3/LITL T3 Death");
+            S1 = content.Load<SoundEffect>("music/T3/LITL T3 S1");
+            S2 = content.Load<SoundEffect>("music/T3/LITL T3 S2");
+            S3 = content.Load<SoundEffect>("music/T3/LITL T3 S3");
+            S4 = content.Load<SoundEffect>("music/T3/LITL T3 S4");
+            Low = content.Load<SoundEffect>("music/T3/LITL T3 Low");
+            Medium = content.Load<SoundEffect>("music/T3/LITL T3 Medium");
+            MediumHigh = content.Load<SoundEffect>("music/T3/LITL T3 Medium High");
+            High = content.Load<SoundEffect>("music/T3/LITL T3 High");
         }
 
         public static Settings Settings;
