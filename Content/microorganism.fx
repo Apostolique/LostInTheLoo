@@ -53,7 +53,7 @@ PixelInput SpriteVertexShader(VertexInput v) {
 
 float4 SpritePixelShader(PixelInput p) : SV_TARGET {
     float4 colShape = tex2D(Shape, p.UV.xy);
-    float4 colShape2 = tex2D(Shape, float2(p.UV.x, 1 - p.UV.y));
+    float4 colShape2 = tex2D(Shape, p.UV.xz);
     colShape = lerp(colShape, colShape2, (SinTime + 1) * 0.5);
     clip(colShape.r - 0.01);
 

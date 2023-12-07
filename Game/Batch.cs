@@ -82,7 +82,7 @@ namespace GameProject {
 
             _vertices[_vertexCount + 0] = new VertexMicro(
                 new Vector3(wTopLeft.X, wTopLeft.Y, 0f),
-                GetUV(_shapes, topLeft),
+                GetUVMirror(_shapes, topLeft, 256f),
                 GetUV(_core, topLeft),
                 color ?? Color.White,
                 r,
@@ -92,7 +92,7 @@ namespace GameProject {
             );
             _vertices[_vertexCount + 1] = new VertexMicro(
                 new Vector3(wTopRight.X, wTopRight.Y, 0f),
-                GetUV(_shapes, topRight),
+                GetUVMirror(_shapes, topRight, 256f),
                 GetUV(_core, topRight),
                 color ?? Color.White,
                 r,
@@ -102,7 +102,7 @@ namespace GameProject {
             );
             _vertices[_vertexCount + 2] = new VertexMicro(
                 new Vector3(wBottomRight.X, wBottomRight.Y, 0f),
-                GetUV(_shapes, bottomRight),
+                GetUVMirror(_shapes, bottomRight, 256f),
                 GetUV(_core, bottomRight),
                 color ?? Color.White,
                 r,
@@ -112,7 +112,7 @@ namespace GameProject {
             );
             _vertices[_vertexCount + 3] = new VertexMicro(
                 new Vector3(wBottomLeft.X, wBottomLeft.Y, 0f),
-                GetUV(_shapes, bottomLeft),
+                GetUVMirror(_shapes, bottomLeft, 256f),
                 GetUV(_core, bottomLeft),
                 color ?? Color.White,
                 r,
@@ -190,6 +190,9 @@ namespace GameProject {
 
         private Vector2 GetUV(Texture2D texture, Num.Vector2 xy) {
             return new Vector2(xy.X / texture.Width, xy.Y / texture.Height);
+        }
+        private Vector3 GetUVMirror(Texture2D texture, Num.Vector2 xy, float row) {
+            return new Vector3(xy.X / texture.Width, xy.Y / texture.Height, (row * 2f - 256f) / texture.Height - xy.Y / texture.Height);
         }
 
         private void GenerateIndexArray() {

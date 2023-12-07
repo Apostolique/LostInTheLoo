@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameProject {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct VertexMicro(Vector3 position, Vector2 textureCoordinate1, Vector2 textureCoordinate2, Color c, float ramp, float coreBlendBegin, float coreBlendEnd, Vector2 direction) : IVertexType {
+    public struct VertexMicro(Vector3 position, Vector3 textureCoordinate1, Vector2 textureCoordinate2, Color c, float ramp, float coreBlendBegin, float coreBlendEnd, Vector2 direction) : IVertexType {
         public Vector3 Position = position;
-        public Vector2 TextureCoordinate1 = textureCoordinate1;
+        public Vector3 TextureCoordinate1 = textureCoordinate1;
         public Vector2 TextureCoordinate2 = textureCoordinate2;
         public Color Color = c;
         public Vector4 Meta1 = new Vector4(ramp, coreBlendBegin, coreBlendEnd, 0);
@@ -59,11 +59,11 @@ namespace GameProject {
         static VertexMicro() {
             var elements = new VertexElement[] {
                 new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
-                new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
-                new VertexElement(sizeof(float) * 5, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
-                new VertexElement(sizeof(float) * 7, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-                new VertexElement(sizeof(float) * 8, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-                new VertexElement(sizeof(float) * 12, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
+                new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0),
+                new VertexElement(sizeof(float) * 6, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1),
+                new VertexElement(sizeof(float) * 8, VertexElementFormat.Color, VertexElementUsage.Color, 0),
+                new VertexElement(sizeof(float) * 9, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
+                new VertexElement(sizeof(float) * 13, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
             };
             VertexDeclaration = new VertexDeclaration(elements);
         }
