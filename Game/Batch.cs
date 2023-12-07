@@ -218,10 +218,10 @@ namespace GameProject {
         }
 
         public enum MicroShapes {
-            Bean = 0,
-            Bell = 256,
-            Drill = 512,
-            Skewer = 768
+            Skewer = 0,
+            Drill = 256,
+            Bell = 512,
+            Bean = 768
         }
 
         private const int _initialSprites = 2048;
