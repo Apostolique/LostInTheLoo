@@ -136,7 +136,7 @@ namespace GameProject {
 
             _defaultEffect.Parameters["view_projection"]?.SetValue(_view * _projection);
             _defaultEffect.Parameters["Ramp"]?.SetValue(Assets.MicroRamps);
-            _defaultEffect.Parameters["Core"]?.SetValue(Assets.Core01);
+            _defaultEffect.Parameters["core_texture"]?.SetValue(Assets.Core01);
             // Apply the default pass in case a custom shader doesn't provide a vertex shader.
             _defaultPass.Apply();
 

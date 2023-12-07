@@ -10,8 +10,17 @@ float4x4 view_projection;
 float SinTime;
 float Time;
 sampler Shape : register(s0);
-sampler Core;
 sampler Ramp;
+
+Texture2D core_texture;
+sampler Core {
+    Texture = ( core_texture );
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+    AddressU = WRAP;
+    AddressV = WRAP;
+};
 
 struct VertexInput {
     float4 Position : POSITION0;
