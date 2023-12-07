@@ -204,19 +204,18 @@ namespace GameProject
             var category = random.Next(0, StaticFoodCategories.MaxIndex + 1);
             var type = random.Next(0, StaticFoodTypes.MaxIndex + 1);
             var color1 = staticFoodColors1[type];
-            var color2 = staticFoodColors2[type];
-            var radius = random.NextSingle() * 4 + 1;
+            var size = random.NextSingle(20, 40) + 1;
             var entity = new StaticFoodEntity()
             {
                 Category = category,
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp02, position.X, position.Y, radius, 0.1f, color1, position.Z),
+                    new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp02, position.X, position.Y, size, 0.1f, color1, position.Z),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = microRenderLogic,
-                AABB = MicroSegment.GetAABB(new Vector2(position.X, position.Y), radius),
+                AABB = MicroSegment.GetAABB(new Vector2(position.X, position.Y), size),
             };
             entity.Leaf = G.EntitiesByLocation.Add(entity.AABB, entity);
             entity.Leaf2 = G.StaticFoodEntitiesByLocation.Add(entity.AABB, entity);

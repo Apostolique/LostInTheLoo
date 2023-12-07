@@ -64,7 +64,7 @@ namespace GameProject
             var position = pet.AbsolutePosition;
             var poop = WorldGenerator.CreateStaticFood(position);
             var poopSegment = (MicroSegment)poop.Segments[0];
-            poopSegment.Size = 1.0f;
+            poopSegment.Size = 10.0f;
             poopSegment.Color = Color.Brown;
             poop.Type = StaticFoodTypes.Brown;
         }
