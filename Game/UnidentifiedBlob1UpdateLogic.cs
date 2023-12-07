@@ -164,7 +164,7 @@ namespace GameProject
             food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
             food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
 
-            var foodSize = ((MicroSegment)food.Segments[0]).Size;
+            var foodSize = ((MicroSegment)food.Segments[0]).Size / 10f;
             pet.Scale += foodSize / pet.Definition.BaseSize;
             pet.Size = pet.Definition.BaseSize * pet.Scale;
             pet.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodSize * pet.Definition.FoodBonusMultiplier;
