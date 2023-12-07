@@ -1,8 +1,10 @@
+using System;
+
 namespace GameProject
 {
     public class Transition
     {
-        private enum Direction { Left = -1, Right = 1}
+        public enum Direction { Left = -1, Right = 1}
 
         private const string ExtremitySpriteName = @"transition_crescent";
 
@@ -70,6 +72,7 @@ namespace GameProject
 
             if (_isTransitioning) return;
 
+            _isTransitioning = true;
             _timeElapsed = 0;
             _halfwayReached = onHalfwayReached;
             _endReached = onEndReached;
