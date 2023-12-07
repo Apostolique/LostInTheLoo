@@ -61,6 +61,18 @@
 /processorParam:DebugMode=Auto
 /build:infinite.fx
 
+#begin lens.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:lens.png
+
 #begin mask.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -363,4 +375,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/shapes/shape-sprites.png
+
+#begin transition_crescent.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:transition_crescent.png
 
