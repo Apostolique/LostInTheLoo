@@ -11,8 +11,7 @@ namespace GameProject
         public bool CanPoop;
         public double MinPoopTimeDelay = 10; // default value
         public double MaxPoopTimeDelay = 20; // default value
-        public float BaseRadius1 = 1;
-        public float BaseRadius2 = 1;
+        public float BaseSize = 1;
         public float MaxScale = 5;
         public bool CanEatFood;
         public int[] EatsFoods = Array.Empty<int>();

@@ -323,7 +323,6 @@ namespace GameProject {
             return new RectangleF(topLeft, bottomRight - topLeft);
         }
         public RectangleF GetRectangleAABB(Vector2 xy, Vector2 size, float rotation = 0f) {
-
             var topLeft = xy;
             var topRight = xy + new Vector2(size.X, 0);
             var bottomRight = xy + size;

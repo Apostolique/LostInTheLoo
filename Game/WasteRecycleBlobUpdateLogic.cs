@@ -51,7 +51,7 @@ namespace GameProject
                     if(food != null)
                     {
                         blob.TargetFood = food;
-                        blob.TargetPosition = ((CircleSegment)food.Segments[0]).Center.ToVector3XY(food.Z);
+                        blob.TargetPosition = ((MicroSegment)food.Segments[0]).Center.ToVector3XY(food.Z);
                         blob.MovementSpeedMultiplier = WasteRecycleBlobEntity.SeekSpeedMultiplier;
                     }
                 }
@@ -67,11 +67,10 @@ namespace GameProject
                     blob.TargetFood = null!;
                     food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
                     food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
-                    var foodRadius = ((CircleSegment)food.Segments[0]).Radius;
-                    blob.Scale += foodRadius;
-                    blob.Segment.Radius1 = blob.OriginalRadius1 * blob.Scale;
-                    blob.Segment.Radius2 = blob.OriginalRadius2 * blob.Scale;
-                    blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodRadius * 15f;
+                    var foodSize = ((MicroSegment)food.Segments[0]).Size;
+                    blob.Scale += foodSize;
+                    blob.Segment.Size = blob.OriginalSize * blob.Scale;
+                    blob.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodSize * 15f;
                     blob.NextFoodScan += digestTime + 2.0d; // delay to search for food again
                     blob.State = Digest;
                     blob.DigestTimer = G.WorldTime.TotalGameTime.TotalSeconds + digestTime;
@@ -105,7 +104,7 @@ namespace GameProject
             blob.Segment.Center = blob.AbsolutePosition.ToVector2XY();
             blob.Segment.Z = blob.AbsolutePosition.Z;
             blob.Segment.Rotation = blob.LocalRotationSpin;
-            blob.AABB = G.SB.GetEllipseAABB(blob.Segment.Center, blob.Segment.Radius1, blob.Segment.Radius2, blob.Segment.Rotation);
+            blob.AABB = MicroSegment.GetAABB(blob.Segment.Center, blob.Segment.Size, blob.Segment.Rotation);
             blob.Z = blob.AbsolutePosition.Z;
             G.EntitiesByLocation.Update(blob.Leaf, blob.AABB);
         }
@@ -119,17 +118,16 @@ namespace GameProject
 
             if(blob.Scale > WasteRecycleBlobEntity.MaxRadius)
             {
-                const float foodRadius = 4;
+                const float foodSize = 4;
                 blob.Scale *= 0.5f;
-                blob.Segment.Radius1 = blob.OriginalRadius1 * blob.Scale;
-                blob.Segment.Radius2 = blob.OriginalRadius2 * blob.Scale;
+                blob.Segment.Size = blob.OriginalSize * blob.Scale;
 
                 var position = blob.AbsolutePosition;
                 var food = WorldGenerator.CreateStaticFood(position);
-                var poopSegment = (CircleSegment)food.Segments[0];
-                poopSegment.Radius = foodRadius;
+                var poopSegment = (MicroSegment)food.Segments[0];
+                poopSegment.Size = foodSize;
             }
-            
+
             blob.State = Idle;
         }
     }

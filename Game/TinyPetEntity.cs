@@ -28,13 +28,12 @@ namespace GameProject
         public double SinusMovementSpeedMultiplierOffset;
         public double SinusMovementSpeedMultiplierScale;
         public float CourseDiviationSpeed;
-        public EllipseSegment Segment;
+        public MicroSegment Segment;
         public TinyPetEntity Twin;
         public double SplitTimer;
         public float SplitScaleChangePerSecond;
         public float TargetRotation;
 
-        public float Radius1 { get => this.Segment.Radius1; set => this.Segment.Radius1 = value; }
-        public float Radius2 { get => this.Segment.Radius2; set => this.Segment.Radius2 = value; }
+        public float Size { get => this.Segment.Size; set => this.Segment.Size = value; }
     }
 }
