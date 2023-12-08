@@ -66,7 +66,7 @@ namespace GameProject {
                 direction.Normalize();
             }
 
-            float r = ((float)ramp + 0.1f) / (float)MicroRamps.Count;
+            float r = ((float)ramp + 0.5f) / (float)MicroRamps.Count;
 
             int shapeOffset = (int)shape;
 
@@ -216,12 +216,57 @@ namespace GameProject {
         }
 
         public enum MicroRamps {
-            Ramp02 = 0,
-            Ramp03 = 1,
-            Ramp04 = 2,
-            Ramp05 = 3,
-            Count = 4
+            Ramp01a,
+            Ramp02a,
+            Ramp03a,
+            Ramp04a,
+            Ramp05a,
+            Ramp06a,
+            Ramp07a,
+            Ramp08a,
+            Ramp09a,
+            Ramp10a,
+            Ramp11a,
+            Ramp12a,
+            Ramp01b,
+            Ramp02b,
+            Ramp03b,
+            Ramp04b,
+            Ramp05b,
+            Ramp06b,
+            Ramp07b,
+            Ramp08b,
+            Ramp09b,
+            Ramp10b,
+            Ramp11b,
+            Ramp12b,
+            Ramp01c,
+            Ramp02c,
+            Ramp03c,
+            Ramp04c,
+            Ramp05c,
+            Ramp06c,
+            Ramp07c,
+            Ramp08c,
+            Ramp09c,
+            Ramp10c,
+            Ramp11c,
+            Ramp12c,
+            Ramp01d,
+            Ramp02d,
+            Ramp03d,
+            Ramp04d,
+            Ramp05d,
+            Ramp06d,
+            Ramp07d,
+            Ramp08d,
+            Ramp09d,
+            Ramp10d,
+            Ramp11d,
+            Ramp12d,
+            Count
         }
+        public Array Ramps = Enum.GetValues(typeof(MicroRamps));
 
         public enum MicroShapes {
             Ovoid,
