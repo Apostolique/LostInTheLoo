@@ -26,6 +26,7 @@ namespace GameProject {
         private static void LoadTextures(ContentManager content) {
             Background = content.Load<Texture2D>("background");
             Background3 = content.Load<Texture2D>("background3");
+            Background4 = content.Load<Texture2D>("background4");
             Noise1 = content.Load<Texture2D>("noise1");
             Noise2 = content.Load<Texture2D>("noise2");
             Mask1 = content.Load<Texture2D>("mask1");
@@ -124,6 +125,7 @@ namespace GameProject {
 
         public static Texture2D Background;
         public static Texture2D Background3;
+        public static Texture2D Background4;
         public static Texture2D Noise1;
         public static Texture2D Noise2;
         public static Texture2D Mask1;

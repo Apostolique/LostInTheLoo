@@ -27,7 +27,7 @@ namespace GameProject {
         }
 
         public void ApplyBokeh(RenderTarget2D source, RenderTarget2D real, RenderTarget2D imaginary, RenderTarget2D temp, RenderTarget2D destination, float z, float blur, float opacity) {
-            if (G.DisableBokeh || blur == 0f) {
+            if (G.DisableBokeh || blur == 0f || true) {
                 G.GraphicsDevice.SetRenderTarget(destination);
                 G.S.Begin();
                 G.S.Draw(source, Vector2.Zero, TWColor.White * opacity);
@@ -64,6 +64,9 @@ namespace GameProject {
 
                 G.GraphicsDevice.SetRenderTarget(destination);
                 G.S.Begin();
+                G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
+                G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
+                G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
                 G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
                 G.S.Draw(temp, Vector2.Zero, TWColor.White * opacity);
                 G.S.End();

@@ -218,7 +218,7 @@ namespace GameProject {
             GraphicsDevice.Clear(TWColor.Black);
 
             G.S.Begin(transformMatrix: G.Camera.GetView(-3f));
-            G.S.Draw(Assets.Background3, new Rectangle(-15000, -10000, Assets.Background3.Width * 50, Assets.Background3.Height * 50), TWColor.White);
+            G.S.Draw(Assets.Background4, new Rectangle(-20000, -20000, Assets.Background4.Width * 30, Assets.Background4.Height * 30), TWColor.White);
             G.S.End();
 
             G.R.Draw(Composite);
