@@ -190,7 +190,7 @@ namespace GameProject
                 return;
             }
 
-            if (pet.DeathFromStarvationTime > G.WorldTime.TotalGameTime.TotalSeconds)
+            if (pet.DeathFromStarvationTime < G.WorldTime.TotalGameTime.TotalSeconds)
             {
                 return;
             }

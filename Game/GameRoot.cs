@@ -326,6 +326,7 @@ namespace GameProject {
         ICondition _toggleBorderless = new KeyboardCondition(Keys.F11);
         ICondition _dragCamera =
             new AnyCondition(
+                new MouseCondition(MouseButton.LeftButton),
                 new MouseCondition(MouseButton.RightButton),
                 new MouseCondition(MouseButton.MiddleButton)
             );
