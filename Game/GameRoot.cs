@@ -187,6 +187,10 @@ namespace GameProject {
             G.R.Clear(Composite);
             G.R.Clear(Target1);
 
+            float time = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            Assets.Micro.Parameters["Time"].SetValue(time * 0.00005f);
+            Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.0005f));
+
             float intervalGroup = 0.05f;
             float focalPoint = 0.0f;
             float maxFocus = 0.5f;
@@ -215,10 +219,32 @@ namespace GameProject {
 
             G.R.Draw(Composite);
 
-            float time = (float)gameTime.TotalGameTime.TotalMilliseconds;
-
-            Assets.Micro.Parameters["Time"].SetValue(time * 0.00005f);
-            Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.0005f));
+            // G.B.Begin();
+            // G.B.Draw(Batch.MicroShapes.Ovoid, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(0, 0)));
+            // G.B.Draw(Batch.MicroShapes.Ovoid2, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(256, 0)));
+            // G.B.Draw(Batch.MicroShapes.Cylindrical, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(512, 0)));
+            // G.B.Draw(Batch.MicroShapes.Cylindrical2, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(768, 0)));
+            // G.B.Draw(Batch.MicroShapes.Cylindrical3, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1024, 0)));
+            // G.B.Draw(Batch.MicroShapes.Cylindrical4, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1280, 0)));
+            // G.B.Draw(Batch.MicroShapes.Cylindrical5, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(0, 256)));
+            // G.B.Draw(Batch.MicroShapes.Triangle, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(256, 256)));
+            // G.B.Draw(Batch.MicroShapes.Triangle2, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(512, 256)));
+            // G.B.Draw(Batch.MicroShapes.Triangle3, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(768, 256)));
+            // G.B.Draw(Batch.MicroShapes.Triangle4, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1024, 256)));
+            // G.B.Draw(Batch.MicroShapes.Triangle5, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1280, 256)));
+            // G.B.Draw(Batch.MicroShapes.Triangle6, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(0, 512)));
+            // G.B.Draw(Batch.MicroShapes.Triangle7, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(256, 512)));
+            // G.B.Draw(Batch.MicroShapes.Triangle8, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(512, 512)));
+            // G.B.Draw(Batch.MicroShapes.Triangle9, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(768, 512)));
+            // G.B.Draw(Batch.MicroShapes.Triangle10, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1024, 512)));
+            // G.B.Draw(Batch.MicroShapes.Square, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1280, 512)));
+            // G.B.Draw(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(0, 768)));
+            // G.B.Draw(Batch.MicroShapes.Square3, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(256, 768)));
+            // G.B.Draw(Batch.MicroShapes.Square4, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(512, 768)));
+            // G.B.Draw(Batch.MicroShapes.Square5, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(768, 768)));
+            // G.B.Draw(Batch.MicroShapes.Square6, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1024, 768)));
+            // G.B.Draw(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp02, 0.3f, 0.8f, new Vector2(0f, 1f), Matrix32.CreateScale(256, 256) * Matrix32.CreateTranslation(new Vector2(1280, 768)));
+            // G.B.End();
 
             var font = Assets.FontSystem.GetFont(24);
             G.S.Begin();

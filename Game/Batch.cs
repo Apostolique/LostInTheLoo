@@ -68,12 +68,15 @@ namespace GameProject {
 
             float r = ((float)ramp + 0.1f) / (float)MicroRamps.Count;
 
-            float shapeOffset = (float)shape;
+            int shapeOffset = (int)shape;
 
-            Num.Vector2 topLeft = new Num.Vector2(shapeOffset, 0);
-            Num.Vector2 topRight = new Num.Vector2(shapeOffset + 256, 0);
-            Num.Vector2 bottomRight = new Num.Vector2(shapeOffset + 256, 256);
-            Num.Vector2 bottomLeft = new Num.Vector2(shapeOffset, 256);
+            float row = shapeOffset / 6;
+            float column = shapeOffset - (row * 6);
+
+            Num.Vector2 topLeft = new Num.Vector2(column * 256, row * 256);
+            Num.Vector2 topRight = new Num.Vector2(column * 256 + 256, row * 256);
+            Num.Vector2 bottomRight = new Num.Vector2(column * 256 + 256, row * 256 + 256);
+            Num.Vector2 bottomLeft = new Num.Vector2(column * 256, row * 256 + 256);
 
             Num.Vector2 wTopLeft = Num.Vector2.Transform(new Num.Vector2(0f, 0f), world.Value);
             Num.Vector2 wTopRight = Num.Vector2.Transform(new Num.Vector2(1f, 0f), world.Value);
@@ -82,7 +85,7 @@ namespace GameProject {
 
             _vertices[_vertexCount + 0] = new VertexMicro(
                 new Vector3(wTopLeft.X, wTopLeft.Y, 0f),
-                GetUVMirror(_shapes, topLeft, 256f),
+                GetUVMirror(_shapes, topLeft, row * 256),
                 GetUV(_core, topLeft),
                 color ?? Color.White,
                 r,
@@ -92,7 +95,7 @@ namespace GameProject {
             );
             _vertices[_vertexCount + 1] = new VertexMicro(
                 new Vector3(wTopRight.X, wTopRight.Y, 0f),
-                GetUVMirror(_shapes, topRight, 256f),
+                GetUVMirror(_shapes, topRight, row * 256),
                 GetUV(_core, topRight),
                 color ?? Color.White,
                 r,
@@ -102,7 +105,7 @@ namespace GameProject {
             );
             _vertices[_vertexCount + 2] = new VertexMicro(
                 new Vector3(wBottomRight.X, wBottomRight.Y, 0f),
-                GetUVMirror(_shapes, bottomRight, 256f),
+                GetUVMirror(_shapes, bottomRight, row * 256),
                 GetUV(_core, bottomRight),
                 color ?? Color.White,
                 r,
@@ -112,7 +115,7 @@ namespace GameProject {
             );
             _vertices[_vertexCount + 3] = new VertexMicro(
                 new Vector3(wBottomLeft.X, wBottomLeft.Y, 0f),
-                GetUVMirror(_shapes, bottomLeft, 256f),
+                GetUVMirror(_shapes, bottomLeft, row * 256),
                 GetUV(_core, bottomLeft),
                 color ?? Color.White,
                 r,
@@ -192,7 +195,7 @@ namespace GameProject {
             return new Vector2(xy.X / texture.Width, xy.Y / texture.Height);
         }
         private Vector3 GetUVMirror(Texture2D texture, Num.Vector2 xy, float row) {
-            return new Vector3(xy.X / texture.Width, xy.Y / texture.Height, (row * 2f - 256f) / texture.Height - xy.Y / texture.Height);
+            return new Vector3(xy.X / texture.Width, xy.Y / texture.Height, (256 - (xy.Y - row) + row) / texture.Height);
         }
 
         private void GenerateIndexArray() {
@@ -221,10 +224,30 @@ namespace GameProject {
         }
 
         public enum MicroShapes {
-            Skewer = 0,
-            Drill = 256,
-            Bell = 512,
-            Bean = 768
+            Ovoid,
+            Ovoid2,
+            Cylindrical,
+            Cylindrical2,
+            Cylindrical3,
+            Cylindrical4,
+            Cylindrical5,
+            Triangle,
+            Triangle2,
+            Triangle3,
+            Triangle4,
+            Triangle5,
+            Triangle6,
+            Triangle7,
+            Triangle8,
+            Triangle9,
+            Triangle10,
+            Square,
+            Square2,
+            Square3,
+            Square4,
+            Square5,
+            Square6,
+            Skewer,
         }
 
         private const int _initialSprites = 2048;

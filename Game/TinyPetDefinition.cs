@@ -8,17 +8,22 @@ namespace GameProject
 {
     public class TinyPetDefinition
     {
-        public bool CanPoop;
+        public bool CanPoop = true;
         public double MinPoopTimeDelay = 10; // default value
         public double MaxPoopTimeDelay = 20; // default value
         public float BaseSize = 1;
         public float MaxScale = 5;
-        public bool CanEatFood;
-        public int[] EatsFoods = Array.Empty<int>();
-        public float FoodBonusMultiplier = 1;
+        public bool CanEatFood = true;
+        public int[] EatsFoods = new int[] {
+            StaticFoodTypes.Blue,
+            StaticFoodTypes.Green,
+            StaticFoodTypes.Red,
+        };
+
+        public float FoodBonusMultiplier = 1f / 10f;
         public double MinDigestTime = 1;
         public double MaxDigestTime = 2;
-        public bool CanDieFromStarvation;
+        public bool CanDieFromStarvation = true;
         public double DeathAnimationTime = 2; // how long is the death animation
         public double MinRandomMovementSpeedDelay = 10;
         public double MaxRandomMovementSpeedDelay = 15;

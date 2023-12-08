@@ -12,7 +12,7 @@ namespace GameProject
     public static class WorldGenerator
     {
         private const int numberUnidentifiedBlob1ToCreate = 1000;
-        private const int numberOfStaticFoodsToCreate = 15000;
+        private const int numberOfStaticFoodsToCreate = 5000;
         private const int numberOfWasteRecycleBlobToCreate = 1000;
         private const int numberOfWildlyRandomBlobsToCreate = 500;
 
@@ -152,7 +152,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new MicroSegment(Batch.MicroShapes.Drill, Batch.MicroRamps.Ramp04, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Cylindrical, Batch.MicroRamps.Ramp04, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
@@ -181,7 +181,7 @@ namespace GameProject
                 RenderLogic = microRenderLogic,
                 UpdateLogic = wasteRecycleBlobUpdateLogic,
                 TargetPosition = position,
-                Segment = new MicroSegment(Batch.MicroShapes.Bell, Batch.MicroRamps.Ramp05, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Triangle, Batch.MicroRamps.Ramp05, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z),
                 MovementSpeedMultiplier = WasteRecycleBlobEntity.RoamSpeedMultiplier,
                 Z = position.Z,
                 NextFoodScan = index * 0.005f,
@@ -211,7 +211,7 @@ namespace GameProject
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new MicroSegment(Batch.MicroShapes.Bean, Batch.MicroRamps.Ramp03, position.X, position.Y, size, 0.1f, color1, position.Z),
+                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp03, position.X, position.Y, size, 0.1f, color1, position.Z),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = microRenderLogic,

@@ -164,7 +164,7 @@ namespace GameProject
             food.Leaf = G.EntitiesByLocation.Remove(food.Leaf);
             food.Leaf2 = G.StaticFoodEntitiesByLocation.Remove(food.Leaf2);
 
-            var foodSize = ((MicroSegment)food.Segments[0]).Size / 10f;
+            var foodSize = ((MicroSegment)food.Segments[0]).Size;
             pet.Scale += foodSize / pet.Definition.BaseSize;
             pet.Size = pet.Definition.BaseSize * pet.Scale;
             pet.DeathFromStarvationTime = G.WorldTime.TotalGameTime.TotalSeconds + foodSize * pet.Definition.FoodBonusMultiplier;
@@ -328,7 +328,7 @@ namespace GameProject
             twin.State = Null;
             twin.TargetFood = null!;
             twin.TargetPosition = blob.TargetPosition;
-            twin.UpdateLogic = UpdateLogic.NullLogic;
+            twin.UpdateLogic = this;
             twin.Z = blob.Z;
             twin.AABB = blob.AABB;
             twin.UpdateAbsoluteRecursive();
