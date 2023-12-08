@@ -212,7 +212,7 @@ namespace GameProject
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp02a, position.X, position.Y, size, 0.1f, color1, position.Z, 0.7f, 0f),
+                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp06a, position.X, position.Y, size, 0.1f, color1, position.Z, 0.7f, 0f),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = microRenderLogic,
