@@ -84,7 +84,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp01, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp01a, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
@@ -181,7 +181,7 @@ namespace GameProject
                 RenderLogic = microRenderLogic,
                 UpdateLogic = wasteRecycleBlobUpdateLogic,
                 TargetPosition = position,
-                Segment = new MicroSegment(Batch.MicroShapes.Triangle, Batch.MicroRamps.Ramp04, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Triangle, Batch.MicroRamps.Ramp04a, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z),
                 MovementSpeedMultiplier = WasteRecycleBlobEntity.RoamSpeedMultiplier,
                 Z = position.Z,
                 NextFoodScan = index * 0.005f,
@@ -211,7 +211,7 @@ namespace GameProject
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp02, position.X, position.Y, size, 0.1f, color1, position.Z),
+                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp02a, position.X, position.Y, size, 0.1f, color1, position.Z),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = microRenderLogic,
