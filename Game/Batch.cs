@@ -249,6 +249,7 @@ namespace GameProject {
             Square6,
             Skewer,
         }
+        public Array Shapes = Enum.GetValues(typeof(MicroShapes));
 
         private const int _initialSprites = 2048;
         private const int _initialTriangles = _initialSprites * 2;

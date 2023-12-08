@@ -152,7 +152,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new MicroSegment(Batch.MicroShapes.Cylindrical, Batch.MicroRamps.Ramp04, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
+                Segment = new MicroSegment((Batch.MicroShapes)G.B.Shapes.GetValue(random.Next(G.B.Shapes!.Length)!), Batch.MicroRamps.Ramp04, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
