@@ -25,7 +25,7 @@ namespace GameProject {
             _indexBuffer.SetData(_indices);
 
             _shapes = Assets.MicroShapes;
-            _core = Assets.Core01;
+            _core = Assets.Tara;
         }
 
         // TODO: Shapes (filled, borders)
@@ -139,7 +139,7 @@ namespace GameProject {
 
             _defaultEffect.Parameters["view_projection"]?.SetValue(_view * _projection);
             _defaultEffect.Parameters["Ramp"]?.SetValue(Assets.MicroRamps);
-            _defaultEffect.Parameters["core_texture"]?.SetValue(Assets.Core01);
+            _defaultEffect.Parameters["core_texture"]?.SetValue(_core);
             // Apply the default pass in case a custom shader doesn't provide a vertex shader.
             _defaultPass.Apply();
 
