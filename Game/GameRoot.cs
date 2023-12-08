@@ -54,7 +54,7 @@ namespace GameProject {
             SetExpTween(-1.2f, 0);
 
             Random rand = new();
-            int rand_theme = rand.Next((int)Assets.AudioTheme.T1, (int)Assets.AudioTheme.T3);
+            int rand_theme = rand.Next((int)Assets.AudioTheme.T1, (int)Assets.AudioTheme.Count);
             Assets.AudioTheme theme = (Assets.AudioTheme)typeof(Assets.AudioTheme).GetEnumValues().GetValue(rand_theme);
 
             _low = Assets.Themes[theme].music[Assets.MusicIntensity.Low].GetMusic.CreateInstance();
@@ -77,7 +77,7 @@ namespace GameProject {
 
             WorldGenerator.Generate();
         }
-        
+
         protected void ClientSizeChanged(object? sender, EventArgs? e) {
             int w = Window.ClientBounds.Width;
             int h = Window.ClientBounds.Height;

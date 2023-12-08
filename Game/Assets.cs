@@ -58,6 +58,7 @@ namespace GameProject {
             T1,
             T2,
             T3,
+            Count
         }
 
         public enum MusicIntensity {
