@@ -53,10 +53,14 @@ namespace GameProject {
             G.Camera = new Camera(new DensityViewport(GraphicsDevice, Window, 2000f, 2000f));
             SetExpTween(-1.2f, 0);
 
-            _low = Assets.Low.CreateInstance();
-            _medium = Assets.Medium.CreateInstance();
-            _mediumHigh = Assets.MediumHigh.CreateInstance();
-            _high = Assets.High.CreateInstance();
+            Random rand = new();
+            int rand_theme = rand.Next((int)Assets.AudioTheme.T1, (int)Assets.AudioTheme.T3);
+            Assets.AudioTheme theme = (Assets.AudioTheme)typeof(Assets.AudioTheme).GetEnumValues().GetValue(rand_theme);
+
+            _low = Assets.Themes[Assets.AudioTheme.T2].music[Assets.MusicIntensity.Low].GetMusic.CreateInstance();
+            _medium = Assets.Themes[Assets.AudioTheme.T2].music[Assets.MusicIntensity.Medium].GetMusic.CreateInstance();
+            _mediumHigh = Assets.Themes[Assets.AudioTheme.T2].music[Assets.MusicIntensity.MediumHigh].GetMusic.CreateInstance();
+            _high = Assets.Themes[Assets.AudioTheme.T2].music[Assets.MusicIntensity.High].GetMusic.CreateInstance();
             _low.IsLooped = true;
             _medium.IsLooped = true;
             _mediumHigh.IsLooped = true;
