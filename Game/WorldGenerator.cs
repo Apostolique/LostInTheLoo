@@ -84,7 +84,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp01a, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Skewer, Batch.MicroRamps.Ramp01a, position.X, position.Y, radius1, 0f, definition.Color1, position.Z, 0.8f, 1f),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
@@ -103,6 +103,7 @@ namespace GameProject
 
         public static TinyPetEntity CreateWildlyRandomBlob(int index)
         {
+            var middleRamp = random.NextSingle(0f, 1f);
             var twColorType = typeof(TWColor);
             var twColorFields = twColorType
                 .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
@@ -152,7 +153,7 @@ namespace GameProject
                 UpdateLogic = unidentifiedBlob1UpdateLogic,
                 CourseDiviationSpeed = random.NextSingle() * 50 + 1,
                 TargetPosition = targetPosition,
-                Segment = new MicroSegment((Batch.MicroShapes)G.B.Shapes.GetValue(random.Next(G.B.Shapes.Length))!, (Batch.MicroRamps)G.B.Ramps.GetValue(random.Next(G.B.Ramps.Length))!, position.X, position.Y, radius1, 0f, definition.Color1, position.Z),
+                Segment = new MicroSegment((Batch.MicroShapes)G.B.Shapes.GetValue(random.Next(G.B.Shapes.Length))!, (Batch.MicroRamps)G.B.Ramps.GetValue(random.Next(G.B.Ramps.Length))!, position.X, position.Y, radius1, 0f, definition.Color1, position.Z, random.NextSingle(0f, middleRamp), random.NextSingle(middleRamp, 1f)),
                 RandomMovementSpeedMultiplier = random.NextSingle(definition.MinRandomMovementSpeedMultiplier, definition.MaxRandomMovementSpeedMultiplier),
                 NextRandomMovementSpeedMultiplierChange = random.NextDouble(definition.MinRandomMovementSpeedDelay, definition.MaxRandomMovementSpeedDelay),
                 Z = position.Z,
@@ -181,7 +182,7 @@ namespace GameProject
                 RenderLogic = microRenderLogic,
                 UpdateLogic = wasteRecycleBlobUpdateLogic,
                 TargetPosition = position,
-                Segment = new MicroSegment(Batch.MicroShapes.Triangle, Batch.MicroRamps.Ramp04a, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z),
+                Segment = new MicroSegment(Batch.MicroShapes.Triangle, Batch.MicroRamps.Ramp04a, position.X, position.Y, size, 0f, Color.SaddleBrown, position.Z, 0.1f, 0.936f),
                 MovementSpeedMultiplier = WasteRecycleBlobEntity.RoamSpeedMultiplier,
                 Z = position.Z,
                 NextFoodScan = index * 0.005f,
@@ -211,7 +212,7 @@ namespace GameProject
                 Type = type,
                 Segments = new Segment[]
                 {
-                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp02a, position.X, position.Y, size, 0.1f, color1, position.Z),
+                    new MicroSegment(Batch.MicroShapes.Square2, Batch.MicroRamps.Ramp02a, position.X, position.Y, size, 0.1f, color1, position.Z, 0.7f, 0f),
                 },
                 UpdateLogic = UpdateLogic.NullLogic,
                 RenderLogic = microRenderLogic,

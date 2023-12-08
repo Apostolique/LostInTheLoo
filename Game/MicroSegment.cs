@@ -4,7 +4,7 @@ using MonoGame.Extended;
 
 namespace GameProject {
     public class MicroSegment : Segment {
-        public MicroSegment(Batch.MicroShapes shape, Batch.MicroRamps ramp, float centerX, float centerY, float size, float rotation, Color color, float z) {
+        public MicroSegment(Batch.MicroShapes shape, Batch.MicroRamps ramp, float centerX, float centerY, float size, float rotation, Color color, float z, float begin, float end) {
             Shape = shape;
             Ramp = ramp;
             this.Center = new Vector2(centerX, centerY);
@@ -12,6 +12,8 @@ namespace GameProject {
             this.Rotation = rotation;
             this.Color = color;
             this.Z = z;
+            CoreBlendBegin = begin;
+            CoreBlendEnd = end;
         }
 
         public Batch.MicroShapes Shape;
