@@ -329,7 +329,7 @@ namespace GameProject
             twin.NextRandomMovementSpeedMultiplierChange = blob.NextRandomMovementSpeedMultiplierChange;
             twin.RenderLogic = blob.RenderLogic;
             var segment = blob.Segment;
-            twin.Segment = new MicroSegment(segment.Shape, segment.Ramp, segment.Center.X, segment.Center.Y, blob.Size, segment.Rotation, segment.Color, segment.Z);
+            twin.Segment = new MicroSegment(segment.Shape, segment.Ramp, segment.Center.X, segment.Center.Y, blob.Size, segment.Rotation, segment.Color, segment.Z, segment.CoreBlendBegin, segment.CoreBlendEnd);
             twin.Segments = new Segment[] { twin.Segment };
             twin.State = Null;
             twin.TargetFood = null!;

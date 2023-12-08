@@ -316,6 +316,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/cores/core_02.png
 
+#begin textures/cores/tara_colour.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/cores/tara_colour.png
+
 #begin textures/ramps/ramp_02.png
 /importer:TextureImporter
 /processor:TextureProcessor

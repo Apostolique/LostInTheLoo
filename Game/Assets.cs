@@ -30,6 +30,7 @@ namespace GameProject {
             MicroShapes = content.Load<Texture2D>("textures/shapes/shape-sprites");
             Core01 = content.Load<Texture2D>("textures/cores/core_01");
             Core02 = content.Load<Texture2D>("textures/cores/core_02");
+            Tara = content.Load<Texture2D>("textures/cores/tara_colour");
             Bean = content.Load<Texture2D>("textures/shapes/shape_bean2");
             Bell = content.Load<Texture2D>("textures/shapes/shape_bell");
             Drill = content.Load<Texture2D>("textures/shapes/shape_drill");
@@ -67,6 +68,7 @@ namespace GameProject {
         public static Texture2D MicroShapes;
         public static Texture2D Core01;
         public static Texture2D Core02;
+        public static Texture2D Tara;
         public static Texture2D Bean;
         public static Texture2D Bell;
         public static Texture2D Drill;

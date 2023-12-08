@@ -192,7 +192,7 @@ namespace GameProject {
             Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.001f));
 
             float intervalGroup = 0.05f;
-            float focalPoint = 0.0f;
+            float focalPoint = 0.01f;
             float maxFocus = 0.5f;
             float maxOpacity = 0.5f;
             foreach (var group in G.EntitiesByLocation
