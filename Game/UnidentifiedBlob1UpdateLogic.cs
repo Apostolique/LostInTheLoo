@@ -269,6 +269,10 @@ namespace GameProject
                 direction.Normalize();
             }
 
+            if (float.IsNaN(direction.X) || float.IsNaN(direction.Y) || float.IsNaN(direction.Z)) {
+                direction = Vector3.Zero;
+            }
+
             var movement = direction * amount;
             pet.LocalPosition += movement;
             pet.DistanceToTargetPositon = Vector3.Distance(pet.AbsolutePosition, pet.TargetPosition);
