@@ -189,7 +189,7 @@ namespace GameProject {
 
             float time = (float)gameTime.TotalGameTime.TotalMilliseconds;
             Assets.Micro.Parameters["Time"].SetValue(time * 0.00005f);
-            Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.0005f));
+            Assets.Micro.Parameters["SinTime"].SetValue(MathF.Sin(time * 0.001f));
 
             float intervalGroup = 0.05f;
             float focalPoint = 0.0f;
