@@ -37,5 +37,6 @@ namespace GameProject {
         public static readonly Random Random = new Random();
         public static readonly bool RenderAABB = File.Exists("renderaabb.enable");
         public static readonly WorldTime WorldTime = new WorldTime();
+        public static float Overpopulation = 1;
     }
 }

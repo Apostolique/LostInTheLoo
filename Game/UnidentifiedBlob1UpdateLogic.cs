@@ -309,6 +309,8 @@ namespace GameProject
             blob.DeathFromStarvationTime += splitTime;
             blob.SplitTimer = G.WorldTime.TotalGameTime.TotalSeconds + splitTime;
             blob.SplitScaleChangePerSecond = blob.Scale * 0.5f / (float)splitTime;
+            blob.Scale *= 0.8f;
+            blob.Size = blob.Definition.BaseSize * blob.Scale;
 
             var twin = blob.Twin = WorldGenerator.CreateRandomUnidentifiedBlob1(0, blob.Definition);
             // twin.AbsolutePosition = blob.AbsolutePosition;
@@ -355,7 +357,7 @@ namespace GameProject
             blob.LocalPosition += movement;
             twin.LocalPosition -= movement;
 
-            blob.Scale -= blob.SplitScaleChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            blob.Scale -= blob.SplitScaleChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds * G.Overpopulation;
             blob.Size = blob.Definition.BaseSize * blob.Scale;
             twin.Segment.Size = blob.Segment.Size;
 

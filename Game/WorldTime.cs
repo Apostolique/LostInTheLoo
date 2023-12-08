@@ -25,6 +25,8 @@ namespace GameProject
 
             worldTime.ElapsedGameTime = TimeSpan.FromSeconds(elapsedWorldSeconds);
             worldTime.TotalGameTime += worldTime.ElapsedGameTime;
+            G.Overpopulation = G.EntitiesByLocation.Count / 4000f;
+            G.Overpopulation *= G.Overpopulation;
         }
     }
 }
