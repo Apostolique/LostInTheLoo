@@ -21,8 +21,8 @@ namespace GameProject {
         public float Rotation;
         public Color Color;
         public float Z;
-        public float CoreBlendBegin = 0.3f;
-        public float CoreBlendEnd = 0.8f;
+        public float CoreBlendBegin = 0.8f;
+        public float CoreBlendEnd = 1.0f;
 
         public static Vector2 Rotate(Vector2 a, Vector2 origin, float rotation) {
             return new Vector2(origin.X + (a.X - origin.X) * MathF.Cos(rotation) - (a.Y - origin.Y) * MathF.Sin(rotation), origin.Y + (a.X - origin.X) * MathF.Sin(rotation) + (a.Y - origin.Y) * MathF.Cos(rotation));
