@@ -269,6 +269,10 @@ namespace GameProject
                 direction.Normalize();
             }
 
+            if (float.IsNaN(direction.X) || float.IsNaN(direction.Y) || float.IsNaN(direction.Z)) {
+                direction = Vector3.Zero;
+            }
+
             var movement = direction * amount;
             pet.LocalPosition += movement;
             pet.DistanceToTargetPositon = Vector3.Distance(pet.AbsolutePosition, pet.TargetPosition);
@@ -305,6 +309,8 @@ namespace GameProject
             blob.DeathFromStarvationTime += splitTime;
             blob.SplitTimer = G.WorldTime.TotalGameTime.TotalSeconds + splitTime;
             blob.SplitScaleChangePerSecond = blob.Scale * 0.5f / (float)splitTime;
+            blob.Scale *= 0.8f;
+            blob.Size = blob.Definition.BaseSize * blob.Scale;
 
             var twin = blob.Twin = WorldGenerator.CreateRandomUnidentifiedBlob1(0, blob.Definition);
             // twin.AbsolutePosition = blob.AbsolutePosition;
@@ -323,7 +329,7 @@ namespace GameProject
             twin.NextRandomMovementSpeedMultiplierChange = blob.NextRandomMovementSpeedMultiplierChange;
             twin.RenderLogic = blob.RenderLogic;
             var segment = blob.Segment;
-            twin.Segment = new MicroSegment(segment.Shape, segment.Ramp, segment.Center.X, segment.Center.Y, blob.Size, segment.Rotation, segment.Color, segment.Z);
+            twin.Segment = new MicroSegment(segment.Shape, segment.Ramp, segment.Center.X, segment.Center.Y, blob.Size, segment.Rotation, segment.Color, segment.Z, segment.CoreBlendBegin, segment.CoreBlendEnd);
             twin.Segments = new Segment[] { twin.Segment };
             twin.State = Null;
             twin.TargetFood = null!;
@@ -351,7 +357,7 @@ namespace GameProject
             blob.LocalPosition += movement;
             twin.LocalPosition -= movement;
 
-            blob.Scale -= blob.SplitScaleChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds;
+            blob.Scale -= blob.SplitScaleChangePerSecond * (float)G.WorldTime.ElapsedGameTime.TotalSeconds * G.Overpopulation;
             blob.Size = blob.Definition.BaseSize * blob.Scale;
             twin.Segment.Size = blob.Segment.Size;
 
