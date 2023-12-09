@@ -54,7 +54,7 @@ namespace GameProject {
             SetExpTween(-1.2f, 0);
 
             Random rand = new();
-            int rand_theme = rand.Next(0, 4);
+            int rand_theme = rand.Next(0, 3);
             Assets.AudioTheme theme = (Assets.AudioTheme)typeof(Assets.AudioTheme).GetEnumValues().GetValue(rand_theme);
 
             _low = Assets.Themes[theme].music[Assets.MusicIntensity.Low].GetMusic.CreateInstance();
