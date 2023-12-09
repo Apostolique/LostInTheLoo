@@ -57,8 +57,7 @@ namespace GameProject {
         public enum AudioTheme {
             T1,
             T2,
-            T3,
-            Count
+            T3
         }
 
         public enum MusicIntensity {
